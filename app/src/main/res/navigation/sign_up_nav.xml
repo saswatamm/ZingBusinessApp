@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_nav.xml">
+    android:id="@+id/main_nav.xml"
+    app:startDestination="@id/getStartedFragment">
 
+    <fragment
+        android:id="@+id/getStartedFragment"
+        android:name="com.zingit.restaurant.views.signUp.GetStartedFragment"
+        android:label="GetStartedFragment" />
 </navigation>

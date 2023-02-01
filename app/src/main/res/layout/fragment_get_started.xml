@@ -33,9 +33,38 @@
             android:textSize="@dimen/_18sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:textColor="@color/black"
-
+            android:fontFamily="@font/duplet_bold"
             app:layout_constraintStart_toStartOf="@id/branding"
-            app:layout_constraintEnd_toEndOf="@id/branding"
+            app:layout_constraintEnd_toEndOf="@id/branding"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/illustration_background"
+            android:src="@drawable/get_started_illustration"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.444"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.435" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/_20sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/_50sdp"
+            android:layout_marginEnd="@dimen/_50sdp"
+            android:text="@string/get_started"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            app:cornerRadius="0dp"
+            app:rippleColor="@android:color/transparent"
+            android:fontFamily="@font/duplet_semibold"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
