@@ -1,4 +1,4 @@
-package com.unorg.unorg.models
+package com.zingit.restaurant.models
 
 import com.google.gson.annotations.SerializedName
 

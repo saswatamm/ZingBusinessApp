@@ -1,8 +1,8 @@
 package com.zingit.restaurant.network
 
 import android.util.Log
-import com.unorg.unorg.models.ApiResult
-import com.unorg.unorg.models.ErrorRes
+import com.zingit.restaurant.models.ApiResult
+import com.zingit.restaurant.models.ErrorRes
 import kotlinx.coroutines.CancellationException
 import okhttp3.ResponseBody
 import retrofit2.Converter
