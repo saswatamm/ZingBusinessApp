@@ -6,4 +6,5 @@
     <string name="restaurant_partner">Restaurant Partner</string>
     <string name="break_queue">Break the Queue.</string>
     <string name="get_started">Get Started</string>
+    <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>
 </resources>
