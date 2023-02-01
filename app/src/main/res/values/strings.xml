@@ -2,4 +2,7 @@
     <string name="app_name">Zing Buisness</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="zing">Zing</string>
+    <string name="restaurant_partner">Restaurant Partner</string>
+    <string name="break_queue">Break the Queue.</string>
 </resources>

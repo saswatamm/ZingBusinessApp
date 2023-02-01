@@ -81,4 +81,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$version_recyclerview"
     //SwipeRefreshLayout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    //Dimen
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
 }
