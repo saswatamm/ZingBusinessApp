@@ -14,7 +14,8 @@
 
         <TextView
             android:id="@+id/branding"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:text="@string/zing"
             app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="@dimen/_12sdp"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/_28sdp"
+            android:textSize="@dimen/_30sdp"
             android:fontFamily="@font/clash_display"/>
 
         <TextView
