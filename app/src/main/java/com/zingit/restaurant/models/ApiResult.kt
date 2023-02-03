@@ -2,7 +2,12 @@ package com.zingit.restaurant.models
 
 import com.google.gson.annotations.SerializedName
 
-data class ApiResult<out T>(val status: Status, val data: T?, val error: ErrorRes?, val message: String?) {
+data class ApiResult<out T>(
+    val status: Status,
+    val data: T?,
+    val error: ErrorRes?,
+    val message: String?
+) {
 
     enum class Status {
         SUCCESS,
@@ -28,6 +33,7 @@ data class ApiResult<out T>(val status: Status, val data: T?, val error: ErrorRe
         return "Result(status=$status, data=$data, error=$error, message=$message)"
     }
 }
+
 sealed class ErrorRes {
 
     data class ApiError(
@@ -37,6 +43,7 @@ sealed class ErrorRes {
         val status_code: Int,
         @SerializedName("message")
         val message: String
-    ):ErrorRes()
+    ) : ErrorRes()
 
 }
+

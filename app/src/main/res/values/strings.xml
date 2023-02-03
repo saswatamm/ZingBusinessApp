@@ -11,6 +11,8 @@
     <string name="login_with_google">Login with Google</string>
     <string name="login_with_email">Login with Email</string>
     <string name="need_help"><u>Need help with login?</u></string>
+    <string name="register_as_partner">Register as a Partner</string>
+    <string name="logout">Logout</string>
     <string name="enter_phone_number">Enter Phone Number</string>
     <string name="enter_otp">Enter your phone number and we will send you an OTP to continue</string>
     <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>
