@@ -4,9 +4,12 @@ import com.zingit.restaurant.models.GetOTPResponse
 import com.zingit.restaurant.models.GetotpDTO
 import com.zingit.restaurant.models.VerifyOtpDTO
 import com.zingit.restaurant.models.VerifyOtpResponse
+import dagger.Provides
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+
+
 
 interface ApiEndPoints {
 

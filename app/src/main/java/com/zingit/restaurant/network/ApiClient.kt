@@ -12,12 +12,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiClient {
-    /*@Provides
+    @Provides
     fun provideOrdersApiService(
         retrofit: Retrofit
-    ):{
-        return retrofit.create(OrdersApiService::class.java)
-    }*/
+    ):ApiEndPoints{
+        return retrofit.create(ApiEndPoints::class.java)
+    }
+
 
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
