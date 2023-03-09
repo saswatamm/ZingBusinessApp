@@ -14,5 +14,6 @@
     <color name="light_grey">#d6d6d6</color>
     <color name="lightest_grey">#FDFDFD</color>
     <color name="offwhite">#F7F7F7</color>
+    <color name="red">#FF0000</color>
 
 </resources>

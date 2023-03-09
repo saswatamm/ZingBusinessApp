@@ -1,9 +1,14 @@
 package com.zingit.restaurant.utils
 
+import android.app.Activity
+import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+
 
 fun checkContactNumber(contact:String):Boolean
 {
@@ -20,4 +25,12 @@ fun Fragment.setInteractionDisabled(disabled : Boolean) {
     } else {
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
+
+
 }
+
+fun View.hideKeyboard(){
+    val inputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(this.windowToken, 0)
+}
+
