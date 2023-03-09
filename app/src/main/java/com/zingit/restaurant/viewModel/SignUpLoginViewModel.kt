@@ -3,6 +3,8 @@ package com.zingit.restaurant.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 import com.zingit.restaurant.models.*
 import com.zingit.restaurant.repository.ZingRepository
 import com.zingit.restaurant.utils.checkContactNumber
@@ -35,6 +37,8 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
     fun isTenDigitNumber(): Boolean {
         return number.value?.length == 10
     }
+
+
 
 
 

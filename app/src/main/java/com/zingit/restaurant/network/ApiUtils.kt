@@ -38,7 +38,7 @@ class ApiUtils  @Inject constructor(private val retrofit: Retrofit) {
             } else {
                 val errorResponse = parseError(result)
                 if(errorResponse is ErrorRes.ApiError)
-                    return ApiResult.error(errorResponse.message?:"Something went wrong", errorResponse)
+                    return ApiResult.error(errorResponse.message ?:"Something went wrong", errorResponse)
             }
 
         } catch (e: Throwable) {
