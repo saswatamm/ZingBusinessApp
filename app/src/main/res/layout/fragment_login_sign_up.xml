@@ -100,6 +100,7 @@
                     android:fontFamily="@font/duplet_semibold"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:hint="@string/enter_phone_number"
+                    android:inputType="phone"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:background="@android:color/transparent"
                     app:layout_constraintBottom_toBottomOf="parent"
