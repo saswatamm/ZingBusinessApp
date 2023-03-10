@@ -2,6 +2,7 @@ package com.zingit.restaurant.views.signUp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,10 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 import com.zingit.restaurant.R
@@ -16,6 +21,7 @@ import com.zingit.restaurant.databinding.FragmentLoginSignUpBinding
 import com.zingit.restaurant.utils.GoogleSignInManager
 import com.zingit.restaurant.utils.hideKeyboard
 import com.zingit.restaurant.viewModel.SignUpLoginViewModel
+import com.zingit.restaurant.views.home.HomeMainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -27,6 +33,7 @@ class LoginSignUpFragment : Fragment() {
     private val viewModel: SignUpLoginViewModel by viewModels()
     private val RC_SIGN_IN = 123
     @Inject lateinit var googleSignInManager: GoogleSignInManager
+    private  val TAG = "LoginSignUpFragment"
 
 
 
@@ -51,14 +58,51 @@ class LoginSignUpFragment : Fragment() {
         }
         binding.apply {
             googleLogin.setOnClickListener {
-                googleSignInManager.signIn(requireActivity(),RC_SIGN_IN)
+                startActivity(Intent(requireContext(),HomeMainActivity::class.java))
+//                googleSignInManager.signIn(requireActivity(),RC_SIGN_IN)
             }
         }
+        
+        googleSignInManager.getAccount()?.let {
+            Log.e(TAG, "onCreateView: ${it}", )
+          
+        }
+
+
+
+
 
 
 
         return binding.root
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == RC_SIGN_IN) {
+//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+//            handleSignInResult(task)
+//        }
+//    }
+
+
+//    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+//        try {
+//            val account = completedTask.getResult(ApiException::class.java)
+//            // Signed in successfully, show UI.
+//           Log.e(TAG, "handleSignInResult: ${account?.id} ${account.displayName}", )
+//            startActivity(Intent(requireContext(),HomeMainActivity::class.java))
+//
+//        } catch (e: ApiException) {
+//            // The ApiException status code indicates the detailed failure reason.
+//            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+//            Log.e(TAG, "signInResult:failed code=" + e.statusCode)
+//
+//        }
+//    }
+
+
+
 
 
 

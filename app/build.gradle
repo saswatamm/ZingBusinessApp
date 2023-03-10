@@ -93,5 +93,6 @@ dependencies {
 
     //Google Sign In
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
+    implementation 'androidx.activity:activity-ktx:1.6.1'
 
 }
