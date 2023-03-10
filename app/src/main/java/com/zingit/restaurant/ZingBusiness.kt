@@ -8,4 +8,11 @@ import dagger.hilt.android.HiltAndroidApp
 class ZingBusiness: Application() {
 
 
+    companion object{
+        lateinit var firebaseToken:String
+
+
+    }
+
+
 }
