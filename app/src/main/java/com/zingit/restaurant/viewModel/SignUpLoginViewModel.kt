@@ -33,7 +33,7 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
     val loadingLivedata:LiveData<Boolean>
         get()=loading
 
-    private val _error:MutableLiveData<String> = MutableLiveData("")
+    private val _error:MutableLiveData<String> = MutableLiveData()
     val error:LiveData<String>
         get()=_error
 
