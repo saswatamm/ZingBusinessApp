@@ -5,6 +5,8 @@
     <string name="zing">zing</string>
     <string name="restaurant_partner">Restaurant Partner</string>
     <string name="break_queue">Break the Queue.</string>
+    <string name="order_id">Order</string>
+    <string name="order_temp_id">#BD001</string>
     <string name="get_started">Get Started</string>
     <string name="india">+91</string>
     <string name="send_otp">Send OTP</string>
@@ -15,6 +17,7 @@
     <string name="logout">Logout</string>
     <string name="search_by_orderId">Search by Order ID</string>
     <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="takeaway">(Takeaway)</string>
     <string name="enter_otp">Enter your phone number and we will send you an OTP to continue</string>
     <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>
 </resources>
