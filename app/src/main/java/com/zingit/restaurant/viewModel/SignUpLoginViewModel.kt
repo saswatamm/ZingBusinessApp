@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.zingit.restaurant.models.*
 import com.zingit.restaurant.repository.ZingRepository
 import com.zingit.restaurant.utils.checkContactNumber
@@ -46,6 +47,7 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
     private val data:MutableLiveData<String> = MutableLiveData()
     val dataLivedata:LiveData<String>
         get()=data
+
 
 
     fun isTenDigitNumber(): Boolean {
@@ -104,26 +106,13 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
 
     fun getDocumentIdData(context: Context, id:String) {
         viewModelScope.launch {
-            firestore.collection("payment").document(id).get().addOnSuccessListener {
-                for (i in it.data!!.keys) {
-                    Toast.makeText(context, "working", Toast.LENGTH_SHORT).show()
-                    Log.e(TAG, "getDocumentIdData: ${i}")
-                }
-            }
+
         }
     }
 
     fun fetchUsersData(){
         viewModelScope.launch {
-            firestore.collection("payment").whereEqualTo("outletId","").addSnapshotListener { value, error ->
-                if (error != null) {
-                    Log.e(TAG, "fetchUsersData: ${error.message}")
-                    return@addSnapshotListener
-                }
-                for (i in value!!.documents) {
-                    Log.e(TAG, "fetchUsersData: ${i.data}")
-                }
-            }
+
         }
     }
 

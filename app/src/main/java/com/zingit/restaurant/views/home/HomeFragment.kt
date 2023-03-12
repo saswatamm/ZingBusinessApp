@@ -39,6 +39,17 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         firestore = FirebaseFirestore.getInstance()
         binding.apply {
+            firestore.collection("payment").whereEqualTo("outletId","1cLAN8pKJcuyIML9g8Uz").addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.e(TAG, "fetchUsersData: ${error.message}")
+                    return@addSnapshotListener
+                }
+                for (i in value!!.documents) {
+                    Log.e(TAG, "fetchUsersData: ${i.data}")
+                }
+            }
+
+
             searchView.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     Log.d("checkDatas", "brfiore: ${p0.toString()}")
