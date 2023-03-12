@@ -17,27 +17,13 @@ import dagger.hilt.android.AndroidEntryPoint
 class FirebaseNotificationActionActivity : AppCompatActivity() {
     private val viewModel: SignUpLoginViewModel by viewModels()
     lateinit var binding: ActivityFirebaseNotificationActionBinding
-    private  val TAG = "FirebaseNotificationAct"
+    private val TAG = "FirebaseNotificationActionActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_firebase_notification_action)
         val count = intent.getStringExtra("id")
-        Log.e(TAG, "onCreate: ${count}", )
         binding.apply {
            viewModel.getDocumentIdData(applicationContext,count!!)
-//            firestore = FirebaseFirestore.getInstance()
-//            if(count !=null){
-//                Toast.makeText(this@FirebaseNotificationActionActivity, count, Toast.LENGTH_SHORT).show()
-//                firestore.collection("payment").document(count).get().addOnSuccessListener {
-//                    for (i in it.data!!.keys) {
-//                        Log.e(TAG, "${i}")
-//
-//
-//                    }
-//                }
-//
-//            }
-
         }
     }
 }
