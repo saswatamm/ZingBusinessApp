@@ -1,13 +1,17 @@
 package com.zingit.restaurant.viewModel
 
+import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.models.*
 import com.zingit.restaurant.repository.ZingRepository
 import com.zingit.restaurant.utils.checkContactNumber
@@ -20,10 +24,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepository):androidx.lifecycle.ViewModel(){
 
+    private  val TAG = "SignUpLoginViewModel"
     val number: MutableLiveData<String> = MutableLiveData()
     private val getOtpMutableLiveData = MutableLiveData<GetOTPResponse>()
     val getOtpLiveData: LiveData<GetOTPResponse>
         get() = getOtpMutableLiveData
+
+     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private val verifyOtpMutableLiveData = MutableLiveData<VerifyOtpResponse>()
     val verifyOtpLiveData: LiveData<VerifyOtpResponse>
@@ -36,6 +43,9 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
     private val _error:MutableLiveData<String> = MutableLiveData()
     val error:LiveData<String>
         get()=_error
+    private val data:MutableLiveData<String> = MutableLiveData()
+    val dataLivedata:LiveData<String>
+        get()=data
 
 
     fun isTenDigitNumber(): Boolean {
@@ -88,6 +98,17 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
                     _error.value = result.message!!
                 }
                 else -> {}
+            }
+        }
+    }
+
+    fun getDocumentIdData(context: Context, id:String) {
+        viewModelScope.launch {
+            firestore.collection("payment").document(id).get().addOnSuccessListener {
+                for (i in it.data!!.keys) {
+                    Toast.makeText(context, "working", Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, "getDocumentIdData: ${i}")
+                }
             }
         }
     }
