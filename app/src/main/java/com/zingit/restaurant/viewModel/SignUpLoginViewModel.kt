@@ -113,4 +113,18 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
         }
     }
 
+    fun fetchUsersData(){
+        viewModelScope.launch {
+            firestore.collection("payment").whereEqualTo("outletId","").addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.e(TAG, "fetchUsersData: ${error.message}")
+                    return@addSnapshotListener
+                }
+                for (i in value!!.documents) {
+                    Log.e(TAG, "fetchUsersData: ${i.data}")
+                }
+            }
+        }
+    }
+
 }

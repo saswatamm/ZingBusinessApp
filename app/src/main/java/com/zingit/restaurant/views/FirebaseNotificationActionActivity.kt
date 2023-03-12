@@ -24,6 +24,10 @@ class FirebaseNotificationActionActivity : AppCompatActivity() {
         val count = intent.getStringExtra("id")
         binding.apply {
            viewModel.getDocumentIdData(applicationContext,count!!)
+
+
+
+
         }
     }
 }
