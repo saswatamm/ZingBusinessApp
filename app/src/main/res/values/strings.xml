@@ -18,6 +18,10 @@
     <string name="search_by_orderId">Search by Order ID</string>
     <string name="enter_phone_number">Enter Phone Number</string>
     <string name="takeaway">(Takeaway)</string>
+    <string name="out_of_stock"><u>Out of Stock?</u></string>
+    <string name="item">Items</string>
+    <string name="help">Help</string>
+    <string name="from_user">from Himanshu at 08:00 PM</string>
     <string name="enter_otp">Enter your phone number and we will send you an OTP to continue</string>
     <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>
 </resources>

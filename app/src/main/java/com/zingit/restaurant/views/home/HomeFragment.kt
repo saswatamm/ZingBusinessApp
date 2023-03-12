@@ -1,5 +1,6 @@
 package com.zingit.restaurant.views.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,8 +12,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.FragmentHomeBinding
+import com.zingit.restaurant.utils.hideKeyboard
+import com.zingit.restaurant.views.FirebaseNotificationActionActivity
+import javax.inject.Inject
 
 
 class HomeFragment : Fragment() {
@@ -20,6 +25,7 @@ class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
     lateinit var firestore: FirebaseFirestore
     private val TAG = "HomeFragment"
+    lateinit var query: Query
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,21 +58,14 @@ class HomeFragment : Fragment() {
                                     Log.e(TAG, "${document.id} => ${document.data.get("paymentOrderID")}")
                                     count= document.id
                                     Toast.makeText(context, document.id, Toast.LENGTH_SHORT).show()
+                                    view?.hideKeyboard()
+                                    startActivity(Intent(context, FirebaseNotificationActionActivity::class.java).putExtra("id",count))
+                                    binding.searchView.text.clear()
                                     break
                                 }
 
                             }
-                            if(count !=null){
-                                Toast.makeText(context, count, Toast.LENGTH_SHORT).show()
-                                firestore.collection("payment").document(count).get().addOnSuccessListener {
-                                    for (i in it.data!!.keys) {
-                                        Log.e(TAG, "${i}")
 
-
-                                    }
-                                }
-
-                            }
                         }
                     }
                 }

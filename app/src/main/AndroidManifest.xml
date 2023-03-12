@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".FirebaseNotificationActionActivity"
+            android:name=".views.FirebaseNotificationActionActivity"
             android:exported="false" />
         <activity
             android:name=".views.home.HomeMainActivity"
