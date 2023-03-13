@@ -50,6 +50,7 @@ class HomeFragment : Fragment() {
                         Log.e(TAG, "fetchUsersData: ${i.document.data}")
                         when(i.type){
                             DocumentChange.Type.ADDED -> {
+                                Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
                                 Log.e(TAG, "onEvent: ${i.document.data}")
 
                             }
