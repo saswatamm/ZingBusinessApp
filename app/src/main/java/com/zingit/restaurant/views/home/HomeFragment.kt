@@ -11,8 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.FragmentHomeBinding
 import com.zingit.restaurant.utils.hideKeyboard
@@ -39,8 +38,34 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         firestore = FirebaseFirestore.getInstance()
         binding.apply {
-            firestore.collection("payment").whereEqualTo("outletId","1cLAN8pKJcuyIML9g8Uz").addSnapshotListener { value, error ->
-                Log.e(TAG, "onCreateView: ${value}")
+            query = firestore.collection("payment").whereEqualTo("outletID","1cLAN8pKJcuyIML9g8Uz").whereEqualTo("statusCode",1)
+            query.addSnapshotListener(object :EventListener<QuerySnapshot> {
+                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                    Log.e(TAG, "onCreateView: ${value!!.documents}")
+                    if (error != null) {
+                        Log.e(TAG, "fetchUsersData: ${error.message}")
+                        return
+                    }
+                    for (i in value!!.documentChanges) {
+                        Log.e(TAG, "fetchUsersData: ${i.document.data}")
+                        when(i.type){
+                            DocumentChange.Type.ADDED -> {
+                                Log.e(TAG, "onEvent: ${i.document.data}")
+
+                            }
+                            DocumentChange.Type.MODIFIED -> {
+                                Log.e(TAG, "onEvent: ${i.document.data}")
+                            }
+                            DocumentChange.Type.REMOVED -> {
+                                Log.e(TAG, "onEvent: ${i.document.data}")
+                            }
+                        }
+                    }
+                }
+            })
+/*
+            firestore.collection("payment").whereEqualTo("outletID","1cLAN8pKJcuyIML9g8Uz").whereEqualTo("statusCode",1).addSnapshotListener { value, error ->
+                Log.e(TAG, "onCreateView: ${value!!.documents}")
                 if (error != null) {
                     Log.e(TAG, "fetchUsersData: ${error.message}")
                     return@addSnapshotListener
@@ -49,6 +74,7 @@ class HomeFragment : Fragment() {
                     Log.e(TAG, "fetchUsersData: ${i.data}")
                 }
             }
+*/
 
 
             searchView.addTextChangedListener(object : TextWatcher {
