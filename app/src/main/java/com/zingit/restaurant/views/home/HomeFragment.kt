@@ -40,6 +40,7 @@ class HomeFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
         binding.apply {
             firestore.collection("payment").whereEqualTo("outletId","1cLAN8pKJcuyIML9g8Uz").addSnapshotListener { value, error ->
+                Log.e(TAG, "onCreateView: ${value}")
                 if (error != null) {
                     Log.e(TAG, "fetchUsersData: ${error.message}")
                     return@addSnapshotListener
