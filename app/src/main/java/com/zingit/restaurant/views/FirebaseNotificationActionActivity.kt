@@ -32,10 +32,14 @@ class FirebaseNotificationActionActivity : AppCompatActivity() {
         val count = intent.getStringExtra("id")
         binding.apply {
 
+
             firestore.collection("payment").document(count!!).get().addOnSuccessListener {
                 Log.e(TAG, "onCreate: ${it.data}")
                 orderItems.clear()
-                it.toObject(PaymentModel::class.java)?.let { it1 -> Log.e(TAG, "qwerty: ${it1}") }
+                it.toObject(PaymentModel::class.java)?.let { it1 ->
+                    Log.e(TAG, "qwerty: ${it1}")
+                    paymentModel = it1
+                }
                 itemAdapter = ItemAdapter(context = applicationContext)
                 itemsList.adapter = itemAdapter
                 it.data?.mapValues { it.value }?.forEach { (key, value) ->
@@ -43,7 +47,6 @@ class FirebaseNotificationActionActivity : AppCompatActivity() {
                     if(key=="orderItems"){
                         Log.e(TAG, "ttt: $key $value")
                         var data = value as ArrayList<OrderItem>
-                        Log.e(TAG, "datata: ${data}", )
                         for (i in 0 until data.size) {
                             val map = data[i] as HashMap<String, String>
                             val itemID = map["itemID"].toString()
@@ -51,8 +54,9 @@ class FirebaseNotificationActionActivity : AppCompatActivity() {
                             val itemName = map["itemName"].toString()
                             val itemQuantity = map["itemQuantity"].toString()
                             val itemImage = map["itemImage"].toString()
-                            Log.e(TAG, "111: ${itemID}", )
+                            Log.e(TAG, "111: ${itemTotal}", )
                             orderItems.add(OrderItem(itemID,itemImage,itemName,itemQuantity,itemTotal))
+                            Log.e(TAG, "list:${orderItems}", )
                             itemsList.adapter = itemAdapter
                             itemAdapter.submitList(orderItems)
                         }

@@ -79,7 +79,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:fontFamily="@font/duplet_regular"
             android:paddingHorizontal="@dimen/_7sdp"
-            android:text="Rs. 100"
+            android:text="@{`Rs`+paymentModel.itemTotal}"
             android:layout_marginEnd="@dimen/_15sdp"
             android:textStyle="bold"
             android:textColor="@color/black"

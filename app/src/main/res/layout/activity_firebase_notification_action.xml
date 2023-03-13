@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="paymentModel"
+            type="com.zingit.restaurant.models.PaymentModel" />
 
     </data>
 
@@ -170,7 +173,7 @@
             android:layout_marginEnd="@dimen/_15sdp"
             android:fontFamily="@font/duplet_regular"
             android:paddingHorizontal="@dimen/_7sdp"
-            android:text="Rs. 100"
+            android:text="@{`Rs` +` ` + paymentModel.totalAmountPaid}"
             android:layout_marginTop="@dimen/_5sdp"
             app:layout_constraintBottom_toTopOf="@id/line1"
             android:layout_marginBottom="@dimen/_20sdp"
