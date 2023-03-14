@@ -53,6 +53,13 @@ class HomeFragment : Fragment() {
                                 Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
                                 Log.e(TAG, "onEvent: ${i.document.data}")
 
+                                /*
+
+                                Print Slip function calling
+                                Payment status code update
+
+                                */
+
                             }
                             DocumentChange.Type.MODIFIED -> {
                                 Log.e(TAG, "onEvent: ${i.document.data}")
