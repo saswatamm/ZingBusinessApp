@@ -24,6 +24,8 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.FragmentHomeBinding
+import com.zingit.restaurant.models.OrderItem
+import com.zingit.restaurant.models.PaymentModel
 import com.zingit.restaurant.utils.hideKeyboard
 import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
@@ -39,6 +41,7 @@ class HomeFragment : Fragment() {
     lateinit var firestore: FirebaseFirestore
     private val TAG = "HomeFragment"
     lateinit var query: Query
+    lateinit var paymentModel: PaymentModel
     private val selectedDevice: BluetoothConnection? = null
     val PERMISSION_BLUETOOTH = 1
     val PERMISSION_BLUETOOTH_ADMIN = 2
@@ -72,7 +75,12 @@ class HomeFragment : Fragment() {
                             DocumentChange.Type.ADDED -> {
                                 Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
                                 Log.e(TAG, "onEvent: ${i.document.data}")
-                                printBluetooth()
+                                paymentModel = i.document.toObject(PaymentModel::class.java)
+                                createPrintSlip(paymentModel)
+
+
+
+
 
 
 
@@ -122,9 +130,9 @@ class HomeFragment : Fragment() {
                         firestore.collection("payment").get().addOnSuccessListener {
                             var count:String ?=null
                             for (document in it) {
-                                Log.e(TAG, "${document.id} => ${document.data.get("paymentOrderID")}")
-                                if (p0.toString().trim().contains(document.data.get("paymentOrderID").toString())){
-                                    Log.e(TAG, "${document.id} => ${document.data.get("paymentOrderID")}")
+                                Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
+                                if (p0.toString().trim().contains(document.data.get("orderNo").toString())){
+                                    Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
                                     count= document.id
                                     Toast.makeText(context, document.id, Toast.LENGTH_SHORT).show()
                                     view?.hideKeyboard()
@@ -243,6 +251,51 @@ class HomeFragment : Fragment() {
                 1
             )
         }
+    }
+
+    fun createPrintSlip(payment: PaymentModel): String? {
+        var slip = "[C]<font size='big'>      ZING</font>"
+        //slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.logo_orange, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";
+        slip += "[L]\n"
+        slip += "[L]<b>Order type : "
+        slip += """
+             ${"[R]<font size='big'>        " + payment.orderType}</font>
+             
+             """.trimIndent()
+        slip += "[L]<b>" + "Order ID : "
+        slip += """
+             ${
+            "[R]<font size='big'>        " + "#" + payment.paymentOrderID
+                .substring(payment.paymentOrderID.length - 4)
+        }</font>
+             
+             """.trimIndent()
+        slip += "[L]<b>" + "Order From : "
+        slip += """
+             ${"[R]<font size='big'>        " + payment.userName}</font>
+             
+             """.trimIndent()
+        //slip += "[L]<font size='big'>" + Dataholder.printingPayment.orderType + "           #" + Dataholder.printingPayment.getPaymentOrderID().substring(Dataholder.printingPayment.getPaymentOrderID().length()-4) + "</font>\n";
+        //slip += "[L]<font size='big'>Order from        " + Dataholder.printingPayment.getUserName().toUpperCase() + "</font>\n";
+        //Add phone no here
+        slip += "[C]<b>=========================================\n"
+        for (i in 0 until payment.orderItem.size) {
+            slip += "[L]<font size='big-4'>" + payment.orderItem.get(i)
+                .itemName + "</font>"
+            slip += """
+            ${
+                "[R]<font size='big-4'> X" + payment.orderItem.get(i).itemQuantity
+            }</font>
+            
+            
+            """.trimIndent()
+        }
+        slip += "[C]<b>=========================================\n"
+        slip += """
+             ${"[R]<font size='big-4'>     Total Amount: " + payment.basePrice}</font>
+             
+             """.trimIndent()
+        return slip
     }
 
     fun getAsyncEscPosPrinter(printerConnection: DeviceConnection?): AsyncEscPosPrinter? {

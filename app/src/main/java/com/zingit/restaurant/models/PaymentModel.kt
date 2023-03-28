@@ -7,6 +7,7 @@ data class PaymentModel(
     val id:String="",
     val couponID:String="",
     val orderItem: ArrayList<OrderItem> = arrayListOf(),
+    val orderType:String="",
     val outletID:String="",
     val paymentOrderID:String="",
     val preparedTime:String="",
