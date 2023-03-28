@@ -76,20 +76,11 @@ class HomeFragment : Fragment() {
                                 Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
                                 Log.e(TAG, "onEvent: ${i.document.data}")
                                 paymentModel = i.document.toObject(PaymentModel::class.java)
-                                createPrintSlip(paymentModel)
+                                printBluetooth()
 
 
 
 
-
-
-
-                                /*
-
-                                Print Slip function calling
-                                Payment status code update
-
-                                */
 
                             }
                             DocumentChange.Type.MODIFIED -> {
@@ -253,6 +244,13 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+
+    fun getAsyncEscPosPrinter(printerConnection: DeviceConnection?): AsyncEscPosPrinter? {
+        val format = SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss")
+        val printer = AsyncEscPosPrinter(printerConnection, 203, 48f, 32)
+        return printer.addTextToPrint(createPrintSlip(paymentModel))
+    }
     fun createPrintSlip(payment: PaymentModel): String? {
         var slip = "[C]<font size='big'>      ZING</font>"
         //slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.logo_orange, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";
@@ -296,54 +294,6 @@ class HomeFragment : Fragment() {
              
              """.trimIndent()
         return slip
-    }
-
-    fun getAsyncEscPosPrinter(printerConnection: DeviceConnection?): AsyncEscPosPrinter? {
-        val format = SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss")
-        val printer = AsyncEscPosPrinter(printerConnection, 203, 48f, 32)
-        return printer.addTextToPrint(
-            """
-            [C]<img>${
-                PrinterTextParserImg.bitmapToHexadecimalString(
-                    printer,
-                   requireActivity().getResources()
-                        .getDrawableForDensity(
-                            R.drawable.zing_business_logo,
-                            DisplayMetrics.DENSITY_MEDIUM
-                        )
-                )
-            }</img>
-            [L]
-            [C]<u><font size='big'>ORDER N°045</font></u>
-            [L]
-            [C]<u type='double'>${format.format(Date())}</u>
-            [C]
-            [C]================================
-            [L]
-            [L]<b>BEAUTIFUL SHIRT</b>[R]9.99€
-            [L]  + Size : S
-            [L]
-            [L]<b>AWESOME HAT</b>[R]24.99€
-            [L]  + Size : 57/58
-            [L]
-            [C]--------------------------------
-            [R]TOTAL PRICE :[R]34.98€
-            [R]TAX :[R]4.23€
-            [L]
-            [C]================================
-            [L]
-            [L]<u><font color='bg-black' size='tall'>Customer :</font></u>
-            [L]Raymond DUPONT
-            [L]5 rue des girafes
-            [L]31547 PERPETES
-            [L]Tel : +33801201456
-            
-            [C]<barcode type='ean13' height='10'>831254784551</barcode>
-            [L]
-            [C]<qrcode size='20'>http://www.developpeur-web.dantsu.com/</qrcode>
-            
-            """.trimIndent()
-        )
     }
 
 
