@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
@@ -47,6 +48,7 @@ class HomeFragment : Fragment() {
     val PERMISSION_BLUETOOTH_ADMIN = 2
     val PERMISSION_BLUETOOTH_CONNECT = 3
     val PERMISSION_BLUETOOTH_SCAN = 4
+    var outletID:String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkPermissions()
@@ -61,38 +63,48 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         firestore = FirebaseFirestore.getInstance()
         binding.apply {
-            query = firestore.collection("payment").whereEqualTo("outletID","1cLAN8pKJcuyIML9g8Uz").whereEqualTo("statusCode",1)
-            query.addSnapshotListener(object :EventListener<QuerySnapshot> {
-                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
-                    Log.e(TAG, "onCreateView: ${value!!.documents}")
-                    if (error != null) {
-                        Log.e(TAG, "fetchUsersData: ${error.message}")
-                        return
-                    }
-                    for (i in value!!.documentChanges) {
-                        Log.e(TAG, "fetchUsersData: ${i.document.data}")
-                        when(i.type){
-                            DocumentChange.Type.ADDED -> {
-                                Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
-                                Log.e(TAG, "onEvent: ${i.document.data}")
-                                paymentModel = i.document.toObject(PaymentModel::class.java)
-                                printBluetooth()
+            firestore.collection("outletID").document("SPVBed0F3hFKB9hx3hZD").get().addOnSuccessListener {
+                outletID = it.data?.get("outletID").toString()
+            }
+            Handler().postDelayed({
+                query = firestore.collection("payment").whereEqualTo("outletID",outletID).whereEqualTo("statusCode",1)
+                query.addSnapshotListener(object :EventListener<QuerySnapshot> {
+                    override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                        Log.e(TAG, "onCreateView: ${value!!.documents}")
+                        if (error != null) {
+                            Log.e(TAG, "fetchUsersData: ${error.message}")
+                            return
+                        }
+                        for (i in value!!.documentChanges) {
+                            Log.e(TAG, "fetchUsersData: ${i.document.data}")
+                            when(i.type){
+                                DocumentChange.Type.ADDED -> {
+                                    Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
+                                    Log.e(TAG, "onEvent: ${i.document.data}")
+                                    paymentModel = i.document.toObject(PaymentModel::class.java)
+                                    Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}", )
+
+                                    printBluetooth()
 
 
 
 
 
-                            }
-                            DocumentChange.Type.MODIFIED -> {
-                                Log.e(TAG, "onEvent: ${i.document.data}")
-                            }
-                            DocumentChange.Type.REMOVED -> {
-                                Log.e(TAG, "onEvent: ${i.document.data}")
+                                }
+                                DocumentChange.Type.MODIFIED -> {
+                                    Log.e(TAG, "onEvent: ${i.document.data}")
+                                }
+                                DocumentChange.Type.REMOVED -> {
+                                    Log.e(TAG, "onEvent: ${i.document.data}")
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
+            }, 5000)
+
+
+
 /*
             firestore.collection("payment").whereEqualTo("outletID","1cLAN8pKJcuyIML9g8Uz").whereEqualTo("statusCode",1).addSnapshotListener { value, error ->
                 Log.e(TAG, "onCreateView: ${value!!.documents}")
@@ -248,7 +260,7 @@ class HomeFragment : Fragment() {
 
     fun getAsyncEscPosPrinter(printerConnection: DeviceConnection?): AsyncEscPosPrinter? {
         val format = SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss")
-        val printer = AsyncEscPosPrinter(printerConnection, 203, 48f, 32)
+        val printer = AsyncEscPosPrinter(printerConnection, 203, 80f, 32)
         return printer.addTextToPrint(createPrintSlip(paymentModel))
     }
     fun createPrintSlip(payment: PaymentModel): String? {
@@ -277,12 +289,12 @@ class HomeFragment : Fragment() {
         //slip += "[L]<font size='big'>Order from        " + Dataholder.printingPayment.getUserName().toUpperCase() + "</font>\n";
         //Add phone no here
         slip += "[C]<b>=========================================\n"
-        for (i in 0 until payment.orderItem.size) {
-            slip += "[L]<font size='big-4'>" + payment.orderItem.get(i)
-                .itemName + "</font>"
+        for (i in 0 until payment.orderItems.size) {
+            Log.e(TAG, "createPrintSlip: ${payment.orderItems.get(i).itemName}", )
+            slip += "[L]<font size='big-4'>" + payment.orderItems.get(i).itemName + "</font>"
             slip += """
             ${
-                "[R]<font size='big-4'> X" + payment.orderItem.get(i).itemQuantity
+                "[R]<font size='big-4'> X" + payment.orderItems.get(i).itemQuantity
             }</font>
             
             
@@ -295,6 +307,7 @@ class HomeFragment : Fragment() {
              """.trimIndent()
         return slip
     }
+
 
 
 }

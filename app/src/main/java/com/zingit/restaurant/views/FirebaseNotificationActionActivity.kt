@@ -55,7 +55,7 @@ class FirebaseNotificationActionActivity : AppCompatActivity() {
                             val itemQuantity = map["itemQuantity"].toString()
                             val itemImage = map["itemImage"].toString()
                             Log.e(TAG, "111: ${itemTotal}", )
-                            orderItems.add(OrderItem(itemID,itemImage,itemName,itemQuantity,itemTotal))
+                            orderItems.add(OrderItem(itemID,itemImage,itemName,itemQuantity.toLong(),itemTotal.toLong()))
                             Log.e(TAG, "list:${orderItems}", )
                             itemsList.adapter = itemAdapter
                             itemAdapter.submitList(orderItems)
