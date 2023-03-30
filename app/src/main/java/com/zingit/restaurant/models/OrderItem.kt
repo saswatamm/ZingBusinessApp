@@ -4,6 +4,6 @@ data class OrderItem(
     val itemID: String="",
     val itemImage: String="",
     val itemName: String="",
-    val itemQuantity: String="",
-    val itemTotal: String=""
+    val itemQuantity: Long=0,
+    val itemTotal: Long=0
 )

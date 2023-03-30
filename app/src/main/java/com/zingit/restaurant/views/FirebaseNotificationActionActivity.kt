@@ -40,6 +40,8 @@ class FirebaseNotificationActionActivity : AppCompatActivity() {
                     Log.e(TAG, "qwerty: ${it1}")
                     paymentModel = it1
                 }
+                oderId.text = "#${paymentModel?.orderNo}"
+                fromOrder.text = "From: ${paymentModel?.userName} at "
                 itemAdapter = ItemAdapter(context = applicationContext)
                 itemsList.adapter = itemAdapter
                 it.data?.mapValues { it.value }?.forEach { (key, value) ->
@@ -55,7 +57,7 @@ class FirebaseNotificationActionActivity : AppCompatActivity() {
                             val itemQuantity = map["itemQuantity"].toString()
                             val itemImage = map["itemImage"].toString()
                             Log.e(TAG, "111: ${itemTotal}", )
-                            orderItems.add(OrderItem(itemID,itemImage,itemName,itemQuantity,itemTotal))
+                            orderItems.add(OrderItem(itemID,itemImage,itemName,itemQuantity.toLong(),itemTotal.toLong()))
                             Log.e(TAG, "list:${orderItems}", )
                             itemsList.adapter = itemAdapter
                             itemAdapter.submitList(orderItems)
