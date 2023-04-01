@@ -116,4 +116,22 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
         }
     }
 
+    fun whatsappToUser(whatsappRequestModel: WhatsappRequestModel){
+        viewModelScope.launch {
+            loading.value=true
+            val result = repository.callWhatsapp(whatsappRequestModel)
+            when (result.status) {
+                ApiResult.Status.SUCCESS -> {
+                    loading.value=false
+                    data.value=result.data!!.message
+                }
+                ApiResult.Status.ERROR -> {
+                    loading.value=false
+                    _error.value = result.message!!
+                }
+                else -> {}
+            }
+        }
+    }
+
 }
