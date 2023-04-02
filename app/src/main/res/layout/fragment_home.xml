@@ -26,84 +26,60 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <com.google.android.material.card.MaterialCardView-->
-<!--            android:id="@+id/cardView"-->
-<!--            android:layout_width="match_parent"-->
+        <TextView
+            android:id="@+id/branch_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/duplet_bold"
+            android:text="@string/maximise_efficiency"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14sdp"
+            app:layout_constraintTop_toBottomOf="@id/branding"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.github.angads25.toggle.widget.LabeledSwitch
+            android:id="@+id/switchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/branch_name"
+            app:on="true"
+            app:colorBorder="@color/colorAccent"/>
+
+
+<!--        <androidx.appcompat.widget.SwitchCompat-->
+<!--            android:id="@+id/switchButton"-->
+<!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/_15sdp"-->
-<!--            android:layout_marginTop="@dimen/_10sdp"-->
-<!--            android:layout_marginEnd="@dimen/_15sdp"-->
-<!--            app:cardBackgroundColor="@color/offwhite"-->
-<!--            app:cardCornerRadius="@dimen/_20sdp"-->
-<!--            app:cardElevation="0dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/branding">-->
-
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent">-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/search_icon"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="5dp"-->
-<!--                    android:src="@drawable/search"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <EditText-->
-<!--                    android:id="@+id/searchView"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="@android:color/transparent"-->
-<!--                    android:fontFamily="@font/duplet_italic"-->
-<!--                    android:hint="@string/search_by_orderId"-->
-<!--                    android:singleLine="true"-->
-<!--                    android:layout_marginStart="5dp"-->
-<!--                    android:layout_marginEnd="5dp"-->
-<!--                    android:paddingVertical="8dp"-->
-<!--                    android:inputType="text|textNoSuggestions"-->
-<!--                    android:textAlignment="center"-->
-<!--                    android:textColorHint="@color/grey"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toStartOf="@id/go"-->
-<!--                    app:layout_constraintStart_toEndOf="@id/search_icon"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/go"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="5dp"-->
-<!--                    android:layout_marginEnd="@dimen/_5sdp"-->
-<!--                    android:layout_marginBottom="5dp"-->
-<!--                    android:background="@drawable/circle_shape"-->
-<!--                    android:padding="5dp"-->
-<!--                    android:src="@drawable/arrwo"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-
-
-
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-<!--        </com.google.android.material.card.MaterialCardView>-->
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/recyclerView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/cardView"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:thumb="@drawable/thumb_layerlist"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            android:layout_marginTop="@dimen/_10sdp"-->
-<!--            tools:listitem="@layout/item_view"/>-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/branch_name"-->
+<!--            app:showText="false"-->
+<!--            app:track="@drawable/track_backgrounds" />-->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:src="@drawable/on_off_status"
+            app:layout_constraintTop_toBottomOf="@id/switchButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="@dimen/_10sdp"/>
+
+
+
+
+
+
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

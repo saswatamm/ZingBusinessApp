@@ -50,6 +50,8 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        binding.switchButton.labelOn = "Open"
+        binding.switchButton.labelOff = "Close"
         return binding.root
     }
 
