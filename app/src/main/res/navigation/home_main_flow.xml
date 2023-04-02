@@ -18,10 +18,18 @@
         android:id="@+id/settingsFragment"
         android:name="com.zingit.restaurant.views.setting.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_helpFragment"
+            app:destination="@id/helpFragment" />
+    </fragment>
     <fragment
         android:id="@+id/menuFragment"
         android:name="com.zingit.restaurant.views.menu.MenuFragment"
         android:label="fragment_menu"
         tools:layout="@layout/fragment_menu" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.zingit.restaurant.views.setting.HelpFragment"
+        android:label="HelpFragment" />
 </navigation>

@@ -15,12 +15,16 @@
     <string name="need_help"><u>Need help with login?</u></string>
     <string name="register_as_partner">Register as a Partner</string>
     <string name="logout">Logout</string>
+    <string name="logout_">Logout?</string>
     <string name="search_by_orderId">Search by Order ID</string>
     <string name="enter_phone_number">Enter Phone Number</string>
     <string name="takeaway">(Takeaway)</string>
     <string name="out_of_stock"><u>Out of Stock?</u></string>
     <string name="item">Items</string>
     <string name="help">Help</string>
+    <string name="cancel">Cancel</string>
+    <string name="facing_issues">Facing Issues?</string>
+    <string name="issue_number">Don\'t let problems hold you back – connect with our Zing experts on <b>+91 6452717191</b> and find solutions that work for you!</string>
     <string name="from_user">from Himanshu at 08:00 PM</string>
     <string name="branch_restaurant">Branch Restaurant</string>
     <string name="maximise_efficiency">Maximise efficiency, streamline operations</string>
@@ -31,6 +35,12 @@
     <string name="test_printer">Test Printer</string>
     <string name="permission">Permission</string>
     <string name="legal">Legal</string>
+    <string name="dummy">Print Dummy KOT</string>
+    <string name="closing_account">Closing your account Zing could mean closing the door to a whole community of potential clients. Are you sure you want to deactivate your account?</string>
+    <string name="are_you">Your Zing account will miss you if you logout now. Are you sure you want to logout of your Zing account?</string>
+    <string name="do_you_want_print">Do you want to print a dummy kitchen ordering ticket for testing the thermal printer?</string>
     <string name="request_deactivated">Request to Deactivate Account</string>
+    <string name="request_deactivated_">Request to Deactivate Account?</string>
+    <string name="deactivated_">Deactivate Account</string>
     <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>
 </resources>
