@@ -8,6 +8,8 @@
     <string name="order_id">Order</string>
     <string name="order_temp_id">#BD001</string>
     <string name="get_started">Get Started</string>
+    <string name="wifi_setting">Wifi Settings</string>
+    <string name="bluetooth_setting">Bluetooth Settings</string>
     <string name="india">+91</string>
     <string name="send_otp">Send OTP</string>
     <string name="login_with_google">Login with Google</string>
