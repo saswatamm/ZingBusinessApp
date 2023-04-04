@@ -1,7 +1,9 @@
 package com.zingit.restaurant.views
 
+import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -31,20 +33,26 @@ class RootActivity : AppCompatActivity() {
         isInternetConnectivity.observe(this@RootActivity) {
             if (it) {
                 binding.fragmentContainerView.visibility = View.VISIBLE
-                binding.noInternet.visibility = View.GONE
+                binding.noInternet.root.visibility = View.GONE
             } else {
                 binding.fragmentContainerView.visibility = View.GONE
-                binding.noInternet.visibility = View.VISIBLE
+                binding.noInternet.root.visibility = View.VISIBLE
+                binding.noInternet.getStarted.setOnClickListener {
+                    startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+                }
             }
 
         }
         isBluetoothConnected.observe(this@RootActivity) {
             if (it) {
                 binding.fragmentContainerView.visibility = View.VISIBLE
-                binding.noBluetooth.visibility = View.GONE
+                binding.noBluetooth.root.visibility = View.GONE
             } else {
                 binding.fragmentContainerView.visibility = View.GONE
-                binding.noBluetooth.visibility = View.VISIBLE
+                binding.noBluetooth.root.visibility = View.VISIBLE
+                binding.noBluetooth.getStarted.setOnClickListener{
+                    startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
+                }
 
             }
         }
@@ -64,11 +72,12 @@ class RootActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        isBluetoothBroadcastReceiver = BluetoothBroadcastReceiver(isBluetoothConnected)
         internetConnectivityReceiver = InternetConnectivityBroadcastReceiver(isInternetConnectivity)
         registerReceiver(internetConnectivityReceiver, IntentFilter().apply {
             addAction("android.net.conn.CONNECTIVITY_CHANGE")
         })
-        isBluetoothBroadcastReceiver = BluetoothBroadcastReceiver(isBluetoothConnected)
+
         registerReceiver(isBluetoothBroadcastReceiver, IntentFilter().apply {
             addAction("android.bluetooth.device.action.ACL_CONNECTED")
             addAction("android.bluetooth.device.action.ACL_DISCONNECTED")
