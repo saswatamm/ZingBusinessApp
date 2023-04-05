@@ -18,5 +18,8 @@ data class PaymentModel(
     val totalAmountPaid:Float=0f,
     val userID: String="",
     val userName: String="",
-    val zingTime: String=""
+    val zingTime: String="",
+    )
+
 )
+

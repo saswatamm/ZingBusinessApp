@@ -39,19 +39,8 @@ import java.util.*
 class HomeFragment : Fragment() {
 
     lateinit var binding: FragmentHomeBinding
-    lateinit var firestore: FirebaseFirestore
-    private val TAG = "HomeFragment"
-    lateinit var query: Query
-    lateinit var paymentModel: PaymentModel
-    private val selectedDevice: BluetoothConnection? = null
-    val PERMISSION_BLUETOOTH = 1
-    val PERMISSION_BLUETOOTH_ADMIN = 2
-    val PERMISSION_BLUETOOTH_CONNECT = 3
-    val PERMISSION_BLUETOOTH_SCAN = 4
-    var outletID : String?= null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkPermissions()
 
     }
     override fun onCreateView(
@@ -60,6 +49,9 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        binding.switchButton.labelOn = "Open"
+        binding.switchButton.labelOff = "Close"
+
         firestore = FirebaseFirestore.getInstance()
         binding.apply {
             firestore.collection("outletID").document("SPVBed0F3hFKB9hx3hZD").get().addOnSuccessListener {
@@ -151,106 +143,11 @@ class HomeFragment : Fragment() {
         }
 
 
-
         return binding.root
     }
 
-    fun printBluetooth() {
-        if (ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.BLUETOOTH
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.BLUETOOTH),
-                PERMISSION_BLUETOOTH
-            )
-        } else if (ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.BLUETOOTH_ADMIN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.BLUETOOTH_ADMIN),
-                HomeFragment().PERMISSION_BLUETOOTH_ADMIN
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
-                HomeFragment().PERMISSION_BLUETOOTH_CONNECT
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.BLUETOOTH_SCAN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.BLUETOOTH_SCAN),
-                HomeFragment().PERMISSION_BLUETOOTH_SCAN
-            )
-        } else {
-            AsyncBluetoothEscPosPrint(
-                requireActivity(),
-                object : AsyncEscPosPrint.OnPrintFinished() {
-                   override fun onError(asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int) {
-                        Log.e(
-                            "Async.OnPrintFinished",
-                            "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
-                        )
-                    }
 
-                   override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
-                        Log.i(
-                            "Async.OnPrintFinished",
-                            "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
-                        )
 
-                    }
-                }
-            )
-                .execute(this.getAsyncEscPosPrinter(selectedDevice))
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            when (requestCode) {
-                HomeFragment().PERMISSION_BLUETOOTH, HomeFragment().PERMISSION_BLUETOOTH_ADMIN, HomeFragment().PERMISSION_BLUETOOTH_CONNECT, HomeFragment().PERMISSION_BLUETOOTH_SCAN -> printBluetooth()
-            }
-        }
-    }
-
-    private fun checkPermissions() {
-        val permission1 =
-            ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        val permission2 =
-            ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.BLUETOOTH_SCAN)
-        if (permission1 != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
-                1
-            )
-        } else if (permission2 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
-                1
-            )
-        }
-    }
 
 
 
@@ -309,6 +206,7 @@ class HomeFragment : Fragment() {
              """.trimIndent()
         return slip
     }
+
 
 
 }

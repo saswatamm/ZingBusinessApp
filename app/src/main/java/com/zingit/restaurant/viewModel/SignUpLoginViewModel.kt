@@ -1,22 +1,13 @@
 package com.zingit.restaurant.viewModel
 
 import android.content.Context
-import android.content.Intent
-import android.util.Log
-import android.view.View
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import com.zingit.restaurant.models.*
 import com.zingit.restaurant.repository.ZingRepository
 import com.zingit.restaurant.utils.checkContactNumber
-import com.zingit.restaurant.views.home.HomeMainActivity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

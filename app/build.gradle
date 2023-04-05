@@ -98,6 +98,11 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.6.1'
     implementation 'com.github.DantSu:ESCPOS-ThermalPrinter-Android:3.2.0'
 
+    //Circle Image View
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    //Toggle
+    implementation 'com.github.angads25:toggle:1.1.0'
 
 
 }

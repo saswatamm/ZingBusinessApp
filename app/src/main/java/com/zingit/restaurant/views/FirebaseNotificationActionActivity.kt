@@ -42,6 +42,27 @@ class FirebaseNotificationActionActivity : AppCompatActivity() {
                 it.toObject(PaymentModel::class.java)?.let { it1 ->
                     Log.e(TAG, "qwerty: ${it1}")
                     paymentModel = it1
+                }
+                itemAdapter = ItemAdapter(context = applicationContext)
+                itemsList.adapter = itemAdapter
+                it.data?.mapValues { it.value }?.forEach { (key, value) ->
+                       Log.e(TAG, "ttt: $key $value")
+                    if(key=="orderItems"){
+                        Log.e(TAG, "ttt: $key $value")
+                        var data = value as ArrayList<OrderItem>
+                        for (i in 0 until data.size) {
+                            val map = data[i] as HashMap<String, String>
+                            val itemID = map["itemID"].toString()
+                            val itemTotal = map["itemTotal"].toString()
+                            val itemName = map["itemName"].toString()
+                            val itemQuantity = map["itemQuantity"].toString()
+                            val itemImage = map["itemImage"].toString()
+                            Log.e(TAG, "111: ${itemTotal}", )
+                            orderItems.add(OrderItem(itemID,itemImage,itemName,itemQuantity.toLong(),itemTotal.toLong()))
+                            Log.e(TAG, "list:${orderItems}", )
+                            itemsList.adapter = itemAdapter
+                            itemAdapter.submitList(orderItems)
+                        }
                     firestore.collection("outlet").document(it1.outletID).get().addOnSuccessListener { it2 ->
 
                         oderId.text = "#${paymentModel?.orderNo}"

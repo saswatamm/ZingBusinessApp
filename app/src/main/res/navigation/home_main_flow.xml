@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_main_flow.xml"
     app:startDestination="@id/homeFragment">
 
@@ -8,4 +9,27 @@
         android:id="@+id/homeFragment"
         android:name="com.zingit.restaurant.views.home.HomeFragment"
         android:label="HomeFragment" />
+    <fragment
+        android:id="@+id/ordersFragment"
+        android:name="com.zingit.restaurant.views.order.OrdersFragment"
+        android:label="fragment_orders"
+        tools:layout="@layout/fragment_orders" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.zingit.restaurant.views.setting.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_helpFragment"
+            app:destination="@id/helpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/menuFragment"
+        android:name="com.zingit.restaurant.views.menu.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.zingit.restaurant.views.setting.HelpFragment"
+        android:label="HelpFragment" />
 </navigation>

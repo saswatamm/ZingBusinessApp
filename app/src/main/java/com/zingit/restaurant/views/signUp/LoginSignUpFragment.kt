@@ -10,18 +10,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.FragmentLoginSignUpBinding
 import com.zingit.restaurant.utils.GoogleSignInManager
 import com.zingit.restaurant.utils.hideKeyboard
 import com.zingit.restaurant.viewModel.SignUpLoginViewModel
-import com.zingit.restaurant.views.home.HomeMainActivity
+import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -58,7 +53,7 @@ class LoginSignUpFragment : Fragment() {
         }
         binding.apply {
             googleLogin.setOnClickListener {
-                startActivity(Intent(requireContext(),HomeMainActivity::class.java))
+                startActivity(Intent(requireContext(), RootActivity::class.java))
 //                googleSignInManager.signIn(requireActivity(),RC_SIGN_IN)
             }
         }
