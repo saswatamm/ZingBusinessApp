@@ -9,6 +9,7 @@ data class PaymentModel(
     val orderItems: ArrayList<OrderItem> = arrayListOf(),
     val orderType:String="",
     val outletID:String="",
+    val orderNo:String="",
     val paymentOrderID:String="",
     val preparedTime:String="",
     val reactionTime:String="",
@@ -18,5 +19,7 @@ data class PaymentModel(
     val userID: String="",
     val userName: String="",
     val zingTime: String="",
-
     )
+
+)
+

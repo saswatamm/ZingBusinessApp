@@ -23,4 +23,10 @@ class ZingRepository @Inject constructor(val apiInterFace: ApiEndPoints,private 
         }
     }
 
+    suspend fun callWhatsapp(whatsappRequestModel:WhatsappRequestModel):ApiResult<WhatsAppResponse>{
+        return apiUtils.getResponse(context,"Oops Something went wrong") {
+            apiInterFace.callWhatsapp(whatsappRequestModel)
+        }
+    }
+
 }
