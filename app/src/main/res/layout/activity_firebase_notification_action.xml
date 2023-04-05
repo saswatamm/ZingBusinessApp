@@ -209,6 +209,7 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reject"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/white"
@@ -218,6 +219,7 @@
                     app:strokeWidth="2dp" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/orderReady"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"

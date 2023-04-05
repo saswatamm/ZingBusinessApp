@@ -1,9 +1,6 @@
 package com.zingit.restaurant.network
 
-import com.zingit.restaurant.models.GetOTPResponse
-import com.zingit.restaurant.models.GetotpDTO
-import com.zingit.restaurant.models.VerifyOtpDTO
-import com.zingit.restaurant.models.VerifyOtpResponse
+import com.zingit.restaurant.models.*
 import dagger.Provides
 import retrofit2.Response
 import retrofit2.http.Body
@@ -18,5 +15,8 @@ interface ApiEndPoints {
 
     @POST("verifyOtp")
     suspend fun verifyOtp(@Body verifyOtpDTO: VerifyOtpDTO): Response<VerifyOtpResponse>
+
+    @POST("/prod/api/v1/whatsapp")
+    suspend fun callWhatsapp(@Body whatsappRequestModel: WhatsappRequestModel): Response<WhatsAppResponse>
 
 }
