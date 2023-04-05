@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ticket"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:src="@drawable/ticket"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/from_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/from_user_"
+            android:textColor="@color/darkGreyText"
+            android:fontFamily="@font/duplet_semibold"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="@id/ticket"
+            app:layout_constraintStart_toStartOf="@id/ticket"
+            app:layout_constraintEnd_toEndOf="@id/ticket"/>
+
+        <TextView
+            android:id="@+id/order_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:text="@string/order_no_"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="@font/duplet_bold"
+            android:textSize="28sp"
+            app:layout_constraintTop_toBottomOf="@id/from_user"
+            app:layout_constraintBottom_toTopOf="@id/amount"
+            app:layout_constraintStart_toStartOf="@id/ticket"
+            app:layout_constraintEnd_toEndOf="@id/ticket"/>
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:text="@string/money"
+            android:textColor="@color/black"
+            android:fontFamily="@font/duplet_bold"
+            android:textSize="18sp"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintBottom_toTopOf="@id/taptoview"
+            android:layout_marginBottom="@dimen/_5sdp"
+            app:layout_constraintStart_toStartOf="@id/ticket"
+            app:layout_constraintEnd_toEndOf="@id/ticket"/>
+
+        <TextView
+            android:id="@+id/taptoview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/duplet_semibold"
+            android:text="@string/tap_to_view"
+            android:textColor="@color/darkGreyText"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ticket"
+            app:layout_constraintEnd_toEndOf="@id/ticket"
+            android:layout_marginBottom="@dimen/_15sdp"
+            app:layout_constraintStart_toStartOf="@id/ticket" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
