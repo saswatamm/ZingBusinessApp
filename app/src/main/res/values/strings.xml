@@ -10,6 +10,7 @@
     <string name="get_started">Get Started</string>
     <string name="wifi_setting">Wifi Settings</string>
     <string name="bluetooth_setting">Bluetooth Settings</string>
+    <string name="setting">Settings</string>
     <string name="india">+91</string>
     <string name="send_otp">Send OTP</string>
     <string name="login_with_google">Login with Google</string>
@@ -37,6 +38,7 @@
     <string name="test_printer">Test Printer</string>
     <string name="permission">Permission</string>
     <string name="legal">Legal</string>
+    <string name="whoops">WHOOPS!\nBoth your Bluetooth and Wifi is not working!</string>
     <string name="dummy">Print Dummy KOT</string>
     <string name="closing_account">Closing your account Zing could mean closing the door to a whole community of potential clients. Are you sure you want to deactivate your account?</string>
     <string name="are_you">Your Zing account will miss you if you logout now. Are you sure you want to logout of your Zing account?</string>
@@ -45,9 +47,12 @@
     <string name="request_deactivated_">Request to Deactivate Account?</string>
     <string name="deactivated_">Deactivate Account</string>
     <string name="order_no">Order #1B12</string>
+    <string name="order_no_">#1B12</string>
+    <string name="tap_to_view"><u>Tap to view</u></string>
     <string name="time">04:49 PM</string>
     <string name="view">View</string>
     <string name="money">₹100</string>
+    <string name="from_user_">from Himanshu</string>
     <string name ="order_will_appear">Your Orders will appear here!</string>
     <string name ="order_will_appear_history">Your Orders history will appear here!</string>
     <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>

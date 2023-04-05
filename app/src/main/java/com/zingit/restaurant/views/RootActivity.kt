@@ -36,10 +36,12 @@ class RootActivity : AppCompatActivity() {
                     binding.fragmentContainerView.visibility = View.VISIBLE
                     binding.noInternet.root.visibility = View.GONE
                     binding.noBluetooth.root.visibility = View.GONE
+                    binding.combined.root.visibility = View.GONE
                 } else if (inter && !blue) {
                     binding.fragmentContainerView.visibility = View.GONE
                     binding.noInternet.root.visibility = View.GONE
                     binding.noBluetooth.root.visibility = View.VISIBLE
+                    binding.combined.root.visibility = View.GONE
                     binding.noBluetooth.getStarted.setOnClickListener {
                         startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
                     }
@@ -47,25 +49,24 @@ class RootActivity : AppCompatActivity() {
                     binding.fragmentContainerView.visibility = View.GONE
                     binding.noInternet.root.visibility = View.VISIBLE
                     binding.noBluetooth.root.visibility = View.GONE
+                    binding.combined.root.visibility = View.GONE
                     binding.noInternet.getStarted.setOnClickListener {
                         startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
                     }
                 } else {
-//                    binding.fragmentContainerView.visibility = View.GONE
-//                    binding.noInternet.root.visibility = View.VISIBLE
-//                    binding.noBluetooth.root.visibility = View.VISIBLE
-//                    binding.noInternet.getStarted.setOnClickListener {
-//                        startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-//                    }
-//                    binding.noBluetooth.getStarted.setOnClickListener {
-//                        startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
-//                    }
+                    binding.fragmentContainerView.visibility = View.GONE
+                    binding.noInternet.root.visibility = View.GONE
+                    binding.noBluetooth.root.visibility = View.GONE
+                    binding.combined.root.visibility = View.VISIBLE
+                    binding.combined.getStarted.setOnClickListener {
+                        startActivity(Intent(Settings.ACTION_SETTINGS))
+                    }
+
                 }
 
             }
 
         }
-
 
     }
 
