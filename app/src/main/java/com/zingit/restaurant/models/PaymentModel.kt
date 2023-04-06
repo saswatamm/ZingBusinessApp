@@ -21,5 +21,4 @@ data class PaymentModel(
     val zingTime: String="",
     )
 
-)
 
