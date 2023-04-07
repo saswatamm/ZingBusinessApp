@@ -14,7 +14,10 @@ import androidx.navigation.ui.NavigationUI
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.ActivityHomeMainBinding
 import com.zingit.restaurant.service.InternetConnectivityBroadcastReceiver
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeMainBinding
     lateinit var navController: NavController

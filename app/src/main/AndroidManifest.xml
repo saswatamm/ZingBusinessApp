@@ -28,9 +28,6 @@
             android:name=".views.BaseActivity"
             android:exported="false" />
         <activity
-            android:name=".views.FirebaseNotificationActionActivity"
-            android:exported="false" />
-        <activity
             android:name=".views.RootActivity"
             android:windowSoftInputMode="adjustPan"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -48,16 +45,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".service.InternetConnectivityBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
-                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
-                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
+
 
 
 

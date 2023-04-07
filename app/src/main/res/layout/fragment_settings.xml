@@ -5,6 +5,10 @@
 
     <data>
 
+            <variable
+                name="viewModel"
+                type="com.zingit.restaurant.viewModel.RestaurantProfileViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_25sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@string/branch_restaurant"
+            android:text="@{viewModel.restaurantProfileData.data.name}"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintStart_toEndOf="@id/profile_image"
@@ -55,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/duplet_regular"
-            android:text="@string/chinese"
+            android:text="@{viewModel.restaurantProfileData.data.description}"
             android:textColor="@color/black"
             android:textSize="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_2sdp"
