@@ -8,6 +8,7 @@
     <string name="order_id">Order</string>
     <string name="order_id_">Order ID</string>
     <string name="date">Date</string>
+    <string name="amount">₹100</string>
     <string name="_time">Time</string>
     <string name="number">Number</string>
     <string name="mobile_temp">8305809059</string>
@@ -46,8 +47,10 @@
     <string name="test_printer">Test Printer</string>
     <string name="permission">Permission</string>
     <string name="legal">Legal</string>
+    <string name="food_name">Chicken Shawarma</string>
     <string name="order_prepared">Order Prepared</string>
     <string name="reject">Reject Order (02:19)</string>
+    <string name="qty">Qty</string>
     <string name="whoops">WHOOPS!\nBoth your Bluetooth and Wifi is not working!</string>
     <string name="dummy">Print Dummy KOT</string>
     <string name="closing_account">Closing your account Zing could mean closing the door to a whole community of potential clients. Are you sure you want to deactivate your account?</string>
