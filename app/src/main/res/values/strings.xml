@@ -6,7 +6,16 @@
     <string name="restaurant_partner">Restaurant Partner</string>
     <string name="break_queue">Break the Queue.</string>
     <string name="order_id">Order</string>
+    <string name="order_id_">Order ID</string>
+    <string name="date">Date</string>
+    <string name="amount">₹100</string>
+    <string name="_time">Time</string>
+    <string name="number">Number</string>
+    <string name="mobile_temp">8305809059</string>
+    <string name="time_">04:39 PM</string>
+    <string name="date_">12.03.21</string>
     <string name="order_temp_id">#BD001</string>
+    <string name="order_temp_id_">#001</string>
     <string name="get_started">Get Started</string>
     <string name="wifi_setting">Wifi Settings</string>
     <string name="bluetooth_setting">Bluetooth Settings</string>
@@ -38,6 +47,10 @@
     <string name="test_printer">Test Printer</string>
     <string name="permission">Permission</string>
     <string name="legal">Legal</string>
+    <string name="food_name">Chicken Shawarma</string>
+    <string name="order_prepared">Order Prepared</string>
+    <string name="reject">Reject Order (02:19)</string>
+    <string name="qty">Qty</string>
     <string name="whoops">WHOOPS!\nBoth your Bluetooth and Wifi is not working!</string>
     <string name="dummy">Print Dummy KOT</string>
     <string name="closing_account">Closing your account Zing could mean closing the door to a whole community of potential clients. Are you sure you want to deactivate your account?</string>
@@ -53,7 +66,7 @@
     <string name="view">View</string>
     <string name="money">₹100</string>
     <string name="from_user_">from Himanshu</string>
-    <string name ="order_will_appear">Your Orders will appear here!</string>
-    <string name ="order_will_appear_history">Your Orders history will appear here!</string>
+    <string name="order_will_appear">Your Orders will appear here!</string>
+    <string name="order_will_appear_history">Your Orders history will appear here!</string>
     <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>
 </resources>

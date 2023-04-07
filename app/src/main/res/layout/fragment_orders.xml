@@ -116,7 +116,6 @@
                     app:tabIndicator="@drawable/primary_button_ripple_effect"
                     app:tabIndicatorColor="@color/white"
                     app:tabIndicatorGravity="stretch"
-                    app:tabMinWidth="100dp"
                     app:tabMode="fixed"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -1,12 +1,17 @@
 package com.zingit.restaurant.views.setting
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.zingit.restaurant.R
@@ -14,14 +19,19 @@ import com.zingit.restaurant.databinding.BottomSheetDeactivateBinding
 import com.zingit.restaurant.databinding.BottomSheetLogoutBinding
 import com.zingit.restaurant.databinding.BottomSheetPrinterBinding
 import com.zingit.restaurant.databinding.FragmentSettingsBinding
+import com.zingit.restaurant.viewModel.RestaurantProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
-
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
     lateinit var binding: FragmentSettingsBinding
+    private  val TAG = "SettingsFragment"
+    private val restaurantProfileViewModel: RestaurantProfileViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
     }
 
@@ -31,7 +41,23 @@ class SettingsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false)
+        restaurantProfileViewModel.getUserData()
         binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = restaurantProfileViewModel
+            viewLifecycleOwner.lifecycle.coroutineScope.launchWhenCreated {
+                restaurantProfileViewModel.restaurantProfileData.collect{
+                Glide.with(this@SettingsFragment)
+                    .load(it.data?.outletImage)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(profileImage)
+                }
+
+
+            }
+
+
             help.setOnClickListener {
                 findNavController().navigate(R.id.action_settingsFragment_to_helpFragment)
             }
