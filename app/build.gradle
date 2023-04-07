@@ -17,15 +17,32 @@ android {
         applicationId "com.zingit.restaurant"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        dev {
+            dimension "default"
+//            applicationIdSuffix ".dev"
+            versionCode 1
+            versionName "1.0"
+        }
+        staging{
+            dimension "default"
+            applicationIdSuffix ".staging"
+        }
+        prod {
+            dimension "default"
+            versionCode 1
+            versionName "1.0"
+        }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -78,8 +95,6 @@ dependencies {
     //Hilt
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
-    // RecyclerView
-    implementation "androidx.recyclerview:recyclerview:$version_recyclerview"
     //SwipeRefreshLayout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
