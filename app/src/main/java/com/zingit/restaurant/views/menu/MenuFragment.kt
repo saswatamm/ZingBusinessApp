@@ -1,28 +1,32 @@
 package com.zingit.restaurant.views.menu
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.zingit.restaurant.R
+import com.zingit.restaurant.adapter.CategoryAdapter
 import com.zingit.restaurant.databinding.FragmentMenuBinding
 import com.zingit.restaurant.viewModel.ExploreViewModel
-import com.zingit.restaurant.viewModel.RestaurantProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
 class MenuFragment : Fragment() {
     private  val TAG = "MenuFragment"
-    lateinit var binding: FragmentMenuBinding
+    private lateinit var binding: FragmentMenuBinding
     private val exploreViewModel: ExploreViewModel by viewModels()
+    private lateinit var categoryAdapter: CategoryAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,21 +37,28 @@ class MenuFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding=DataBindingUtil.inflate(inflater,R.layout.fragment_menu, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu, container, false)
         exploreViewModel.getMenuData()
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-            viewLifecycleOwner.lifecycle.coroutineScope.launchWhenCreated{
-                exploreViewModel.iteMenuData.collect {
-                    Log.e(TAG, "onCreateView: ${it.data?.size}", )
-                   
-     
+            lifecycleScope.launch {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+                    launch {
+                        categoryAdapter = CategoryAdapter(requireContext())
+                        exploreViewModel.categoryData.collect{
+                            categoryAdapter.submitList(it.data)
+
+                        }
+
+                    }
                 }
+
             }
+
+
+
+            return binding.root
         }
-        
-        
-        return binding.root
     }
 
 

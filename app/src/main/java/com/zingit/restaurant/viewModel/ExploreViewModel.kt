@@ -2,6 +2,8 @@ package com.zingit.restaurant.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zingit.restaurant.models.item.CategoryModel
+import com.zingit.restaurant.models.item.CategoryState
 import com.zingit.restaurant.models.item.ItemMenuState
 import com.zingit.restaurant.models.resturant.RestaurantProfileState
 import com.zingit.restaurant.repository.FirebaseRepository
@@ -22,6 +24,11 @@ constructor(
     private val _iteMenuData = MutableStateFlow(ItemMenuState())
     val iteMenuData: StateFlow<ItemMenuState> = _iteMenuData
 
+    private val _categoryData = MutableStateFlow(CategoryState())
+    val categoryData: StateFlow<CategoryState> = _categoryData
+   var tempList:MutableList<CategoryModel> = mutableListOf()
+
+
     fun getMenuData() {
         firebaseRepository.getMenuData().onEach {
             when (it) {
@@ -33,6 +40,13 @@ constructor(
                 }
                 is Resource.Success -> {
                     _iteMenuData.value = ItemMenuState(data = it.data)
+                    it.data?.forEachIndexed { index, itemMenuModel ->
+                        tempList.add(CategoryModel(itemMenuModel.category,itemMenuModel.itemImage))
+
+                    }
+                    _categoryData.value = CategoryState(data = tempList)
+
+
                 }
             }
         }.launchIn(viewModelScope)

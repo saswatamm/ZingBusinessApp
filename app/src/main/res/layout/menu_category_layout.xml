@@ -3,6 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="category"
+            type="com.zingit.restaurant.models.item.CategoryModel" />
 
     </data>
 
@@ -65,6 +68,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/duplet_regular"
                         android:gravity="center_horizontal"
+                        android:text="@{category.category}"
                         android:layout_margin="2dp" />
                 </LinearLayout>
             </LinearLayout>
