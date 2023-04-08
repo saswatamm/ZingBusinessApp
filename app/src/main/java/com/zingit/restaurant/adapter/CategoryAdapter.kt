@@ -18,9 +18,7 @@ class CategoryAdapter(private val context: Context)  : ListAdapter<CategoryModel
         RecyclerView.ViewHolder(binding.root) {
         fun bind(categoryModel: CategoryModel) {
             binding.category = categoryModel
-            Glide.with(context).load(categoryModel.itemImage).into(binding.categoryImage)
-
-
+            Glide.with(context).load(categoryModel.itemImage).into(binding.profileImage)
         }
     }
     override fun onCreateViewHolder(
@@ -37,7 +35,6 @@ class CategoryAdapter(private val context: Context)  : ListAdapter<CategoryModel
     }
 }
 
-
 class CategoryDiffUtils: DiffUtil.ItemCallback<CategoryModel>() {
     override fun areItemsTheSame(
         oldItem: CategoryModel,
@@ -45,7 +42,6 @@ class CategoryDiffUtils: DiffUtil.ItemCallback<CategoryModel>() {
     ): Boolean {
         return oldItem.category == newItem.category
     }
-
     override fun areContentsTheSame(
         oldItem: CategoryModel,
         newItem: CategoryModel

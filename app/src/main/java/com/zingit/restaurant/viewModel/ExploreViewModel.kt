@@ -1,5 +1,6 @@
 package com.zingit.restaurant.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zingit.restaurant.models.item.CategoryModel
@@ -42,11 +43,9 @@ constructor(
                     _iteMenuData.value = ItemMenuState(data = it.data)
                     it.data?.forEachIndexed { index, itemMenuModel ->
                         tempList.add(CategoryModel(itemMenuModel.category,itemMenuModel.itemImage))
-
                     }
-                    _categoryData.value = CategoryState(data = tempList)
 
-
+                    _categoryData.value = CategoryState(data = tempList.distinctBy { it.category }.toList())
                 }
             }
         }.launchIn(viewModelScope)

@@ -1,6 +1,7 @@
 package com.zingit.restaurant.views.menu
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +47,8 @@ class MenuFragment : Fragment() {
                     launch {
                         categoryAdapter = CategoryAdapter(requireContext())
                         exploreViewModel.categoryData.collect{
+                            Log.e(TAG, "onCreateView: ${it.data}", )
+                            rvCategory.adapter = categoryAdapter
                             categoryAdapter.submitList(it.data)
 
                         }
