@@ -30,20 +30,35 @@ constructor(
    var tempList:MutableList<CategoryModel> = mutableListOf()
 
 
-    fun getMenuData() {
+    @JvmOverloads
+    fun getMenuData(category:String?=null) {
+
         firebaseRepository.getMenuData().onEach {
             when (it) {
                 is Resource.Loading -> {
                     _iteMenuData.value = ItemMenuState(isLoading = true)
                 }
                 is Resource.Error -> {
-                    _iteMenuData.value = ItemMenuState(error = it.message ?: "")
+                    _iteMenuData.value = ItemMenuState(isLoading = false,error = it.message ?: "")
                 }
                 is Resource.Success -> {
-                    _iteMenuData.value = ItemMenuState(data = it.data)
+
                     it.data?.forEachIndexed { index, itemMenuModel ->
                         tempList.add(CategoryModel(itemMenuModel.category,itemMenuModel.itemImage))
                     }
+                    if(category==null){
+                        val menuFinal = it.data?.filter {it1 -> it1.category == it.data[0].category
+                          }?.toList()
+                        Log.e("MenuFinal", "getMenuData: $menuFinal", )
+                        _iteMenuData.value = ItemMenuState(isLoading = false,data = menuFinal)
+                    }else{
+                        val menuFinal = it.data?.filter {it1 -> it1.category == category
+                        }?.toList()
+                        Log.e("MenuFinal", "getMenuData: $menuFinal", )
+                        _iteMenuData.value = ItemMenuState(isLoading = false, data = menuFinal)
+                    }
+
+
 
                     _categoryData.value = CategoryState(data = tempList.distinctBy { it.category }.toList())
                 }

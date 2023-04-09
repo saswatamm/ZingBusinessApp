@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,8 +13,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.zingit.restaurant.R
 import com.zingit.restaurant.adapter.CategoryAdapter
+import com.zingit.restaurant.adapter.MenuItemAdapter
 import com.zingit.restaurant.databinding.FragmentMenuBinding
 import com.zingit.restaurant.viewModel.ExploreViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +31,7 @@ class MenuFragment : Fragment() {
     private lateinit var binding: FragmentMenuBinding
     private val exploreViewModel: ExploreViewModel by viewModels()
     private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var menuItemAdapter: MenuItemAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,21 +49,39 @@ class MenuFragment : Fragment() {
             lifecycleScope.launch {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
                     launch {
-                        categoryAdapter = CategoryAdapter(requireContext())
+                        categoryAdapter = CategoryAdapter(requireContext()){
+                            exploreViewModel.getMenuData(it.category)
+                        }
                         exploreViewModel.categoryData.collect{
-                            Log.e(TAG, "onCreateView: ${it.data}", )
                             rvCategory.adapter = categoryAdapter
                             categoryAdapter.submitList(it.data)
+                        }
+                    }
+                    launch {
+                        menuItemAdapter = MenuItemAdapter(requireContext())
+                        exploreViewModel.iteMenuData.collect{
+                            if(it.isLoading){
+                                ll.visibility = View.GONE
+                                loader.visibility = View.VISIBLE
+                                requireActivity().window.setFlags(
+                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                            }else{
+
+                                loader.visibility = View.GONE
+                                ll.visibility = View.VISIBLE
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                            }
+                            Log.e(TAG, "onCreateView: ${it.data}", )
+                            rvProducts.adapter = menuItemAdapter
+                            menuItemAdapter.submitList(it.data)
+
 
                         }
-
                     }
                 }
 
             }
-
-
-
             return binding.root
         }
     }
