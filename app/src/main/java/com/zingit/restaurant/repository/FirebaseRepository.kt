@@ -14,9 +14,9 @@ import javax.inject.Inject
 
 class FirebaseRepository @Inject constructor() {
 
-    private  val TAG = "FirebaseRepository"
+    private val TAG = "FirebaseRepository"
     private val fireStoreDatabase = FirebaseFirestore.getInstance()
-    fun getRestaurantProfileDate()  = flow {
+    fun getRestaurantProfileDate() = flow {
         emit(Resource.Loading())
         try {
             val snapShot =
@@ -25,11 +25,9 @@ class FirebaseRepository @Inject constructor() {
 
 
             if (snapShot.exists()) {
-
-
                 val restaurantProfileModel: RestaurantProfileModel? =
                     snapShot.toObject(RestaurantProfileModel::class.java)
-                Log.e(TAG, "getRestaurantProfileDate: ${restaurantProfileModel.toString()}",)
+                Log.e(TAG, "getRestaurantProfileDate: ${restaurantProfileModel.toString()}")
                 emit(Resource.Success(restaurantProfileModel!!))
             }
 
@@ -40,13 +38,16 @@ class FirebaseRepository @Inject constructor() {
 
 
     }
-    fun getMenuData()  = flow {
+
+    fun getMenuData() = flow {
         emit(Resource.Loading())
         try {
-            val snapShot = fireStoreDatabase.collection("item").whereEqualTo("outletID", "1cLAN8pKJcuyIML9g8Uz").get().await()
-            Log.e(TAG, "getMenuData: ${snapShot.documents}", )
+            val snapShot = fireStoreDatabase.collection("item")
+                .whereEqualTo("outletID", "1cLAN8pKJcuyIML9g8Uz").get().await()
+            Log.e(TAG, "getMenuData: ${snapShot.documents}")
             if (snapShot.documents.isNotEmpty()) {
-                val itemMenuModel :List<ItemMenuModel> = snapShot.toObjects(ItemMenuModel::class.java)
+                val itemMenuModel: List<ItemMenuModel> =
+                    snapShot.toObjects(ItemMenuModel::class.java)
                 emit(Resource.Success(itemMenuModel!!))
             }
 
