@@ -36,7 +36,6 @@ class MenuFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,7 +48,7 @@ class MenuFragment : Fragment() {
             lifecycleScope.launch {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
                     launch {
-                        categoryAdapter = CategoryAdapter(requireContext()){
+                        categoryAdapter = CategoryAdapter(requireContext(),0){
                             exploreViewModel.getMenuData(it.category)
                         }
                         exploreViewModel.categoryData.collect{
