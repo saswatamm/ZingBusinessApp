@@ -40,7 +40,7 @@ class OrdersViewModel @Inject constructor(
                     _orderActiveData.value = OrderState(error = it.message ?: "")
                 }
                 is Resource.Success -> {
-                    _orderActiveData.value = OrderState(data = it.data)
+                    _orderActiveData.value = OrderState(data = it.data, isLoading = false)
                     Log.e(TAG, "getOrdersData: ${it.data}", )
                 }
             }

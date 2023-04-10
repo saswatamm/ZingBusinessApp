@@ -54,6 +54,18 @@ class ActiveFragment : Fragment() {
 
                         }
                         orderViewModel.orderActiveData.collect{
+
+                            if(it.isLoading){
+                                tagline.visibility = View.GONE
+                                loader.visibility = View.VISIBLE
+                                requireActivity().window.setFlags(
+                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                            }else{
+                                loader.visibility = View.GONE
+                                tagline.visibility = View.GONE
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                            }
                             activeRv.adapter = orderAdapter
                             orderAdapter.submitList(it.data)
 

@@ -65,7 +65,7 @@ class FirebaseRepository @Inject constructor() {
         emit(Resource.Loading())
         try {
             val snapShot = fireStoreDatabase.collection("payment")
-                .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko").whereGreaterThan("statusCode",0).whereLessThan("statusCode",4).get().await()
+                .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko").whereGreaterThan("statusCode",0).whereLessThan("statusCode",3).get().await()
             Log.e(TAG, "orderData: ${snapShot.documents}")
             if (snapShot.documents.isNotEmpty()) {
                 val orderModel: List<OrdersModel> =
