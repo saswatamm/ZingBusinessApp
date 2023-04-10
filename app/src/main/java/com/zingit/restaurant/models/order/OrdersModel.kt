@@ -1,8 +1,6 @@
-package com.zingit.restaurant.models
+package com.zingit.restaurant.models.order
 
-import com.zingit.restaurant.models.order.OrderItem
-
-data class PaymentModel(
+data class OrdersModel(
     val basePrice: Double=0.0,
     val collectedTime: String="",
     val couponDiscount: Double=0.0,
@@ -21,6 +19,4 @@ data class PaymentModel(
     val userID: String="",
     val userName: String="",
     val zingTime: String="",
-    )
-
-
+)

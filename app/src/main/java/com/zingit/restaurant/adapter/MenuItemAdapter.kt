@@ -1,17 +1,12 @@
 package com.zingit.restaurant.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.zingit.restaurant.databinding.ItemViewBinding
-import com.zingit.restaurant.databinding.MenuCategoryLayoutBinding
-import com.zingit.restaurant.databinding.SingleItemHistoryBinding
 import com.zingit.restaurant.databinding.SingleItemMenuOptionBinding
-import com.zingit.restaurant.models.OrderItem
 
 import com.zingit.restaurant.models.item.ItemMenuModel
 

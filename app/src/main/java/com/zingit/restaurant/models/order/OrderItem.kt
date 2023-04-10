@@ -1,4 +1,4 @@
-package com.zingit.restaurant.models
+package com.zingit.restaurant.models.order
 
 data class OrderItem(
     val itemID: String="",

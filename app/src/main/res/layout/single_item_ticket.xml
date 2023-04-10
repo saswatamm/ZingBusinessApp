@@ -3,46 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="orderModel"
+            type="com.zingit.restaurant.models.order.OrdersModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:padding="@dimen/_10sdp"
         android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/ticket"
-            android:layout_width="@dimen/_200sdp"
-            android:layout_height="@dimen/_100sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:src="@drawable/ticket"
+            android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/from_user"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp"
-            android:text="@string/from_user_"
+            android:text="@{`from ` + String.valueOf(orderModel.userName)}"
             android:textColor="@color/darkGreyText"
             android:fontFamily="@font/duplet_semibold"
-            android:textSize="14sp"
+            android:textSize="12sp"
+            android:gravity="center"
             app:layout_constraintTop_toTopOf="@id/ticket"
             app:layout_constraintStart_toStartOf="@id/ticket"
             app:layout_constraintEnd_toEndOf="@id/ticket"/>
 
         <TextView
             android:id="@+id/order_no"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:text="@string/order_no_"
+            android:text="@{`#` + orderModel.orderNo}"
             android:textColor="@color/colorPrimary"
             android:fontFamily="@font/duplet_bold"
-            android:textSize="28sp"
+            android:textSize="24sp"
+            android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/from_user"
             app:layout_constraintBottom_toTopOf="@id/amount"
             app:layout_constraintStart_toStartOf="@id/ticket"
@@ -50,13 +54,13 @@
 
         <TextView
             android:id="@+id/amount"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:text="@string/money"
+            android:text="@{`Rs.`+ String.valueOf(orderModel.totalAmountPaid)}"
             android:textColor="@color/black"
             android:fontFamily="@font/duplet_bold"
             android:textSize="18sp"
+            android:gravity="center"
             android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintBottom_toTopOf="@id/taptoview"
             android:layout_marginBottom="@dimen/_5sdp"
@@ -65,14 +69,14 @@
 
         <TextView
             android:id="@+id/taptoview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/duplet_semibold"
             android:text="@string/tap_to_view"
+            android:gravity="center"
             android:textColor="@color/darkGreyText"
-            android:textSize="18sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/ticket"
             app:layout_constraintEnd_toEndOf="@id/ticket"
             android:layout_marginBottom="@dimen/_15sdp"
