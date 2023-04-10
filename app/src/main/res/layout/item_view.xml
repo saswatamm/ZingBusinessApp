@@ -6,7 +6,7 @@
 
         <variable
             name="paymentModel"
-            type="com.zingit.restaurant.models.OrderItem" />
+            type="com.zingit.restaurant.models.order.OrderItem" />
 
 
     </data>

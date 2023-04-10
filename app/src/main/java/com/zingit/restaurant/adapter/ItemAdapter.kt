@@ -1,7 +1,7 @@
 package com.zingit.restaurant.adapter
 
 import com.zingit.restaurant.databinding.ItemViewBinding
-import com.zingit.restaurant.models.OrderItem
+import com.zingit.restaurant.models.order.OrderItem
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
