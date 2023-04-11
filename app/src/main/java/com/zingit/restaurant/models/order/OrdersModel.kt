@@ -1,5 +1,9 @@
 package com.zingit.restaurant.models.order
 
+import java.sql.Timestamp
+import java.util.*
+import kotlin.collections.ArrayList
+
 data class OrdersModel(
     val basePrice: Double=0.0,
     val collectedTime: String="",
@@ -19,4 +23,5 @@ data class OrdersModel(
     val userID: String="",
     val userName: String="",
     val zingTime: String="",
+    var placedTime: com.google.firebase.Timestamp= com.google.firebase.Timestamp.now(),
 )

@@ -56,7 +56,7 @@
             android:id="@+id/amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{`Rs.`+ String.valueOf(orderModel.totalAmountPaid)}"
+            android:text="@{`₹`+ String.valueOf(orderModel.totalAmountPaid)}"
             android:textColor="@color/black"
             android:fontFamily="@font/duplet_bold"
             android:textSize="18sp"
