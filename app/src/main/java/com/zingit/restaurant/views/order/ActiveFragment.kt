@@ -34,7 +34,7 @@ class ActiveFragment : Fragment() {
     private lateinit var orderAdapter: ActiveOrderAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        orderViewModel.getOrdersData()
+
 
     }
 
@@ -44,7 +44,7 @@ class ActiveFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_active, container, false)
-
+        orderViewModel.getOrdersData()
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             lifecycleScope.launch {
@@ -77,8 +77,6 @@ class ActiveFragment : Fragment() {
             return binding.root
         }
 
-
-        return binding.root
     }
 
 

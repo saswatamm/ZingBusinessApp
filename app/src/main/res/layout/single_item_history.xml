@@ -3,6 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="history"
+            type="com.zingit.restaurant.models.order.OrdersModel" />
 
     </data>
 
@@ -29,8 +32,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:text="@string/order_no"
-                    android:textSize="16sp"
+                    android:text="@{`Order #` + history.orderNo}"
+                    android:textSize="14sp"
                     android:fontFamily="@font/duplet_bold"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -41,12 +44,12 @@
                     android:id="@+id/tv_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="5dp"
                     app:layout_constraintStart_toEndOf="@id/tv_order_no"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:text="@string/time"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:fontFamily="@font/duplet_regular"
                     android:textColor="@color/textGrey"
                     android:textStyle="bold"
@@ -58,13 +61,12 @@
                     android:id="@+id/amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     app:layout_constraintEnd_toStartOf="@id/view"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginEnd="10dp"
-                    android:text="@string/money"
-                    android:textSize="16sp"
+                    android:text="@{`₹`+ String.valueOf(history.totalAmountPaid)}"
+                    android:textSize="14sp"
                     android:fontFamily="@font/duplet_regular"
                     android:textColor="@color/textGrey"
                     android:textStyle="bold"
