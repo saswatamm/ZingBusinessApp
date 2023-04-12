@@ -13,15 +13,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class HistoryAdapter(val context: Context, val onClick: (OrdersModel) -> Unit) :
-    ListAdapter<OrdersModel, HistoryAdapter.MyViewHolder>(HistoryOrderDiffUtils()){
+    ListAdapter<OrdersModel, HistoryAdapter.MyViewHolder>(HistoryOrderDiffUtils()) {
 
-    inner class MyViewHolder(val binding: SingleItemHistoryBinding):
+    inner class MyViewHolder(val binding: SingleItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(ordersModel:  OrdersModel) {
+        fun bind(ordersModel: OrdersModel) {
             binding.history = ordersModel
 
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryAdapter.MyViewHolder {
         val binding =
             SingleItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -29,12 +30,16 @@ class HistoryAdapter(val context: Context, val onClick: (OrdersModel) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: HistoryAdapter.MyViewHolder, position: Int) {
-        val orderHistory =getItem(position)
+        val orderHistory = getItem(position)
         holder.bind(orderHistory)
         val date = Date(orderHistory.placedTime.seconds * 1000)
         val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
         val formattedTime = dateFormat.format(date)
         holder.binding.tvTime.text = formattedTime
+        holder.binding.view.setOnClickListener{
+            onClick(orderHistory)
+        }
+
     }
 }
 
@@ -52,7 +57,6 @@ class HistoryOrderDiffUtils : DiffUtil.ItemCallback<OrdersModel>() {
     ): Boolean {
         return oldItem == newItem
     }
-
 
 
 }

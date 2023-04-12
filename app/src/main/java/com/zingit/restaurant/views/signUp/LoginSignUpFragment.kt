@@ -14,7 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.FragmentLoginSignUpBinding
 import com.zingit.restaurant.utils.GoogleSignInManager
-import com.zingit.restaurant.utils.hideKeyboard
+import com.zingit.restaurant.utils.Utils.hideKeyboard
 import com.zingit.restaurant.viewModel.SignUpLoginViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint

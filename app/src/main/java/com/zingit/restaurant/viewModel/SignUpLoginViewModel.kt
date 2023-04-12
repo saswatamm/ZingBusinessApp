@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.models.*
 import com.zingit.restaurant.repository.ZingRepository
-import com.zingit.restaurant.utils.checkContactNumber
+import com.zingit.restaurant.utils.Utils.checkContactNumber
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -7,11 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
 import com.zingit.restaurant.R
 import com.zingit.restaurant.adapter.ActiveOrderAdapter
 import com.zingit.restaurant.adapter.CategoryAdapter
@@ -30,6 +33,7 @@ class ActiveFragment : Fragment() {
     lateinit var binding: FragmentActiveBinding
 
     private val orderViewModel: OrdersViewModel by viewModels()
+    lateinit var gson: Gson
 
     private lateinit var orderAdapter: ActiveOrderAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,10 +55,13 @@ class ActiveFragment : Fragment() {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
                     launch {
                         orderAdapter = ActiveOrderAdapter(requireContext(),){
+                            gson = Gson()
+                            val json = gson.toJson(it)
+                            val bundle = bundleOf("orderModel" to json)
+                            findNavController().navigate(R.id.action_ordersFragment_to_newOrderFragment, bundle)
 
                         }
                         orderViewModel.orderActiveData.collect{
-
                             if(it.isLoading){
                                 tagline.visibility = View.GONE
                                 loader.visibility = View.VISIBLE

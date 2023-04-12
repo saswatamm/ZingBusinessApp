@@ -28,10 +28,24 @@ class RootActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home_main)
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
+        binding.bottomNavigationView.apply {
+            navController.let { navController ->
+                NavigationUI.setupWithNavController(
+                    this,
+                    navController
+                )
+                setOnItemSelectedListener { item ->
+                    NavigationUI.onNavDestinationSelected(item, navController)
+                    true
+                }
+                setOnItemReselectedListener {
+                    navController.popBackStack(destinationId = it.itemId, inclusive = false)
+                }
+            }
+        }
         isInternetConnectivity.observe(this@RootActivity) { inter ->
             isBluetoothConnected.observe(this@RootActivity) { blue ->
 
