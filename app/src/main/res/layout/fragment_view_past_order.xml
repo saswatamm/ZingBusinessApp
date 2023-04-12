@@ -5,6 +5,11 @@
 
     <data>
 
+            <variable
+                name="pastOrder"
+                type="com.zingit.restaurant.models.order.OrdersModel" />
+
+        <import type="com.zingit.restaurant.utils.Utils"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@string/order_temp_id_"
+            android:text="@{`#`+pastOrder.orderNo}"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintStart_toEndOf="@id/order"
@@ -80,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@string/date_"
+            android:text="@{Utils.INSTANCE.formatDate(pastOrder.placedTime.seconds * 1000)}"
             android:layout_marginTop="@dimen/_10sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"

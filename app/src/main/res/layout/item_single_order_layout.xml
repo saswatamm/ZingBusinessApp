@@ -4,6 +4,12 @@
 
     <data>
 
+            <variable
+                name="order"
+                type="com.zingit.restaurant.models.order.OrderItem" />
+
+
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,7 +20,6 @@
             android:id="@+id/veg_non"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_10sdp"
             android:layout_marginBottom="@dimen/_10sdp"
@@ -29,8 +34,8 @@
             app:layout_constraintStart_toEndOf="@id/veg_non"
             app:layout_constraintTop_toTopOf="@id/veg_non"
             android:layout_marginStart="@dimen/_5sdp"
-            android:text="@string/food_name"
-            android:textSize="18sp"
+            android:text="@{order.itemName}"
+            android:textSize="16sp"
             android:textColor="@color/black"
             android:fontFamily="@font/duplet_semibold"
             app:layout_constraintBottom_toBottomOf="@id/veg_non" />
@@ -40,12 +45,11 @@
             android:id="@+id/qty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_2sdp"
-            android:text="@string/qty"
+            android:text="@{`Qty:` + order.itemQuantity}"
             android:textColor="@color/black"
             android:fontFamily="@font/duplet_regular"
-            android:textSize="@dimen/_8sdp"
+            android:textSize="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/veg_non"/>
 
@@ -53,14 +57,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="@dimen/_5sdp"
-            android:text="@string/amount"
+            android:text="@{`₹` + order.itemTotal}"
             android:textSize="18sp"
-            android:layout_marginEnd="@dimen/_10sdp"
             android:textColor="@color/black"
             android:fontFamily="@font/duplet_semibold"
-            app:layout_constraintTop_toTopOf="@id/qty"
-            app:layout_constraintBottom_toBottomOf="@id/qty" />
+            app:layout_constraintTop_toTopOf="@id/veg_non"
+            app:layout_constraintBottom_toBottomOf="@id/veg_non" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

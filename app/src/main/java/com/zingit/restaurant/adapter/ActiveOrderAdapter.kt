@@ -33,6 +33,8 @@ class ActiveOrderAdapter(val context: Context, val onClick: (OrdersModel) -> Uni
     override fun onBindViewHolder(holder: ActiveOrderAdapter.MyViewHolder, position: Int) {
         val orderHistory =getItem(position)
         holder.bind(orderHistory)
+        holder.itemView.setOnClickListener {
+            onClick(orderHistory) }
     }
 }
 

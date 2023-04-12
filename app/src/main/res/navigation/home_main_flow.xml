@@ -13,7 +13,14 @@
         android:id="@+id/ordersFragment"
         android:name="com.zingit.restaurant.views.order.OrdersFragment"
         android:label="fragment_orders"
-        tools:layout="@layout/fragment_orders" />
+        tools:layout="@layout/fragment_orders" >
+        <action
+            android:id="@+id/action_ordersFragment_to_viewPastOrderFragment"
+            app:destination="@id/viewPastOrderFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_newOrderFragment"
+            app:destination="@id/newOrderFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.zingit.restaurant.views.setting.SettingsFragment"
@@ -32,4 +39,12 @@
         android:id="@+id/helpFragment"
         android:name="com.zingit.restaurant.views.setting.HelpFragment"
         android:label="HelpFragment" />
+    <fragment
+        android:id="@+id/viewPastOrderFragment"
+        android:name="com.zingit.restaurant.views.order.ViewPastOrderFragment"
+        android:label="ViewPastOrderFragment" />
+    <fragment
+        android:id="@+id/newOrderFragment"
+        android:name="com.zingit.restaurant.views.order.NewOrderFragment"
+        android:label="NewOrderFragment" />
 </navigation>
