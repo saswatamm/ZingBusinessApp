@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -23,8 +24,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.URL
 
-class FirebaseService : FirebaseMessagingService(){
-
+class FirebaseService : FirebaseMessagingService() {
 
 
     override fun onCreate() {
@@ -35,44 +35,52 @@ class FirebaseService : FirebaseMessagingService(){
 
     private fun fcmToken() {
         FirebaseMessaging.getInstance().token.addOnSuccessListener { token: String ->
-            Log.e(TAG, "fcmToken: ${token}", )
-            firebaseToken =token
+            Log.e(TAG, "fcmToken: ${token}")
+            firebaseToken = token
         }
     }
 
 
     companion object {
         private const val TAG = "mFirebaseIIDService"
-        private const val CHANNEL_ID="badhatX_notification"
-        private const val NOTIFICATION_ID=1
+        private const val CHANNEL_ID = "zing_buisness"
+        private const val NOTIFICATION_ID = 1
 
-        fun NotificationManager.sendNotification(messageBody: String, notificationTitle:String, imageUrl: String?, intent: Intent, applicationContext: Context) {
-
+        fun NotificationManager.sendNotification(
+            messageBody: String,
+            notificationTitle: String,
+            imageUrl: String?,
+            intent: Intent,
+            applicationContext: Context
+        ) {
 
 
             //for Android 12
 
             val contentPendingIntent: PendingIntent
             contentPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.getActivity(applicationContext,
-                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.getActivity(
+                    applicationContext,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
             } else {
-                PendingIntent.getActivity(applicationContext,
-                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.getActivity(
+                    applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
                 )
             }
 
             val builder = NotificationCompat.Builder(
-                applicationContext,
-                CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle(notificationTitle)
-                .setContentText(messageBody)
-                .setContentIntent(contentPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-            if(imageUrl!=null) {
+                applicationContext, CHANNEL_ID
+            ).setSmallIcon(R.mipmap.ic_launcher_round).setContentTitle(notificationTitle)
+                .setContentText(messageBody).setContentIntent(contentPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH).setAutoCancel(true)
+                .setSound(
+                    Uri.parse("android.resource://" + applicationContext.packageName + "/" + R.raw.sliver_sprint),
+                )
+
+            if (imageUrl != null) {
                 runBlocking {
                     val url = URL(imageUrl)
 
@@ -93,6 +101,7 @@ class FirebaseService : FirebaseMessagingService(){
         }
 
     }
+
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
         Log.e(TAG, "onNewToken: DEVICE_TOKEN_${p0}")
@@ -102,51 +111,53 @@ class FirebaseService : FirebaseMessagingService(){
         super.onMessageReceived(message)
 
         Log.e("onMeessageReceived", "onMessageReceived: ${message.data}")
-        message.data.let{
+        message.data.let {
             val intent = Intent()
-            intent.putExtra("redirect",it["redirect"])
-            sendNotification(it["body"]?:"ZingBusiness",it["title"]?:"ZingBusiness",it["image"], intent)
-
-
-
-
-
-
-
-
+            intent.putExtra("redirect", it["redirect"])
+            sendNotification(
+                it["body"] ?: "ZingBusiness", it["title"] ?: "ZingBusiness", it["image"], intent
+            )
 
         }
 
 
-
-
     }
 
-    private fun sendNotification(messageBody: String, title:String,imageUrl: String?,intent: Intent){
+    private fun sendNotification(
+        messageBody: String, title: String, imageUrl: String?, intent: Intent
+    ) {
         createNotificationChannel()
 
-        val notificationManager = ContextCompat.getSystemService(applicationContext, NotificationManager::class.java) as NotificationManager
-        notificationManager.sendNotification(messageBody,title,imageUrl,intent,applicationContext)
+        val notificationManager = ContextCompat.getSystemService(
+            applicationContext, NotificationManager::class.java
+        ) as NotificationManager
+        notificationManager.sendNotification(
+            messageBody, title, imageUrl, intent, applicationContext
+        )
     }
+
     private fun redirectToSplash(): Intent {
-        val intent = Intent("SPLASH_ACTIVITY").putExtra("notification",1)
+        val intent = Intent("SPLASH_ACTIVITY").putExtra("notification", 1)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         return intent
     }
 
 
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "ZingBusiness"
+            val name = "Zing Business"
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
             val notificationManager: NotificationManager =
                 applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-            val audioAttributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
+            val audioAttributes =
+                AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
             channel.enableLights(true)
+            channel.setSound(
+                Uri.parse("android.resource://" + applicationContext.packageName + "/" + R.raw.sliver_sprint),
+                null
+            )
             channel.lightColor = Color.RED
             channel.enableVibration(true)
             channel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
@@ -154,7 +165,6 @@ class FirebaseService : FirebaseMessagingService(){
 
         }
     }
-
 
 
 }

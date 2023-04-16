@@ -8,6 +8,9 @@
             <variable
                 name="pastOrder"
                 type="com.zingit.restaurant.models.order.OrdersModel" />
+        <variable
+            name="viewModel"
+            type="com.zingit.restaurant.viewModel.OrderDetailsViewModel" />
 
         <import type="com.zingit.restaurant.utils.Utils"/>
 
@@ -60,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@string/order_temp_id_"
+            android:text="@{`#`+ pastOrder.orderNo}"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintStart_toEndOf="@id/order"
@@ -179,22 +182,26 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_75sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
             android:orientation="horizontal"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/prepared"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_10sdp"
                 android:layout_weight="1"
+                android:layout_marginEnd="@dimen/_5sdp"
                 android:backgroundTint="@color/green"
                 android:fontFamily="@font/duplet_semibold"
                 android:paddingVertical="@dimen/_15sdp"
                 android:text="@string/order_prepared"
                 android:textAlignment="center"
+                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_prepared_campaign`)}"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp"
@@ -203,12 +210,13 @@
             <com.google.android.material.button.MaterialButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_10sdp"
+               android:layout_marginStart="7dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/colorOnPrimary"
                 android:fontFamily="@font/duplet_semibold"
                 android:paddingVertical="@dimen/_15sdp"
-                android:text="@string/reject"
+                android:text="@{viewModel.remainingTimeFinal}"
+                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_declined_campaign`)}"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

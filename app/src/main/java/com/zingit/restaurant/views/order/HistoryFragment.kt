@@ -50,36 +50,38 @@ class HistoryFragment : Fragment() {
         orderViewModel.getOrderHistory()
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
-                    launch {
-                        orderHistoryAdapter = HistoryAdapter(requireContext()){
-                            gson = Gson()
-                            val json = gson.toJson(it)
-                            val bundle = bundleOf("orderModel" to json)
-                            findNavController().navigate(R.id.action_ordersFragment_to_viewPastOrderFragment, bundle)
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                orderHistoryAdapter = HistoryAdapter(requireContext()) {
+                    gson = Gson()
+                    val json = gson.toJson(it)
+                    val bundle = bundleOf("orderModel" to json)
+                    findNavController().navigate(
+                        R.id.action_ordersFragment_to_viewPastOrderFragment,
+                        bundle
+                    )
 
-                        }
-                        orderViewModel.orderHistoryData.collect{
-
-                            if(it.isLoading){
-                                tagline.visibility = View.GONE
-                                loader.visibility = View.VISIBLE
-                                requireActivity().window.setFlags(
-                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            }else{
-                                loader.visibility = View.GONE
-                                tagline.visibility = View.GONE
-                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            }
-                            historyRv.adapter = orderHistoryAdapter
-                            orderHistoryAdapter.submitList(it.data)
-
-                        }
-                    }
                 }
+                orderViewModel.orderHistoryData.collect {
+                    loader.visibility = View.VISIBLE
+                    requireActivity().window.setFlags(
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                    )
+                    if (it.isEmpty()) {
+                        tagline.visibility = View.GONE
+                        loader.visibility = View.GONE
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
+                    } else {
+                        loader.visibility = View.GONE
+                        tagline.visibility = View.GONE
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        historyRv.adapter = orderHistoryAdapter
+                        orderHistoryAdapter.submitList(it)
+                    }
+
+
+                }
             }
             return binding.root
         }

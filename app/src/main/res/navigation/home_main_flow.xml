@@ -47,4 +47,12 @@
         android:id="@+id/newOrderFragment"
         android:name="com.zingit.restaurant.views.order.NewOrderFragment"
         android:label="NewOrderFragment" />
+    <fragment
+        android:id="@+id/activeFragment"
+        android:name="com.zingit.restaurant.views.order.ActiveFragment"
+        android:label="ActiveFragment" >
+        <action
+            android:id="@+id/action_activeFragment_to_newOrderFragment"
+            app:destination="@id/newOrderFragment" />
+    </fragment>
 </navigation>

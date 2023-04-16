@@ -107,10 +107,10 @@ class SignUpLoginViewModel @Inject constructor(private var repository: ZingRepos
         }
     }
 
-    fun whatsappToUser(whatsappRequestModel: WhatsappRequestModel){
+    fun whatsappToUser(userName:String,orderNumber:String,hashMap: HashMap<String,Int>,mobileNumber:String,restaurant:String,type:String){
         viewModelScope.launch {
             loading.value=true
-            val result = repository.callWhatsapp(whatsappRequestModel)
+            val result = repository.callWhatsapp(WhatsappRequestModel("https://msrit.zingnow.in/",userName,orderNumber,hashMap,mobileNumber,restaurant,type,"15"))
             when (result.status) {
                 ApiResult.Status.SUCCESS -> {
                     loading.value=false
