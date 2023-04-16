@@ -19,7 +19,6 @@
             android:layout_margin="10dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/single_item_ticket"
-
             app:spanCount="2"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

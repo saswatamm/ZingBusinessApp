@@ -51,18 +51,20 @@ class ActiveFragment : Fragment() {
         orderViewModel.getOrdersData()
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
-                    launch {
-                        orderAdapter = ActiveOrderAdapter(requireContext(),){
-                            gson = Gson()
-                            val json = gson.toJson(it)
-                            val bundle = bundleOf("orderModel" to json)
-                            findNavController().navigate(R.id.action_ordersFragment_to_newOrderFragment, bundle)
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                orderAdapter = ActiveOrderAdapter(requireContext(),){
+                            if (it!=null){
+                                gson = Gson()
+                                val json = gson.toJson(it)
+                                val bundle = bundleOf("orderModel" to json)
+                                findNavController().navigate(R.id.action_ordersFragment_to_newOrderFragment, bundle)
+
+                            }
+
 
                         }
                         orderViewModel.orderActiveData.collect{
-                            if(it.isLoading){
+                            if(it.isEmpty()){
                                 tagline.visibility = View.GONE
                                 loader.visibility = View.VISIBLE
                                 requireActivity().window.setFlags(
@@ -74,13 +76,13 @@ class ActiveFragment : Fragment() {
                                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                             }
                             activeRv.adapter = orderAdapter
-                            orderAdapter.submitList(it.data)
+                            orderAdapter.submitList(it)
 
                         }
                     }
-                }
 
-            }
+
+
             return binding.root
         }
 

@@ -1,88 +1,103 @@
 package com.zingit.restaurant.viewModel
 
 import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
-import com.google.firestore.v1.StructuredQuery.Order
-import com.zingit.restaurant.models.item.CategoryModel
-import com.zingit.restaurant.models.item.CategoryState
-import com.zingit.restaurant.models.item.ItemMenuState
+
 import com.zingit.restaurant.models.order.OrderState
 import com.zingit.restaurant.models.order.OrdersModel
+import com.zingit.restaurant.models.order.SearchState
 import com.zingit.restaurant.repository.FirebaseRepository
 import com.zingit.restaurant.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 
-
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
     private val repository: FirebaseRepository
-) : ViewModel(){
-    private  val TAG = "OrdersViewModel"
-    private val _orderActiveData = MutableStateFlow(OrderState())
-    val orderActiveData: StateFlow<OrderState> = _orderActiveData
+) : ViewModel() {
+    private val TAG = "OrdersViewModel"
+    private val _orderActiveData: MutableStateFlow<List<OrdersModel>> = MutableStateFlow(listOf())
+    val orderActiveData: StateFlow<List<OrdersModel>> = _orderActiveData
 
-    private val _orderHistoryData = MutableStateFlow(OrderState())
-    val orderHistoryData: StateFlow<OrderState> = _orderHistoryData
-    var myList: MutableList<OrdersModel> = mutableListOf<OrdersModel>()
+    private val _orderHistoryData: MutableStateFlow<List<OrdersModel>> = MutableStateFlow(listOf())
+    val orderHistoryData: StateFlow<List<OrdersModel>> = _orderHistoryData
+    var myList: MutableList<OrdersModel> = mutableListOf()
+    
+    private val _orderPrintNew:MutableStateFlow<OrdersModel> = MutableStateFlow(OrdersModel())
+    val orderPrintNew:StateFlow<OrdersModel> = _orderPrintNew
+
+    private val _orderSearchData = MutableStateFlow(SearchState())
+    val orderSearchData: StateFlow<SearchState> = _orderSearchData
 
 
     fun getOrdersData() {
         repository.getOrder().onEach {
-            when (it) {
-                is Resource.Loading -> {
-                    _orderActiveData.value = OrderState(isLoading = true)
-                }
-                is Resource.Error -> {
-                    _orderActiveData.value = OrderState(error = it.message ?: "")
-                }
-                is Resource.Success -> {
-                    _orderActiveData.value = OrderState(data = it.data, isLoading = false)
 
-                    Log.e(TAG, "getOrdersData: ${it.data}", )
-                }
+            if (it.isNotEmpty()) {
+                _orderActiveData.value = it
             }
         }.launchIn(viewModelScope)
+
+    }
+
+    fun printNewOrder(){
+        repository.recentOrder().onEach {
+            _orderPrintNew.value = it
+        }.launchIn(viewModelScope)
+
     }
 
 
-    fun getOrderHistory(){
+
+
+    fun getOrderHistory() {
         repository.getHistoryOrder().onEach {
-            when (it) {
-                is Resource.Loading -> {
-                    _orderHistoryData.value = OrderState(isLoading = true)
+            if (it.isNotEmpty()) {
+                clear()
+                val currentTime = Timestamp.now().seconds
+                it.forEach { order ->
+                    val timeDiff = currentTime  - order.placedTime!!.seconds
+                    if (timeDiff <= 3 * 60 * 60) { // 3 hours in milliseconds
+                        myList.add(order)
+                    }
+
                 }
-                is Resource.Error -> {
-                    _orderHistoryData.value = OrderState(error = it.message ?: "")
-                }
-                is Resource.Success -> {
-                    clear()
-                    val currentTime = Timestamp.now().seconds
-                    it.data?.forEach { order ->
-                        val timeDiff = currentTime  - order.placedTime!!.seconds
-                        if (timeDiff <= 3 * 60 * 60) { // 3 hours in milliseconds
-                            myList.add(order)
-                        }
+                _orderHistoryData.value = myList
+            }
+        }.launchIn(viewModelScope)
+
+    }
+
+    fun clear() {
+        myList.clear()
+    }
+
+
+    fun getOrderSearch(string: String) {
+            repository.getOrderBySearch(string).onEach {
+                when (it) {
+                    is Resource.Loading -> {
+                        _orderSearchData.value = SearchState(isLoading = true)
+                    }
+                    is Resource.Error -> {
+                        _orderSearchData.value = SearchState(error = it.message ?: "")
+                    }
+                    is Resource.Success -> {
+                        _orderSearchData.value = SearchState(data = it.data, isLoading = false)
+                        Log.e(TAG, "getOrdersData: ${it.data}")
 
                     }
-                    _orderHistoryData.value = OrderState(data = myList, isLoading = false)
-                    Log.e(TAG, "histroy: ${it.data}", )
                 }
             }
-        }.launchIn(viewModelScope)
 
-    }
-    fun clear (){
-        myList.clear()
     }
 
 }

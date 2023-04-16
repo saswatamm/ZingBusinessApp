@@ -4,6 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="viewmodel"
+            type="com.zingit.restaurant.viewModel.OrdersViewModel" />
+
+
+        <import type="android.view.inputmethod.EditorInfo" />
+        <import type="android.widget.TextView.OnEditorActionListener" />
 
     </data>
 
@@ -66,7 +73,7 @@
                     android:layout_marginEnd="5dp"
                     android:paddingVertical="8dp"
                     android:inputType="number"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionSearch"
                     android:textAlignment="center"
                     android:textColorHint="@color/grey"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -140,6 +147,33 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:listitem="@layout/instant_orders"
+            tools:itemCount="2"
+            android:layout_marginBottom="10dp"
+
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"/>
+
+<!--        <com.airbnb.lottie.LottieAnimationView-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:id="@+id/loader"-->
+<!--            app:lottie_rawRes="@raw/loader"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:lottie_autoPlay="true"-->
+<!--            app:lottie_loop="true"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
