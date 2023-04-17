@@ -1,6 +1,7 @@
 package com.zingit.restaurant.views.order
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -33,6 +35,7 @@ import com.zingit.restaurant.databinding.FragmentOrdersBinding
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.utils.SlideInItemAnimator
 import com.zingit.restaurant.utils.Utils
+import com.zingit.restaurant.utils.Utils.hideKeyboard
 import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
@@ -51,7 +54,6 @@ class OrdersFragment : Fragment() {
     private val orderViewModel: OrdersViewModel by viewModels()
     private val TAG = "OrdersFragment"
     lateinit var gson: Gson
-
     private val selectedDevice: BluetoothConnection? = null
     val PERMISSION_BLUETOOTH = 1
     val PERMISSION_BLUETOOTH_ADMIN = 2
@@ -91,18 +93,49 @@ class OrdersFragment : Fragment() {
         }.attach()
 
         binding.apply {
+
+            searchView.setOnEditorActionListener { textView, i, keyEvent ->
+                if (i == EditorInfo.IME_ACTION_SEARCH) {
+                    loader.visibility = View.VISIBLE
+
+                    firestore.collection("payment").get().addOnSuccessListener {
+                        for (document in it) {
+                            Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
+                            if (searchView.text.toString().trim().contains(document.data.get("orderNo").toString())){
+                                Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
+                                val gson = Gson()
+                                loader.visibility = View.GONE
+                                val finalValue = document.toObject(OrdersModel::class.java)
+                                val json = gson.toJson(finalValue)
+                                val bundle = bundleOf("orderModel" to json)
+                                findNavController().navigate(R.id.action_ordersFragment_to_newOrderFragment,bundle)
+                                view?.hideKeyboard()
+                                binding.searchView.text.clear()
+                                break
+                            }
+
+                        }
+
+                    }
+                    view.hideKeyboard()
+                    true
+                } else {
+                    false
+                }
+            }
            lifecycleScope.launch {
+               launch {
+                   orderViewModel.orderSearchData.collect{
+                       Log.e(TAG, "onViewCreated: $it", )
+                   }
+               }
                orderViewModel.orderPrintNew.collect{
                    Log.e(TAG, "onViewCreated: $it", )
                    printBluetooth(it,it.id)
-
-
                }
+
            }
-//            orderAdapter = InstantOrderAdapter(requireContext())
-//            recyclerView.adapter = orderAdapter
-//            recyclerView.itemAnimator = SlideInItemAnimator()
-//            orderAdapter.submitList(tempArrayOf)
+
 
 
 
@@ -177,15 +210,12 @@ class OrdersFragment : Fragment() {
                             "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
                         )
                     }
-
                     override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
                         Log.i(
                             "Async.OnPrintFinished",
                             "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
                         )
-
                         firestore.collection("payment").document(id).update("statusCode",2)
-
                     }
                 }
             )
