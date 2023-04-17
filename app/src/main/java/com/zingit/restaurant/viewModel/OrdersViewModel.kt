@@ -81,24 +81,24 @@ class OrdersViewModel @Inject constructor(
     }
 
 
-    fun getOrderSearch(string: String) {
-            repository.getOrderBySearch(string).onEach {
-                when (it) {
-                    is Resource.Loading -> {
-                        _orderSearchData.value = SearchState(isLoading = true)
-                    }
-                    is Resource.Error -> {
-                        _orderSearchData.value = SearchState(error = it.message ?: "")
-                    }
-                    is Resource.Success -> {
-                        _orderSearchData.value = SearchState(data = it.data, isLoading = false)
-                        Log.e(TAG, "getOrdersData: ${it.data}")
-
-                    }
-                }
-            }
-
-    }
+//    fun getOrderSearch(string: String) {
+//            repository.getOrderBySearch(string).onEach {
+//                when (it) {
+//                    is Resource.Loading -> {
+//                        _orderSearchData.value = SearchState(isLoading = true)
+//                    }
+//                    is Resource.Error -> {
+//                        _orderSearchData.value = SearchState(error = it.message ?: "")
+//                    }
+//                    is Resource.Success -> {
+////                        _orderSearchData.value = SearchState(data = it.data.size, isLoading = false)
+//                        Log.e(TAG, "getOrdersData: ${it.data}")
+//
+//                    }
+//                }
+//            }
+//
+//    }
 
 }
 
