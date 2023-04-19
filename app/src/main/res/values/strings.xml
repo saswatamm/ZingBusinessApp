@@ -59,6 +59,8 @@
     <string name="request_deactivated">Request to Deactivate Account</string>
     <string name="request_deactivated_">Request to Deactivate Account?</string>
     <string name="cancelling_order">Cancelling the Order?</string>
+    <string name="item_not_available">Item not available</string>
+    <string name="mark_as">Mark the item that is not available</string>
     <string name="not_accept">Not accepting orders currently</string>
     <string name="delivery">Delivery Restrictions</string>
     <string name ="too_order">Too many orders</string>
