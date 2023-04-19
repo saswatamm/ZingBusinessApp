@@ -44,6 +44,7 @@ class NewOrderFragment : Fragment() {
     lateinit var cancelSpecificItemsAdapter: CancelSpecificItemsAdapter
     private val zingViewModel: OrderDetailsViewModel by viewModels()
     val arrayList = ArrayList<String>()
+    val arrayList1 = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +74,7 @@ class NewOrderFragment : Fragment() {
             )
             arrayList.addAll(tempArray)
             rejectBtn.setOnClickListener {
-                cancel()
+                cancel(orderModel)
             }
 
             pastOrderAdapter = PastOrderAdapter(requireContext())
@@ -86,7 +87,7 @@ class NewOrderFragment : Fragment() {
         return binding.root
     }
 
-    fun cancel() {
+    fun cancel(ordersModel: OrdersModel) {
         val binding: BottomCancelOrderBinding = DataBindingUtil.inflate(
             LayoutInflater.from(context),
             R.layout.bottom_cancel_order,
@@ -103,19 +104,22 @@ class NewOrderFragment : Fragment() {
                     false
                 )
                 cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
-                    binding.apply {
-                        recyclerView.adapter = cancelAdapter
-                        cancelAdapter.submitList(arrayList)
-                        keep.setOnClickListener {
-                            dialog.dismiss()
-                        }
-                    }
-                    val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
-                    dialog.setCancelable(false)
-                    dialog.setContentView(binding.root)
-                    dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                    dialog.show()
+
                 }
+                binding.apply {
+                    recyclerView.adapter = cancelAdapter
+                    arrayList1.add("All Items")
+                    arrayList1.addAll(ordersModel.orderItems.map { it.itemName })
+                    cancelAdapter.submitList(arrayList)
+                    keep.setOnClickListener {
+                        dialog.dismiss()
+                    }
+                }
+                val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
+                dialog.setCancelable(false)
+                dialog.setContentView(binding.root)
+                dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                dialog.show()
 
 
 
