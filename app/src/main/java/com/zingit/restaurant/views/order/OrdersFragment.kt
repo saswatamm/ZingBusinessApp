@@ -230,7 +230,7 @@ class OrdersFragment : Fragment() {
 
     fun printBluetooth(ordersModel: OrdersModel, id: String) {
         if (ContextCompat.checkSelfPermission(
-                requireActivity(),
+                requireContext(),
                 Manifest.permission.BLUETOOTH
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -240,7 +240,7 @@ class OrdersFragment : Fragment() {
                 PERMISSION_BLUETOOTH
             )
         } else if (ContextCompat.checkSelfPermission(
-                requireActivity(),
+                requireContext(),
                 Manifest.permission.BLUETOOTH_ADMIN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -249,7 +249,7 @@ class OrdersFragment : Fragment() {
                 arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
             )
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                requireActivity(),
+                requireContext(),
                 Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -259,7 +259,7 @@ class OrdersFragment : Fragment() {
                 PERMISSION_BLUETOOTH_CONNECT
             )
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                requireActivity(),
+                requireContext(),
                 Manifest.permission.BLUETOOTH_SCAN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -270,7 +270,7 @@ class OrdersFragment : Fragment() {
             )
         } else {
             AsyncBluetoothEscPosPrint(
-                requireActivity(),
+                requireContext(),
                 object : AsyncEscPosPrint.OnPrintFinished() {
                     override fun onError(
                         asyncEscPosPrinter: AsyncEscPosPrinter?,
