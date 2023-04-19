@@ -83,29 +83,7 @@ class FirebaseRepository @Inject constructor() {
 
     }
 
-//    fun getOrderBySearch(orderNo: String) = flow {
-//        emit(Resource.Loading())
-//        try {
-//            val snapShot = fireStoreDatabase.collection("payment")
-//                .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko").whereGreaterThan("statusCode", 0)
-//                .whereLessThan("statusCode", 3).get().await()
-//            Log.e(TAG, "SearchData: ${snapShot.documents}")
-//            emit(Resource.Success(snapShot.documents))
-//           /* if (snapShot.documents.isNotEmpty()) {
-//                for (document in snapShot.documents) {
-//                    if (document.data?.get("orderNo").toString().contains(orderNo)) {
-//                        val orderModel: OrdersModel = document.toObject(OrdersModel::class.java)!!
-//                        Log.e(TAG, "getOrderBySearch: ${orderModel}")
-//                        emit(Resource.Success(orderModel))
-//                    }
-//                }
-//            }*/
-//
-//
-//        } catch (e: Exception) {
-//            emit(Resource.Error(e.message!!))
-//        }
-//    }
+
 
 
 
@@ -131,8 +109,7 @@ class FirebaseRepository @Inject constructor() {
 
     fun recentOrder(): Flow<OrdersModel> = callbackFlow {
         val snapShot = fireStoreDatabase.collection("payment")
-            .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko").whereGreaterThan("statusCode", 0)
-            .whereLessThan("statusCode", 3).addSnapshotListener { value, error ->
+            .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko").whereEqualTo("statusCode",1).addSnapshotListener { value, error ->
                 if (error != null) {
                     trySend(OrdersModel()).isSuccess
                     return@addSnapshotListener
@@ -143,6 +120,12 @@ class FirebaseRepository @Inject constructor() {
                             DocumentChange.Type.ADDED->{
                                 val orderModel: OrdersModel = i.document.toObject(OrdersModel::class.java)
                                 trySend((orderModel)).isSuccess
+
+                            }
+                            DocumentChange.Type.MODIFIED->{
+                                val orderModel: OrdersModel = i.document.toObject(OrdersModel::class.java)
+                                trySend((orderModel)).isSuccess
+
                             }
                             else -> {}
                         }
