@@ -24,6 +24,7 @@ import com.zingit.restaurant.adapter.CancelItemAdapter
 import com.zingit.restaurant.adapter.CancelSpecificItemsAdapter
 import com.zingit.restaurant.adapter.PastOrderAdapter
 import com.zingit.restaurant.databinding.BottomCancelOrderBinding
+import com.zingit.restaurant.databinding.BottomCancelSpecificItemBinding
 import com.zingit.restaurant.databinding.BottomSheetPrinterBinding
 import com.zingit.restaurant.databinding.FragmentNewOrderBinding
 import com.zingit.restaurant.models.item.CancelModel
@@ -96,10 +97,11 @@ class NewOrderFragment : Fragment() {
         )
         val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         cancelAdapter = CancelItemAdapter(requireContext()) {
+            Log.e(TAG, "cancel: $it", )
             if (it == getString(R.string.items_is)) {
-                val binding: BottomCancelOrderBinding = DataBindingUtil.inflate(
+                val binding: BottomCancelSpecificItemBinding = DataBindingUtil.inflate(
                     LayoutInflater.from(context),
-                    R.layout.bottom_cancel_order,
+                    R.layout.bottom_cancel_specific_item,
                     null,
                     false
                 )
@@ -110,7 +112,7 @@ class NewOrderFragment : Fragment() {
                     recyclerView.adapter = cancelAdapter
                     arrayList1.add("All Items")
                     arrayList1.addAll(ordersModel.orderItems.map { it.itemName })
-                    cancelAdapter.submitList(arrayList)
+                    cancelAdapter.submitList(arrayList1)
                     keep.setOnClickListener {
                         dialog.dismiss()
                     }
@@ -128,7 +130,6 @@ class NewOrderFragment : Fragment() {
         }
         binding.apply {
             recyclerView.adapter = cancelAdapter
-            Log.e(TAG, "cancel: $arrayList")
             cancelAdapter.submitList(arrayList)
             keep.setOnClickListener {
                 dialog.dismiss()

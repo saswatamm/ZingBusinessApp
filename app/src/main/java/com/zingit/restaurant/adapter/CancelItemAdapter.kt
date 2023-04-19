@@ -31,6 +31,12 @@ class CancelItemAdapter(val context: Context,val onClick: (String) -> Unit) :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val orderItem = getItem(position)
         holder.bind(orderItem)
+        holder.binding.notAvailable.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                onClick(orderItem)
+            }
+        }
+
         Log.e(TAG, "onBindViewHolder: $orderItem", )
 
     }
