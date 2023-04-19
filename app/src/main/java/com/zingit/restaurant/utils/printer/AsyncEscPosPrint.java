@@ -28,7 +28,7 @@ public abstract class AsyncEscPosPrint extends AsyncTask<AsyncEscPosPrinter, Int
     protected final static int PROGRESS_PRINTING = 3;
     protected final static int PROGRESS_PRINTED = 4;
 
-    protected ProgressDialog dialog;
+   // protected ProgressDialog dialog;
     protected WeakReference<Context> weakContext;
     protected OnPrintFinished onPrintFinished;
 
@@ -98,7 +98,7 @@ public abstract class AsyncEscPosPrint extends AsyncTask<AsyncEscPosPrinter, Int
     }
 
     protected void onPreExecute() {
-        if (this.dialog == null) {
+       /* if (this.dialog == null) {
             Context context = weakContext.get();
 
             if (context == null) {
@@ -113,11 +113,11 @@ public abstract class AsyncEscPosPrint extends AsyncTask<AsyncEscPosPrinter, Int
             this.dialog.setIndeterminate(false);
             this.dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             this.dialog.show();
-        }
+        }*/
     }
 
     protected void onProgressUpdate(Integer... progress) {
-        switch (progress[0]) {
+       /* switch (progress[0]) {
             case AsyncEscPosPrint.PROGRESS_CONNECTING:
                 this.dialog.setMessage("Connecting printer...");
                 break;
@@ -132,12 +132,12 @@ public abstract class AsyncEscPosPrint extends AsyncTask<AsyncEscPosPrinter, Int
                 break;
         }
         this.dialog.setProgress(progress[0]);
-        this.dialog.setMax(4);
+        this.dialog.setMax(4);*/
     }
 
     protected void onPostExecute(PrinterStatus result) {
-        this.dialog.dismiss();
-        this.dialog = null;
+      /*  this.dialog.dismiss();
+        this.dialog = null;*/
 
         Context context = weakContext.get();
 
@@ -145,7 +145,7 @@ public abstract class AsyncEscPosPrint extends AsyncTask<AsyncEscPosPrinter, Int
             return;
         }
 
-        switch (result.getPrinterStatus()) {
+        /*switch (result.getPrinterStatus()) {
             case AsyncEscPosPrint.FINISH_SUCCESS:
                 new AlertDialog.Builder(context)
                         .setTitle("Success")
@@ -182,7 +182,7 @@ public abstract class AsyncEscPosPrint extends AsyncTask<AsyncEscPosPrinter, Int
                     .setMessage("Data send to be converted to barcode or QR code seems to be invalid.")
                     .show();
                 break;
-        }
+        }*/
         if(this.onPrintFinished != null) {
             if (result.getPrinterStatus() == AsyncEscPosPrint.FINISH_SUCCESS) {
                 this.onPrintFinished.onSuccess(result.getAsyncEscPosPrinter());

@@ -201,24 +201,25 @@
                 android:paddingVertical="@dimen/_15sdp"
                 android:text="@string/order_prepared"
                 android:textAlignment="center"
-                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_prepared_campaign`)}"
+                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_prepared_campaign`,true,pastOrder.id)}"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp"
                 app:cornerRadius="@dimen/_5sdp" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/rejectBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-               android:layout_marginStart="7dp"
+                android:layout_marginStart="7dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/colorOnPrimary"
+                android:backgroundTint="@{viewModel.checkFinish ?  @color/textGrey : @color/colorOnPrimary }"
                 android:fontFamily="@font/duplet_semibold"
                 android:paddingVertical="@dimen/_15sdp"
                 android:text="@{viewModel.remainingTimeFinal}"
-                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_declined_campaign`)}"
                 android:textAlignment="center"
                 android:textAllCaps="false"
+                android:enabled="@{viewModel.checkFinish ? false : true}"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp"
                 app:cornerRadius="@dimen/_5sdp" />
@@ -228,3 +229,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
+
+<!--
+    android:onClick="@{() -> viewModel.checkFinish == false ? viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_declined_campaign`,false,pastOrder.id) : null}"-->

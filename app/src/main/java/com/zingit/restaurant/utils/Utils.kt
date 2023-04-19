@@ -1,7 +1,11 @@
 package com.zingit.restaurant.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothProfile
 import android.content.pm.PackageManager
 import android.text.Editable
 import android.text.TextWatcher
@@ -122,6 +126,20 @@ object Utils {
             override fun afterTextChanged(s: Editable?) {
             }
         })
+    }
+    @SuppressLint("MissingPermission")
+    fun isDeviceConnected(deviceName: String): Boolean {
+        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val bondedDevices: Set<BluetoothDevice>? = bluetoothAdapter.bondedDevices
+        if (bondedDevices != null && bondedDevices.isNotEmpty()) {
+            for (device in bondedDevices) {
+                if (device.name == deviceName) {
+                    val deviceState: Int = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.A2DP)
+                    return deviceState == BluetoothProfile.STATE_CONNECTED
+                }
+            }
+        }
+        return false
     }
 
     fun getAsyncEscPosPrinter(orderModel: OrdersModel,printerConnection: DeviceConnection?): AsyncEscPosPrinter? {

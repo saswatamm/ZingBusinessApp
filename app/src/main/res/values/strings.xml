@@ -58,6 +58,14 @@
     <string name="do_you_want_print">Do you want to print a dummy kitchen ordering ticket for testing the thermal printer?</string>
     <string name="request_deactivated">Request to Deactivate Account</string>
     <string name="request_deactivated_">Request to Deactivate Account?</string>
+    <string name="cancelling_order">Cancelling the Order?</string>
+    <string name="not_accept">Not accepting orders currently</string>
+    <string name="delivery">Delivery Restrictions</string>
+    <string name ="too_order">Too many orders</string>
+    <string name="items_is">Item(s) is not available</string>
+    <string name="canel_refund">Cancel &amp; Refund</string>
+    <string name="select_the_reason">Select the reason for cancelling this order</string>
+    <string name ="keep">Keep Order</string>
     <string name="deactivated_">Deactivate Account</string>
     <string name="order_no">Order #1B12</string>
     <string name="order_no_">#1B12</string>

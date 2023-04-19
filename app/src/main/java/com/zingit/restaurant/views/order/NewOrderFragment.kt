@@ -16,10 +16,16 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.zingit.restaurant.R
+import com.zingit.restaurant.adapter.CancelItemAdapter
 import com.zingit.restaurant.adapter.PastOrderAdapter
+import com.zingit.restaurant.databinding.BottomCancelOrderBinding
+import com.zingit.restaurant.databinding.BottomSheetPrinterBinding
 import com.zingit.restaurant.databinding.FragmentNewOrderBinding
+import com.zingit.restaurant.models.item.CancelModel
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.service.CountdownService
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
@@ -33,7 +39,9 @@ class NewOrderFragment : Fragment() {
     lateinit var gson: Gson
     lateinit var pastOrderAdapter: PastOrderAdapter
     private  val TAG = "NewOrderFragment"
+    lateinit var  cancelAdapter:CancelItemAdapter
     private val zingViewModel: OrderDetailsViewModel by viewModels()
+    val arrayList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +63,12 @@ class NewOrderFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             pastOrder = orderModel
             viewModel = zingViewModel
+            val tempArray = arrayOf(getString(R.string.items_is),getString(R.string.too_order),getString(R.string.delivery),getString(R.string.not_accept))
+            arrayList.addAll(tempArray)
+            rejectBtn.setOnClickListener {
+                cancel()
+            }
+
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter= pastOrderAdapter
             pastOrderAdapter.submitList(orderModel.orderItems)
@@ -65,10 +79,26 @@ class NewOrderFragment : Fragment() {
         return binding.root
     }
 
-  /*  fun startMyService() {
-        val intent = Intent(requireContext(), CountdownService::class.java)
-        requireActivity().startService(intent)
-    }*/
+    fun cancel() {
+        val binding: BottomCancelOrderBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(context),
+            R.layout.bottom_cancel_order,
+            null,
+            false
+        )
+        val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
+        cancelAdapter = CancelItemAdapter(requireContext())
+        binding.apply {
+            recyclerView.adapter = cancelAdapter
+            cancelAdapter.submitList(arrayList)
+        }
+        dialog.setCancelable(false)
+        dialog.setContentView(binding.root)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        dialog.show()
+    }
+
+
 
 
 

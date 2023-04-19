@@ -49,6 +49,7 @@ class OrdersViewModel @Inject constructor(
     }
 
     fun printNewOrder(){
+
         repository.recentOrder().onEach {
             _orderPrintNew.value = it
         }.launchIn(viewModelScope)

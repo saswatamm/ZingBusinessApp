@@ -1,5 +1,6 @@
 package com.zingit.restaurant.service
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
@@ -42,9 +43,15 @@ class InternetConnectivityBroadcastReceiver(
 
     }
 
+    @SuppressLint("MissingPermission")
     fun isBluetoothAvailable(): Boolean {
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val bondedDevices: Set<BluetoothDevice>? = bluetoothAdapter.bondedDevices
+
+
         return bluetoothAdapter != null && bluetoothAdapter.isEnabled && bluetoothAdapter.state == BluetoothAdapter.STATE_ON
 
     }
+
+
 }
