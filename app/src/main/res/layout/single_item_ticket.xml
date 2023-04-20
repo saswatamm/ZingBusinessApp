@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/duplet_semibold"
-            android:text="@string/tap_to_view"
+            android:text="@{orderModel.statusCode==1?`Not Printed` : `Tap to View`}"
             android:gravity="center"
             android:textColor="@color/darkGreyText"
             android:textSize="14sp"

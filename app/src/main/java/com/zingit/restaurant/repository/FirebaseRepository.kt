@@ -3,6 +3,8 @@ package com.zingit.restaurant.repository
 import android.util.Log
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firestore.v1.StructuredQuery.Order
 
 import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.models.order.OrderState
@@ -72,8 +74,15 @@ class FirebaseRepository @Inject constructor() {
                     return@addSnapshotListener
                 }
                 if (value != null) {
-                    val orderModel: List<OrdersModel> =
+
+
+                    var orderModel: List<OrdersModel> =
                         value.toObjects(OrdersModel::class.java)
+
+                    orderModel = orderModel.sortedByDescending { it.orderNo } //Orders sorted in descending order
+
+
+
                     trySend(orderModel).isSuccess
                 }
             }
