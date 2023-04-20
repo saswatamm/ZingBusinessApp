@@ -184,7 +184,7 @@ object Utils {
             slip += "[L]<font size='big-4'>" + payment.orderItems.get(i).itemName + "</font>"
             slip += """
             ${
-                "[R]<font size='big-4'>      X" + payment.orderItems.get(i).itemQuantity
+                "[R]<font size='big-4'>                       X" + payment.orderItems.get(i).itemQuantity
             }</font>
             
             
@@ -192,7 +192,7 @@ object Utils {
         }
         slip += "[C]<b>=============================================\n"
         slip += """
-             ${"[R]<font size='big-4'>       Total Amount: " + payment.basePrice}</font>
+             ${"[R]<font size='big-4'>                        Total Amount: " + payment.basePrice}</font>
              
              """.trimIndent()
         return slip

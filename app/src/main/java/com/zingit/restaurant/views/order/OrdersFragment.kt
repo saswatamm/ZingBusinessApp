@@ -64,6 +64,8 @@ class OrdersFragment : Fragment() {
     val PERMISSION_BLUETOOTH_CONNECT = 3
     val PERMISSION_BLUETOOTH_SCAN = 4
 
+    var uniqueOrders = HashSet<String>() //To print only unique orders
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -179,13 +181,18 @@ class OrdersFragment : Fragment() {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
                             when(i.type){
                                 DocumentChange.Type.ADDED -> {
-                                    Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
-                                    Log.e(TAG, "onEvent: ${i.document.data}")
-                                    paymentModel = i.document.toObject(OrdersModel::class.java)
-                                    Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}", )
-
-                                    printBluetooth(paymentModel, i.document.id)
-
+                                    /*if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
+                                    {
+                                        uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
+                                        Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
+                                        Log.e(TAG, "onEvent: ${i.document.data}")
+                                        paymentModel = i.document.toObject(OrdersModel::class.java)
+                                        Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}",)
+                                        printBluetooth(paymentModel, i.document.id)
+                                    }
+                                    else{
+                                        Log.e(TAG,"eventPrinting: ${i.document.data.get("paymentOrderID").toString()}")   //Commented it out as already mentioned in HomeFragment
+                                    }*/
                                 }
                                 DocumentChange.Type.MODIFIED -> {
                                     Log.e(TAG, "onEvent: ${i.document.data}")
@@ -291,11 +298,18 @@ class OrdersFragment : Fragment() {
                                 Log.d(TAG, "Transaction success!")
 
                             }
-                                .addOnFailureListener { e -> Toast.makeText(requireContext(),"Error $e",Toast.LENGTH_LONG).show() }
-                        }catch (e:Exception){
-                            Toast.makeText(requireContext(),"Error $e",Toast.LENGTH_LONG).show()
-                            }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Error $e",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), "Error $e", Toast.LENGTH_LONG).show()
+                        }
                     }
+
                 }
             )
                 .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice))

@@ -9,20 +9,30 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
+import com.google.firebase.firestore.*
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.ActivityHomeMainBinding
+import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.service.InternetConnectivityBroadcastReceiver
+import com.zingit.restaurant.utils.Utils
+import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
+import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
+import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Method
 
@@ -39,7 +49,16 @@ class RootActivity : AppCompatActivity() {
     val PERMISSION_BLUETOOTH_ADMIN = 2
     val PERMISSION_BLUETOOTH_CONNECT = 3
     val PERMISSION_BLUETOOTH_SCAN = 4
-    @SuppressLint("MissingPermission")
+
+    var firestore = FirebaseFirestore.getInstance()
+    var uniqueOrders = HashSet<String>() //To print only unique orders
+    lateinit var paymentModel: OrdersModel
+    private val selectedDevice: BluetoothConnection? = null
+
+
+
+
+    @SuppressLint("MissingPermission", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home_main)
@@ -100,6 +119,44 @@ class RootActivity : AppCompatActivity() {
                 }
 
             }
+
+            Handler().postDelayed({
+             var query = firestore.collection("payment").whereEqualTo("outletID","9i1Q3aRU8AiH0dUAZjko").whereEqualTo("statusCode",1)
+                query.addSnapshotListener(object : EventListener<QuerySnapshot> {
+                    override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                        Log.e(TAG, "onCreateView: ${value!!.documents}")
+                        if (error != null) {
+                            Log.e(TAG, "fetchUsersData: ${error.message}")
+                            return
+                        }
+                        for (i in value!!.documentChanges) {
+                            Log.e(TAG, "fetchUsersData: ${i.document.data}")
+                            when(i.type){
+                                DocumentChange.Type.ADDED -> {
+                                    if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
+                                    {
+                                        uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
+                                        Toast.makeText(applicationContext, i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
+                                        Log.e(TAG, "onEvent: ${i.document.data}")
+                                        paymentModel = i.document.toObject(OrdersModel::class.java)
+                                        Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}",)
+                                        printBluetooth(paymentModel, i.document.id)
+                                    }
+                                    else{
+                                        Log.e(TAG,"eventPrinting: ${i.document.data.get("paymentOrderID").toString()}")
+                                    }
+                                }
+                                DocumentChange.Type.MODIFIED -> {
+                                    Log.e(TAG, "onEvent: ${i.document.data}")
+                                }
+                                DocumentChange.Type.REMOVED -> {
+                                    Log.e(TAG, "onEvent: ${i.document.data}")
+                                }
+                            }
+                        }
+                    }
+                })
+            }, 5000)
 
         }
 
@@ -193,4 +250,62 @@ class RootActivity : AppCompatActivity() {
     }
 
 
-}
+    private fun printBluetooth(ordersModel: OrdersModel, id: String)
+    {
+        AsyncBluetoothEscPosPrint(
+            applicationContext,
+            object : AsyncEscPosPrint.OnPrintFinished() {
+                override fun onError(
+                    asyncEscPosPrinter: AsyncEscPosPrinter?,
+                    codeException: Int
+                ) {
+                    Log.e(
+                        "Async.OnPrintFinished",
+                        "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
+                    )
+                }
+
+                override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
+                    Log.i(
+                        "Async.OnPrintFinished",
+                        "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
+                    )
+
+                    try {
+
+                        val sfDocRef = firestore.collection("payment").document(id)
+                        Toast.makeText(
+                            applicationContext,
+                            "Print is finished ! $id",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        firestore.runTransaction { transaction ->
+                            transaction.update(sfDocRef, "statusCode", 2)
+                        }.addOnSuccessListener {
+                            Log.d(TAG, "Transaction success!")
+
+                        }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Error $e",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                    } catch (e: Exception) {
+                        Toast.makeText(applicationContext, "Error $e", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            }
+        )
+            .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice))
+    }
+    }
+
+
+
+
+
+

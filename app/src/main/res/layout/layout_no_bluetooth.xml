@@ -6,6 +6,11 @@
 
     </data>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,8 +43,8 @@
 
         <ImageView
             android:id="@+id/no_internet"
-            android:layout_width="@dimen/_250sdp"
-            android:layout_height="@dimen/_300sdp"
+            android:layout_width="@dimen/_230sdp"
+            android:layout_height="@dimen/_280sdp"
             android:src="@drawable/no_bluetooth"
             app:layout_constraintTop_toBottomOf="@id/branch_name"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +62,7 @@
             android:layout_marginStart="@dimen/_50sdp"
             android:layout_marginEnd="@dimen/_50sdp"
             android:text="@string/bluetooth_setting"
-            android:paddingVertical="@dimen/_10sdp"
+            android:paddingVertical="@dimen/_8sdp"
             android:textColor="@color/white"
             android:textAllCaps="false"
             app:cornerRadius="0dp"
@@ -65,4 +70,6 @@
             android:fontFamily="@font/duplet_semibold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
 </layout>
