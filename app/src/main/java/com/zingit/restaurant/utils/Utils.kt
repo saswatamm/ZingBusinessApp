@@ -6,6 +6,7 @@ import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothProfile
+import android.content.Context
 import android.content.pm.PackageManager
 import android.text.Editable
 import android.text.TextWatcher
@@ -70,6 +71,26 @@ object Utils {
         val inputMethodManager =
             context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(this.windowToken, 0)
+    }
+
+    fun insertUserInfo(
+        context: Context,
+        account_id: String,
+    ) {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        var editor = sharedPreference.edit()
+        editor.putString("account_id", account_id)
+        editor.commit()
+    }
+
+
+    fun getUserInfo(context: Context): String? {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        return sharedPreference.getString("account_id", null)
+    }
+    fun deleteUserInfo(context: Context) {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        sharedPreference.edit().clear().apply()
     }
 
 
