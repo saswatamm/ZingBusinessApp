@@ -7,6 +7,7 @@
         <variable
             name="viewModel"
             type="com.zingit.restaurant.viewModel.SignUpLoginViewModel"/>
+        <import type="android.view.View"/>
 
     </data>
 
@@ -78,33 +79,58 @@
                 android:paddingVertical="@dimen/_10sdp"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/india"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="+91"
-                    android:textColor="@color/grey"
-                    android:layout_marginStart="@dimen/_15sdp"
                     app:layout_constraintTop_toTopOf="parent"
+                    android:textSize="@dimen/_16sdp"
+                    android:text="@={viewModel.email}"
+                    android:fontFamily="@font/duplet_semibold"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:hint="@string/enter_email"
+                    android:inputType="textEmailAddress"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@android:color/transparent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_14sdp" />
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/viewPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/viewPhone"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/grey"
+            android:layout_marginStart="@dimen/_15sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_14sdp"
+            app:cardCornerRadius="5dp"
+            android:layout_marginEnd="@dimen/_15sdp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:paddingVertical="@dimen/_10sdp"
+                android:layout_height="match_parent">
 
                 <EditText
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
                     android:textSize="@dimen/_16sdp"
-                    android:text="@={viewModel.number}"
+                    android:password="true"
+                    android:text="@={viewModel.password}"
                     android:fontFamily="@font/duplet_semibold"
                     android:layout_marginStart="@dimen/_10sdp"
-                    android:hint="@string/enter_phone_number"
-                    android:inputType="phone"
+                    android:hint="@string/enter_password"
+                    android:inputType="textPassword"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:background="@android:color/transparent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/india"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -115,19 +141,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/viewPhone"
+            app:layout_constraintTop_toBottomOf="@id/viewPass"
             android:layout_marginTop="@dimen/_10sdp"
-            android:text="@string/send_otp"
-            android:onClick="@{() -> viewModel.getOtp()}"
+            android:text="@string/send_in"
+            android:onClick="@{(view) -> viewModel.signInWithUserPass(view)}"
 
             app:cornerRadius="0dp"
             android:paddingVertical="@dimen/_10sdp"
-            android:backgroundTint="@{viewModel.isTenDigitNumber ? @color/colorPrimary : @color/grey}"
+            android:backgroundTint="@{@color/colorPrimary}"
             android:layout_marginStart="@dimen/_15sdp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/_15sdp" />
 
-        <LinearLayout
+      <!--  <LinearLayout
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -206,20 +232,34 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/_15sdp"
             android:paddingVertical="@dimen/_10sdp"
-            android:backgroundTint="@color/lightest_grey" />
+            android:backgroundTint="@color/lightest_grey" />-->
 
         <TextView
             android:id="@+id/need_help"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/need_help"
-            app:layout_constraintTop_toBottomOf="@id/login_with_email"
+            app:layout_constraintTop_toBottomOf="@id/sendOtp"
             android:textSize="@dimen/_12sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:textColor="@color/colorOnPrimary"
             android:fontFamily="@font/duplet_bold"
-            app:layout_constraintStart_toStartOf="@id/branding"
-            app:layout_constraintEnd_toEndOf="@id/branding" />
+            app:layout_constraintStart_toStartOf="@id/sendOtp"
+            app:layout_constraintEnd_toEndOf="@id/sendOtp" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/loader"
+            app:lottie_rawRes="@raw/loader"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

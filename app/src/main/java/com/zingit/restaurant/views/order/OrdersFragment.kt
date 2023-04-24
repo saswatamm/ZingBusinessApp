@@ -165,15 +165,7 @@ class OrdersFragment : Fragment() {
                         Log.e(TAG, "onViewCreated: $it")
                     }
                 }
-//                orderViewModel.orderPrintNew.collect {
-//                    Log.e(TAG, "onViewCreated: $it")
-//                    if (it.id !="" && it.statusCode !=2){
-//                        Log.e(TAG, "statusCode: ${it.statusCode} ", )
-//                        Log.e(TAG, "idd: ${it.id}")
-//                        printBluetooth(it, it.id)
-//                    }
-//
-//                }
+
 
             }
             Handler().postDelayed({
@@ -213,11 +205,7 @@ class OrdersFragment : Fragment() {
                     }
                 })
             }, 5000)
-
-
         }
-
-
     }
 
     override fun onRequestPermissionsResult(

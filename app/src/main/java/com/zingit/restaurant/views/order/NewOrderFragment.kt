@@ -1,18 +1,12 @@
 package com.zingit.restaurant.views.order
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
-import android.content.Intent
-import android.os.Build
+
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -24,13 +18,10 @@ import com.zingit.restaurant.adapter.CancelItemAdapter
 import com.zingit.restaurant.adapter.CancelSpecificItemsAdapter
 import com.zingit.restaurant.adapter.PastOrderAdapter
 import com.zingit.restaurant.databinding.BottomCancelOrderBinding
-import com.zingit.restaurant.databinding.BottomSheetPrinterBinding
+import com.zingit.restaurant.databinding.BottomCancelSpecificItemBinding
 import com.zingit.restaurant.databinding.FragmentNewOrderBinding
-import com.zingit.restaurant.models.item.CancelModel
 import com.zingit.restaurant.models.order.OrdersModel
-import com.zingit.restaurant.service.CountdownService
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
-import com.zingit.restaurant.viewModel.SignUpLoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -50,6 +41,7 @@ class NewOrderFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
 
+
     }
 
     override fun onCreateView(
@@ -66,6 +58,7 @@ class NewOrderFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             pastOrder = orderModel
             viewModel = zingViewModel
+            arrayList.clear()
             val tempArray = arrayOf(
                 getString(R.string.items_is),
                 getString(R.string.too_order),
@@ -96,48 +89,48 @@ class NewOrderFragment : Fragment() {
         )
         val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         cancelAdapter = CancelItemAdapter(requireContext()) {
+            Log.e(TAG, "cancel: $it", )
             if (it == getString(R.string.items_is)) {
-                val binding: BottomCancelOrderBinding = DataBindingUtil.inflate(
-                    LayoutInflater.from(context),
-                    R.layout.bottom_cancel_order,
-                    null,
-                    false
-                )
-                cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
-
-                }
-                binding.apply {
-                    recyclerView.adapter = cancelAdapter
-                    arrayList1.add("All Items")
-                    arrayList1.addAll(ordersModel.orderItems.map { it.itemName })
-                    cancelAdapter.submitList(arrayList)
-                    keep.setOnClickListener {
-                        dialog.dismiss()
-                    }
-                }
-                val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
-                dialog.setCancelable(false)
-                dialog.setContentView(binding.root)
-                dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                dialog.show()
-
-
-
-
+                dialog.dismiss()
+                itemsBottomSheet(ordersModel)
             }
         }
         binding.apply {
             recyclerView.adapter = cancelAdapter
-            Log.e(TAG, "cancel: $arrayList")
             cancelAdapter.submitList(arrayList)
             keep.setOnClickListener {
                 dialog.dismiss()
             }
         }
+
         dialog.setCancelable(false)
         dialog.setContentView(binding.root)
         dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         dialog.show()
+    }
+
+
+    fun itemsBottomSheet(ordersModel:OrdersModel){
+        val binding: BottomCancelSpecificItemBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.bottom_cancel_specific_item, null, false)
+        val d1 = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
+        d1.setCancelable(false)
+        d1.setContentView(binding.root)
+        d1.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        binding.apply {
+            cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
+                Log.e(TAG, "cancel: $it", )
+            }
+            arrayList1.clear()
+            recyclerView.adapter = cancelAdapter
+            arrayList1.add("All Items")
+            arrayList1.addAll(ordersModel.orderItems.map { it.itemName })
+            cancelAdapter.submitList(arrayList1)
+            keep.setOnClickListener {
+                d1.dismiss()
+            }
+        }
+
+        d1.show()
     }
 
 

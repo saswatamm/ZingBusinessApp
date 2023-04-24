@@ -35,12 +35,14 @@ import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.reflect.Method
+import kotlin.system.exitProcess
 
 
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeMainBinding
     lateinit var navController: NavController
+    var destination_id = R.id.homeFragment
     lateinit var internetConnectivityReceiver: InternetConnectivityBroadcastReceiver
     private val TAG = "RootActivity"
      val isInternetConnectivity = MutableLiveData<Boolean>()
@@ -79,6 +81,7 @@ class RootActivity : AppCompatActivity() {
                     true
                 }
                 setOnItemReselectedListener {
+                    Log.d("getItemIDs", "onCreate: ${it.itemId}")
                     navController.popBackStack(destinationId = it.itemId, inclusive = false)
                 }
             }
@@ -136,7 +139,6 @@ class RootActivity : AppCompatActivity() {
                                     if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
                                     {
                                         uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
-                                        Toast.makeText(applicationContext, i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
                                         Log.e(TAG, "onEvent: ${i.document.data}")
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}",)
@@ -166,6 +168,18 @@ class RootActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(internetConnectivityReceiver)
+    }
+
+    override fun onBackPressed() {
+        var home = R.id.homeFragment
+        if( destination_id == home){
+            //showToast("Please Press Back again to exit")
+            finishAffinity();
+            exitProcess(0);
+        }
+        else {
+            super.onBackPressed()
+        }
     }
 
 
@@ -303,6 +317,8 @@ class RootActivity : AppCompatActivity() {
             .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice))
     }
     }
+
+
 
 
 

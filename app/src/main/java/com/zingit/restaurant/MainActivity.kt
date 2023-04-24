@@ -1,5 +1,6 @@
 package com.zingit.restaurant
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.zingit.restaurant.databinding.ActivityMainBinding
+import com.zingit.restaurant.utils.Utils
+import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -23,6 +26,11 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
+
+        if (Utils.getUserInfo(this@MainActivity) != null) {
+            startActivity(Intent(this@MainActivity, RootActivity::class.java))
+            finish()
+        }
 
         if (NotificationManagerCompat.from(applicationContext).areNotificationsEnabled()) {
             // Notifications are already enabled

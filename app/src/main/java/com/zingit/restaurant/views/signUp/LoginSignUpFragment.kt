@@ -25,7 +25,7 @@ import javax.inject.Inject
 class LoginSignUpFragment : Fragment() {
 
     lateinit var binding:FragmentLoginSignUpBinding
-    private val viewModel: SignUpLoginViewModel by viewModels()
+    private val viewModelSignUp: SignUpLoginViewModel by viewModels()
     private val RC_SIGN_IN = 123
     @Inject lateinit var googleSignInManager: GoogleSignInManager
     private  val TAG = "LoginSignUpFragment"
@@ -44,17 +44,25 @@ class LoginSignUpFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_login_sign_up, container, false)
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        binding.viewModel = viewModelSignUp
         view?.hideKeyboard()
-        viewModel.error.observe(viewLifecycleOwner){
+        viewModelSignUp.error.observe(viewLifecycleOwner){
             val snack = Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG)
             snack.view.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.red))
             snack.show()
         }
         binding.apply {
-            googleLogin.setOnClickListener {
-                startActivity(Intent(requireContext(), RootActivity::class.java))
-//                googleSignInManager.signIn(requireActivity(),RC_SIGN_IN)
+            viewModelSignUp.loadingLivedata.observe(viewLifecycleOwner){
+                if (it)
+                    loader.visibility = View.VISIBLE
+                else
+                    loader.visibility = View.GONE
+            }
+            viewModelSignUp.dataSignIn.observe(viewLifecycleOwner){
+                if (it)
+                startActivity(Intent(requireContext(),RootActivity::class.java))
+                else
+                    Log.e(TAG, "onCreateView: not working ", )
             }
         }
         

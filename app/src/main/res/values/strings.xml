@@ -22,6 +22,7 @@
     <string name="setting">Settings</string>
     <string name="india">+91</string>
     <string name="send_otp">Send OTP</string>
+    <string name="send_in">Sign In</string>
     <string name="login_with_google">Login with Google</string>
     <string name="login_with_email">Login with Email</string>
     <string name="need_help"><u>Need help with login?</u></string>
@@ -30,6 +31,8 @@
     <string name="logout_">Logout?</string>
     <string name="search_by_orderId">Search by Order ID</string>
     <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
     <string name="takeaway">(Takeaway)</string>
     <string name="out_of_stock"><u>Out of Stock?</u></string>
     <string name="item">Items</string>
