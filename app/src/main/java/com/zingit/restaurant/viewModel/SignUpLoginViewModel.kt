@@ -76,7 +76,6 @@ class SignUpLoginViewModel @Inject constructor(
                     if (it.isSuccessful) {
                         loading.value = false
                         Utils.insertUserInfo(application, mAuth.currentUser?.uid!!)
-
                         Log.e(TAG, "signInWithUserPass: $it")
                         signIn.value = true
                     } else {
