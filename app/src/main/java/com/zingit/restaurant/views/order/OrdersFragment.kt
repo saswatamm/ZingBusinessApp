@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
@@ -102,7 +103,7 @@ class OrdersFragment : Fragment() {
             searchView.setOnEditorActionListener { textView, i, keyEvent ->
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     loader.visibility = View.VISIBLE
-                    firestore.collection("payment").get().addOnSuccessListener {
+                    /*firestore.collection("payment").get().addOnSuccessListener {
                         for (document in it) {
                             Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
                             if (searchView.text.toString().trim()
@@ -123,17 +124,59 @@ class OrdersFragment : Fragment() {
                                 break
                             }
 
+
                         }
 
-                    }
-                    view.hideKeyboard()
+                    }*/
+
+                    firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
+                        .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko")
+                        .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+                        .addSnapshotListener { value, e ->
+                            if (e != null) {
+                                Log.w(TAG, "Listen failed.", e)
+                                loader.visibility = View.GONE
+                                //Toast.makeText(requireContext(), "Order does not exist", Toast.LENGTH_SHORT).show()
+                                view?.hideKeyboard()
+                                binding.searchView.text.clear()
+                                return@addSnapshotListener
+                            }
+                            if (value == null) {
+                                Log.w(TAG, "Listen failed.", e)
+                                loader.visibility = View.GONE
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Order does not exist",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                view?.hideKeyboard()
+                                binding.searchView.text.clear()
+                            } else {
+                                val gson = Gson()
+
+                                for (doc in value!!) {
+                                    val finalValue = doc.toObject(OrdersModel::class.java)
+                                    val json = gson.toJson(finalValue)
+                                    loader.visibility = View.GONE
+                                    val bundle = bundleOf("orderModel" to json)
+                                    findNavController().navigate(
+                                        R.id.action_ordersFragment_to_newOrderFragment,
+                                        bundle
+                                    )
+                                    view?.hideKeyboard()
+                                    binding.searchView.text.clear()
+                                    break
+                                }
+                            }
+                            view.hideKeyboard()
+                        }
                     true
                 } else {
                     false
                 }
             }
-            go.setOnClickListener {
-                firestore.collection("payment").get().addOnSuccessListener {
+            /*go.setOnClickListener {
+                firestore.collection("payment").whereGreaterThan("statusCode",0).whereLessThan("statusCode",3).whereEqualTo("outletID","9i1Q3aRU8AiH0dUAZjko").get().addOnSuccessListener {
                     for (document in it) {
                         Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
                         if (searchView.text.toString().trim()
@@ -158,6 +201,47 @@ class OrdersFragment : Fragment() {
 
                 }
 
+            }*/
+            go.setOnClickListener {
+                firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
+                    .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko")
+                    .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+                    .addSnapshotListener { value, e ->
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e)
+                            //Toast.makeText(requireContext(), "Order does not exist", Toast.LENGTH_SHORT).show()
+                            view?.hideKeyboard()
+                            binding.searchView.text.clear()
+                            return@addSnapshotListener
+                        }
+
+                        if(value==null)
+                        {
+                            Log.w(TAG, "Listen failed.", e)
+                            Toast.makeText(requireContext(), "Order does not exist", Toast.LENGTH_SHORT).show()
+                            view?.hideKeyboard()
+                            binding.searchView.text.clear()
+                            return@addSnapshotListener
+                        }
+                        else {
+
+                            val gson = Gson()
+
+                            for (doc in value!!) {
+                                val finalValue = doc.toObject(OrdersModel::class.java)
+                                val json = gson.toJson(finalValue)
+                                loader.visibility = View.GONE
+                                val bundle = bundleOf("orderModel" to json)
+                                findNavController().navigate(
+                                    R.id.action_ordersFragment_to_newOrderFragment,
+                                    bundle
+                                )
+                                view?.hideKeyboard()
+                                binding.searchView.text.clear()
+                                break
+                            }
+                        }
+                    }
             }
             lifecycleScope.launch {
                 launch {
