@@ -5,6 +5,7 @@ import com.zingit.restaurant.models.order.OrderItem
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 class ItemAdapter(val context: Context) : ListAdapter<OrderItem,ItemAdapter.MyViewHolder>(MyDiffUtilsAds()) {
     inner class MyViewHolder(val binding: ItemViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(paymentModel: OrderItem) {
             binding.paymentModel = paymentModel
 
@@ -30,6 +32,7 @@ class ItemAdapter(val context: Context) : ListAdapter<OrderItem,ItemAdapter.MyVi
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val orderHistory =getItem(position)
+
         holder.bind(orderHistory)
 
 

@@ -18,11 +18,13 @@
             android:id="@+id/ticket"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ticket"
+            android:src="@{orderModel.statusCode==1?@drawable/red_ticket:@drawable/ticket}"
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
 
         <TextView
             android:id="@+id/from_user"
@@ -30,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:text="@{`from ` + String.valueOf(orderModel.userName)}"
-            android:textColor="@color/darkGreyText"
+            android:textColor="@{orderModel.statusCode==1?@color/white:@color/darkGreyText}"
             android:fontFamily="@font/duplet_semibold"
             android:textSize="12sp"
             android:gravity="center"
@@ -43,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{`#` + orderModel.orderNo}"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@{orderModel.statusCode==1?@color/white:@color/colorPrimary}"
             android:fontFamily="@font/duplet_bold"
             android:textSize="24sp"
             android:gravity="center"
@@ -57,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@{`₹`+ String.valueOf(orderModel.totalAmountPaid)}"
-            android:textColor="@color/black"
+            android:textColor="@{orderModel.statusCode==1?@color/white:@color/black}"
             android:fontFamily="@font/duplet_bold"
             android:textSize="18sp"
             android:gravity="center"
@@ -75,7 +77,7 @@
             android:fontFamily="@font/duplet_semibold"
             android:text="@{orderModel.statusCode==1?`Not Printed` : `Tap to View`}"
             android:gravity="center"
-            android:textColor="@color/darkGreyText"
+            android:textColor="@{orderModel.statusCode==1?@color/white:@color/darkGreyText}"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/ticket"
             app:layout_constraintEnd_toEndOf="@id/ticket"

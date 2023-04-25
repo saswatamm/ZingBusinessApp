@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -18,12 +19,16 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.res.ResourcesCompat.getDrawableForDensity
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.dantsu.escposprinter.connection.DeviceConnection
+import com.dantsu.escposprinter.textparser.PrinterTextParserImg
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firestore.v1.StructuredQuery.Order
+import com.zingit.restaurant.R
 import com.zingit.restaurant.models.PaymentModel
 import com.zingit.restaurant.models.order.OrderItem
 import com.zingit.restaurant.models.order.OrdersModel
@@ -166,25 +171,22 @@ object Utils {
     fun getAsyncEscPosPrinter(orderModel: OrdersModel,printerConnection: DeviceConnection?): AsyncEscPosPrinter? {
         val format = SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss")
         val printer = AsyncEscPosPrinter(printerConnection, 203, 48f, 32)
-        return printer.addTextToPrint(createPrintSlip(orderModel))
+        return printer.addTextToPrint(createPrintSlip(orderModel,printer))
     }
-    fun createPrintSlip(payment: OrdersModel): String? {
+    fun createPrintSlip(payment: OrdersModel, printer: AsyncEscPosPrinter): String? {
         var slip = "[C]<font size='big'>          ZING</font>"
+        var spaces = ""
+
         //slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.logo_orange, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";
+        /*slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, getDrawableForDensity(
+            R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*/
+
         slip += "[L]\n"
         slip += "[L]<b>Order type : "
         slip += """
              ${"[R]<font size='big'>        " + payment.orderType}</font>
              
              """.trimIndent()
-//        slip += "[L]<b>" + "Order ID : "
-//        slip += """
-//             ${
-//            "[R]<font size='big'>        " + "#" + payment.paymentOrderID
-//                .substring(payment.paymentOrderID.length - 4)
-//        }</font>
-//
-//             """.trimIndent()
 
         slip += "[L]<b>Order No. : "
         slip += """
@@ -201,15 +203,16 @@ object Utils {
         //Add phone no here
         slip += "[C]<b>=============================================\n"
         for (i in 0 until payment.orderItems.size) {
+            spaces = getSpaces(payment.orderItems.get(i).itemName)
+            slip += "[L]<font size='big-4'>" + payment.orderItems.get(i).itemName + spaces + "X"+  payment.orderItems.get(i).itemQuantity  +"\n\n"
+            "</font>"
 
-            slip += "[L]<font size='big-4'>" + payment.orderItems.get(i).itemName + "</font>"
-            slip += """
-            ${
-                "[R]<font size='big-4'>                       X" + payment.orderItems.get(i).itemQuantity
-            }</font>
+
+            /*slip += "[L]<font size='big-4'>${spaces}X" + payment.orderItems.get(i).itemQuantity +"\n\n"
+            "</font>"*/
             
             
-            """.trimIndent()
+           // """.trimIndent()
         }
         slip += "[C]<b>=============================================\n"
         slip += """
@@ -238,6 +241,21 @@ object Utils {
         }
     }
 
+    fun getSpaces(item: String) :String
+    {
+        Log.e(TAG,"Item Length ${item.length}")
+        var itemLength = item.length
+        var spaces = ""
+       // var count = if(itemLength>=16) 23 - (itemLength-16) else 17 + (16-itemLength)
+        var count = if(itemLength>=16) 25 - (itemLength-16) else 25 + (16-itemLength)
+            for(i in 1..count)
+                spaces += " "
+        return spaces
+    }
+
 
 }
 
+//Important Notes :
+//"[R]<font size='big-4'>                       X" + payment.orderItems.get(i).itemQuantity
+//Total 23 spaces
