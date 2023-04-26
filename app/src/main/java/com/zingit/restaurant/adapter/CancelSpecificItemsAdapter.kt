@@ -38,7 +38,6 @@ class CancelSpecificItemsAdapter(val context: Context, val onClick: (String) -> 
         holder.bind(orderItem)
         holder.binding.notAvailable.setOnClickListener {
             onClick(orderItem)
-            Toast.makeText(context, "bsdk", Toast.LENGTH_SHORT).show()
             Log.e(TAG, "onBindViewHolder: clickeddd")
             Log.e(TAG, "onBindViewHolder: ${holder.binding.notAvailable.isChecked}", )
         }

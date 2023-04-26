@@ -71,7 +71,6 @@ class RootActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
-        Toast.makeText(this, "Device ${getConnectedDeviceName()}", Toast.LENGTH_SHORT).show()
 
 
         binding.bottomNavigationView.apply {
@@ -189,20 +188,17 @@ class RootActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-       /* var home = R.id.homeFragment
-        if (destination_id == home) {
-            finishAffinity();
-            exitProcess(0);
-        } else {
-            super.onBackPressed()
-        }*/
-        if (backPressedTime + 2000 > System.currentTimeMillis()) {
-            super.onBackPressed()
-        } else {
 
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+        if (navController.currentDestination?.id == R.id.homeFragment) {
+            if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                super.onBackPressed()
+            } else {
+                Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+            }
+            backPressedTime = System.currentTimeMillis()
+        } else {
+            super.onBackPressed()
         }
-        backPressedTime = System.currentTimeMillis()
 
     }
 
