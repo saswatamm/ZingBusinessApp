@@ -269,7 +269,6 @@ class OrdersFragment : Fragment() {
                                     if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
                                     {
                                         uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
-                                        Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
                                         Log.e(TAG, "onEvent: ${i.document.data}")
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}",)
