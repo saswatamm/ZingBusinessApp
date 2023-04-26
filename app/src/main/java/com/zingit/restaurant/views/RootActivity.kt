@@ -45,12 +45,13 @@ import kotlin.system.exitProcess
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeMainBinding
+    private var backPressedTime: Long = 0
     lateinit var navController: NavController
     var destination_id = R.id.homeFragment
     lateinit var internetConnectivityReceiver: InternetConnectivityBroadcastReceiver
     private val TAG = "RootActivity"
-     val isInternetConnectivity = MutableLiveData<Boolean>()
-     val isBluetoothConnected = MutableLiveData<Boolean>()
+    val isInternetConnectivity = MutableLiveData<Boolean>()
+    val isBluetoothConnected = MutableLiveData<Boolean>()
     val PERMISSION_BLUETOOTH = 1
     val PERMISSION_BLUETOOTH_ADMIN = 2
     val PERMISSION_BLUETOOTH_CONNECT = 3
@@ -62,13 +63,12 @@ class RootActivity : AppCompatActivity() {
     private val selectedDevice: BluetoothConnection? = null
 
 
-
-
     @SuppressLint("MissingPermission", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home_main)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController)
         Toast.makeText(this, "Device ${getConnectedDeviceName()}", Toast.LENGTH_SHORT).show()
@@ -129,9 +129,14 @@ class RootActivity : AppCompatActivity() {
 
 
             Handler().postDelayed({
-             var query = firestore.collection("payment").whereEqualTo("outletID",Utils.getUserOutletId(this)).whereEqualTo("statusCode",1)
+                var query = firestore.collection("payment")
+                    .whereEqualTo("outletID", Utils.getUserOutletId(this))
+                    .whereEqualTo("statusCode", 1)
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
-                    override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                    override fun onEvent(
+                        value: QuerySnapshot?,
+                        error: FirebaseFirestoreException?
+                    ) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")
                         if (error != null) {
                             Log.e(TAG, "fetchUsersData: ${error.message}")
@@ -139,18 +144,26 @@ class RootActivity : AppCompatActivity() {
                         }
                         for (i in value!!.documentChanges) {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
-                            when(i.type){
+                            when (i.type) {
                                 DocumentChange.Type.ADDED -> {
-                                    if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
-                                    {
-                                        uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
+                                    if (!uniqueOrders.contains(
+                                            i.document.data.get("paymentOrderID").toString()
+                                        )
+                                    ) {
+                                        uniqueOrders.add(
+                                            i.document.data.get("paymentOrderID").toString()
+                                        ) // Unique orders are added to prevent repetative printing
                                         Log.e(TAG, "onEvent: ${i.document.data}")
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
-                                        Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}",)
+                                        Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}")
                                         printBluetooth(paymentModel, i.document.id)
-                                    }
-                                    else{
-                                        Log.e(TAG,"eventPrinting: ${i.document.data.get("paymentOrderID").toString()}")
+                                    } else {
+                                        Log.e(
+                                            TAG,
+                                            "eventPrinting: ${
+                                                i.document.data.get("paymentOrderID").toString()
+                                            }"
+                                        )
                                     }
                                 }
                                 DocumentChange.Type.MODIFIED -> {
@@ -176,15 +189,21 @@ class RootActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        var home = R.id.homeFragment
-        if( destination_id == home){
-            //showToast("Please Press Back again to exit")
+       /* var home = R.id.homeFragment
+        if (destination_id == home) {
             finishAffinity();
             exitProcess(0);
-        }
-        else {
+        } else {
             super.onBackPressed()
+        }*/
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed()
+        } else {
+
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
         }
+        backPressedTime = System.currentTimeMillis()
+
     }
 
 
@@ -203,8 +222,6 @@ class RootActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun getConnectedDeviceName(): String? {
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -212,7 +229,7 @@ class RootActivity : AppCompatActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-               this,
+                this,
                 arrayOf(Manifest.permission.BLUETOOTH),
                 PERMISSION_BLUETOOTH
             )
@@ -222,30 +239,30 @@ class RootActivity : AppCompatActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-               this,
+                this,
                 arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
             )
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-               this,
+                this,
                 Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-               this,
+                this,
                 arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
                 PERMISSION_BLUETOOTH_CONNECT
             )
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-               this,
+                this,
                 Manifest.permission.BLUETOOTH_SCAN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-               this,
+                this,
                 arrayOf(Manifest.permission.BLUETOOTH_SCAN),
                 PERMISSION_BLUETOOTH_SCAN
             )
-        }else{
+        } else {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val connectedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
             for (device in connectedDevices!!) {
@@ -271,8 +288,7 @@ class RootActivity : AppCompatActivity() {
     }
 
 
-    private fun printBluetooth(ordersModel: OrdersModel, id: String)
-    {
+    private fun printBluetooth(ordersModel: OrdersModel, id: String) {
         AsyncBluetoothEscPosPrint(
             applicationContext,
             object : AsyncEscPosPrint.OnPrintFinished() {
@@ -321,9 +337,15 @@ class RootActivity : AppCompatActivity() {
 
             }
         )
-            .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice, this.applicationContext))
+            .execute(
+                Utils.getAsyncEscPosPrinter(
+                    ordersModel,
+                    selectedDevice,
+                    this.applicationContext
+                )
+            )
     }
-    }
+}
 
 
 
