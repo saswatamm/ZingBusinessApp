@@ -397,7 +397,7 @@ class OrdersFragment : Fragment() {
 
                 }
             )
-                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice))
+                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,requireContext()))
         }
     }
 

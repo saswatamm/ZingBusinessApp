@@ -82,4 +82,5 @@
     <string name="order_will_appear">Your Orders will appear here!</string>
     <string name="order_will_appear_history">Your Orders history will appear here!</string>
     <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>
+    <string name="print_kot">Print KOT</string>
 </resources>

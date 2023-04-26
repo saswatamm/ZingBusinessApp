@@ -49,6 +49,7 @@ import kotlin.time.Duration.Companion.seconds
 object Utils {
 
     private const val TAG = "Utils"
+    lateinit var activityContext:Context
 
 
     fun checkContactNumber(contact: String): Boolean {
@@ -181,16 +182,17 @@ object Utils {
         return false
     }
 
-    fun getAsyncEscPosPrinter(orderModel: OrdersModel,printerConnection: DeviceConnection?): AsyncEscPosPrinter? {
+    fun getAsyncEscPosPrinter(orderModel: OrdersModel,printerConnection: DeviceConnection?, context: Context): AsyncEscPosPrinter? {
         val format = SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss")
         val printer = AsyncEscPosPrinter(printerConnection, 203, 48f, 32)
+        activityContext = context
         return printer.addTextToPrint(createPrintSlip(orderModel,printer))
     }
     fun createPrintSlip(payment: OrdersModel, printer: AsyncEscPosPrinter): String? {
-        var slip = "[C]<font size='big'>          ZING</font>"
+        var slip = ""
         var spaces = ""
 
-        //slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.logo_orange, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";
+        slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, activityContext.getResources().getDrawableForDensity(R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";
         /*slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, getDrawableForDensity(
             R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*/
 

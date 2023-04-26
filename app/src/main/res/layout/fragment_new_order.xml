@@ -224,6 +224,23 @@
                 android:textSize="@dimen/_10sdp"
                 app:cornerRadius="@dimen/_5sdp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/printKOT"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:layout_weight="1"
+                android:backgroundTint="@{@color/black}"
+                android:fontFamily="@font/duplet_semibold"
+                android:paddingVertical="@dimen/_15sdp"
+                android:text="@string/print_kot"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sdp"
+                app:cornerRadius="@dimen/_5sdp"
+                />
+
         </LinearLayout>
 
 
