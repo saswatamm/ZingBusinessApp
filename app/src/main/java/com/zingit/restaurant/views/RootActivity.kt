@@ -20,6 +20,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -34,6 +35,9 @@ import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.launch
 import java.lang.reflect.Method
 import kotlin.system.exitProcess
 
@@ -123,8 +127,9 @@ class RootActivity : AppCompatActivity() {
 
             }
 
+
             Handler().postDelayed({
-             var query = firestore.collection("payment").whereEqualTo("outletID","9i1Q3aRU8AiH0dUAZjko").whereEqualTo("statusCode",1)
+             var query = firestore.collection("payment").whereEqualTo("outletID",Utils.getUserOutletId(this)).whereEqualTo("statusCode",1)
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")
@@ -196,6 +201,8 @@ class RootActivity : AppCompatActivity() {
 
 
     }
+
+
 
 
     private fun getConnectedDeviceName(): String? {

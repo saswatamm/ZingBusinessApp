@@ -1,5 +1,7 @@
 package com.zingit.restaurant.repository
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
@@ -11,6 +13,8 @@ import com.zingit.restaurant.models.order.OrderState
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.models.resturant.RestaurantProfileModel
 import com.zingit.restaurant.utils.Resource
+import com.zingit.restaurant.utils.Utils
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -19,15 +23,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseRepository @Inject constructor() {
+class FirebaseRepository @Inject constructor(private val application:Application){
 
     private val TAG = "FirebaseRepository"
     private val fireStoreDatabase = FirebaseFirestore.getInstance()
     fun getRestaurantProfileDate() = flow {
         emit(Resource.Loading())
         try {
+
             val snapShot =
-                fireStoreDatabase.collection("outlet").document("1cLAN8pKJcuyIML9g8Uz").get()
+                fireStoreDatabase.collection("outlet").document(Utils.getUserOutletId(application)!!).get()
                     .await()
 
 
@@ -45,10 +50,11 @@ class FirebaseRepository @Inject constructor() {
     }
 
     fun getMenuData() = flow {
+        Log.e(TAG, "getMenu: ${Utils.getUserOutletId(application)}", )
         emit(Resource.Loading())
         try {
             val snapShot = fireStoreDatabase.collection("item")
-                .whereEqualTo("outletID", "1cLAN8pKJcuyIML9g8Uz").get().await()
+                .whereEqualTo("outletID", Utils.getUserOutletId(application)).get().await()
             Log.e(TAG, "getMenuData: ${snapShot.documents}")
             if (snapShot.documents.isNotEmpty()) {
                 val itemMenuModel: List<ItemMenuModel> =
@@ -66,8 +72,9 @@ class FirebaseRepository @Inject constructor() {
 
 
     fun getOrder(): Flow<List<OrdersModel>> = callbackFlow {
+        Log.e(TAG, "getOrder: ${Utils.getUserOutletId(application)}", )
         val snapShot = fireStoreDatabase.collection("payment")
-            .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko").whereGreaterThan("statusCode", 0)
+            .whereEqualTo("outletID", Utils.getUserOutletId(application)).whereGreaterThan("statusCode", 0)
             .whereLessThan("statusCode", 3).addSnapshotListener { value, error ->
                 if (error != null) {
                     trySend(listOf()).isSuccess
@@ -97,8 +104,9 @@ class FirebaseRepository @Inject constructor() {
 
 
     fun getHistoryOrder(): Flow<List<OrdersModel>> = callbackFlow {
+        Log.e(TAG, "getHistoryOrder: ${Utils.getUserOutletId(application)}", )
         val snapShot = fireStoreDatabase.collection("payment")
-            .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko").whereEqualTo("statusCode", 3)
+            .whereEqualTo("outletID", Utils.getUserOutletId(application)).whereEqualTo("statusCode", 3)
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     trySend(listOf()).isSuccess
@@ -117,8 +125,9 @@ class FirebaseRepository @Inject constructor() {
     }
 
     fun recentOrder(): Flow<OrdersModel> = callbackFlow {
+        Log.e(TAG, "getRecent: ${Utils.getUserOutletId(application)}", )
         val snapShot = fireStoreDatabase.collection("payment")
-            .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko").whereEqualTo("statusCode",1).addSnapshotListener { value, error ->
+            .whereEqualTo("outletID", Utils.getUserOutletId(application)).whereEqualTo("statusCode",1).addSnapshotListener { value, error ->
                 if (error != null) {
                     trySend(OrdersModel()).isSuccess
                     return@addSnapshotListener

@@ -83,6 +83,7 @@ class OrdersFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
         binding.viewmodel = orderViewModel
 
+
         return binding.root
     }
 
@@ -108,7 +109,7 @@ class OrdersFragment : Fragment() {
                             Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
                             if (searchView.text.toString().trim()
                                     .contains(document.data.get("orderNo").toString())
-                            ) {
+                             ) {
                                 Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
                                 val gson = Gson()
                                 loader.visibility = View.GONE
@@ -265,7 +266,7 @@ class OrdersFragment : Fragment() {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
                             when(i.type){
                                 DocumentChange.Type.ADDED -> {
-                                    /*if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
+                                    if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
                                     {
                                         uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
                                         Toast.makeText(requireContext(), i.document.data.get("paymentOrderID").toString(), Toast.LENGTH_SHORT).show()
@@ -276,7 +277,7 @@ class OrdersFragment : Fragment() {
                                     }
                                     else{
                                         Log.e(TAG,"eventPrinting: ${i.document.data.get("paymentOrderID").toString()}")   //Commented it out as already mentioned in HomeFragment
-                                    }*/
+                                    }
                                 }
                                 DocumentChange.Type.MODIFIED -> {
                                     Log.e(TAG, "onEvent: ${i.document.data}")

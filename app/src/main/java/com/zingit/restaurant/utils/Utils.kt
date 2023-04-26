@@ -49,7 +49,6 @@ import kotlin.time.Duration.Companion.seconds
 object Utils {
 
     private const val TAG = "Utils"
-    lateinit var activityContext:Context
 
 
     fun checkContactNumber(contact: String): Boolean {
@@ -82,10 +81,14 @@ object Utils {
     fun insertUserInfo(
         context: Context,
         account_id: String,
+        email: String,
+        outlet_id: String,
     ) {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
         editor.putString("account_id", account_id)
+        editor.putString("email", email)
+        editor.putString("outlet_id", outlet_id)
         editor.commit()
     }
 
@@ -93,6 +96,15 @@ object Utils {
     fun getUserInfo(context: Context): String? {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         return sharedPreference.getString("account_id", null)
+    }
+
+    fun getUserEmail(context: Context): String? {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        return sharedPreference.getString("email", null)
+    }
+    fun getUserOutletId(context: Context): String? {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        return sharedPreference.getString("outlet_id", null)
     }
     fun deleteUserInfo(context: Context) {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
@@ -172,14 +184,13 @@ object Utils {
     fun getAsyncEscPosPrinter(orderModel: OrdersModel,printerConnection: DeviceConnection?, context: Context): AsyncEscPosPrinter? {
         val format = SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss")
         val printer = AsyncEscPosPrinter(printerConnection, 203, 48f, 32)
-        activityContext = context
-        return printer.addTextToPrint(createPrintSlip(orderModel,printer))
+        return printer.addTextToPrint(createPrintSlip(orderModel,printer,context))
     }
-    fun createPrintSlip(payment: OrdersModel, printer: AsyncEscPosPrinter): String? {
+    fun createPrintSlip(payment: OrdersModel, printer: AsyncEscPosPrinter,context: Context): String? {
         var slip = ""
         var spaces = ""
 
-        slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, activityContext.getResources().getDrawableForDensity(R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";
+        slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, context.getResources().getDrawableForDensity(R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";
         /*slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, getDrawableForDensity(
             R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*/
 
@@ -258,6 +269,3 @@ object Utils {
 
 }
 
-//Important Notes :
-//"[R]<font size='big-4'>                       X" + payment.orderItems.get(i).itemQuantity
-//Total 23 spaces
