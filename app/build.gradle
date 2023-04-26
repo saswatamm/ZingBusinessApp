@@ -26,7 +26,7 @@ android {
         dev {
             dimension "default"
 //            applicationIdSuffix ".dev"
-            versionCode 17
+            versionCode 18
             versionName "1.0"
         }
         staging{
@@ -93,7 +93,7 @@ dependencies {
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
-    implementation 'androidx.core:core-splashscreen:1.0.0'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     //Hilt
     implementation "com.google.dagger:hilt-android:2.44"
