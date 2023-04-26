@@ -131,6 +131,7 @@ class RootActivity : AppCompatActivity() {
                 var query = firestore.collection("payment")
                     .whereEqualTo("outletID", Utils.getUserOutletId(this))
                     .whereEqualTo("statusCode", 1)
+
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(
                         value: QuerySnapshot?,
@@ -216,6 +217,8 @@ class RootActivity : AppCompatActivity() {
 
 
     }
+
+
 
 
     private fun getConnectedDeviceName(): String? {
