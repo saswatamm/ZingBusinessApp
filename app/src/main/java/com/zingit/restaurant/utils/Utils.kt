@@ -81,10 +81,14 @@ object Utils {
     fun insertUserInfo(
         context: Context,
         account_id: String,
+        email: String,
+        outlet_id: String,
     ) {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
         editor.putString("account_id", account_id)
+        editor.putString("email", email)
+        editor.putString("outlet_id", outlet_id)
         editor.commit()
     }
 
@@ -92,6 +96,15 @@ object Utils {
     fun getUserInfo(context: Context): String? {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         return sharedPreference.getString("account_id", null)
+    }
+
+    fun getUserEmail(context: Context): String? {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        return sharedPreference.getString("email", null)
+    }
+    fun getUserOutletId(context: Context): String? {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        return sharedPreference.getString("outlet_id", null)
     }
     fun deleteUserInfo(context: Context) {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)

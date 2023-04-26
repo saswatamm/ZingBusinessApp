@@ -109,7 +109,7 @@ class OrdersFragment : Fragment() {
                             Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
                             if (searchView.text.toString().trim()
                                     .contains(document.data.get("orderNo").toString())
-                            ) {
+                             ) {
                                 Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
                                 val gson = Gson()
                                 loader.visibility = View.GONE

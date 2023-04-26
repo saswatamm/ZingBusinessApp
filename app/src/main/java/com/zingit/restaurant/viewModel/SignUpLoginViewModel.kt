@@ -1,22 +1,17 @@
 package com.zingit.restaurant.viewModel
 
 import android.app.Application
-import android.content.Context
-import android.content.Intent
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.zingit.restaurant.MainActivity
 import com.zingit.restaurant.models.*
 import com.zingit.restaurant.repository.ZingRepository
 import com.zingit.restaurant.utils.Utils
-import com.zingit.restaurant.utils.Utils.checkContactNumber
 import com.zingit.restaurant.utils.Utils.hideKeyboard
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -65,33 +60,47 @@ class SignUpLoginViewModel @Inject constructor(
             .matches()
     }
 
+
     fun signInWithUserPass(view: View) {
         view.hideKeyboard()
+        viewModelScope.launch {
+            if (isEmailValid() && !password.value.isNullOrEmpty()) {
+                loading.value = true
+                mAuth.signInWithEmailAndPassword(email.value!!, password.value!!)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            loading.value = false
+                            Log.e(TAG, "signInWithUserPass: $it")
+                            getOutlet()
+                            signIn.value = true
 
 
-        if (isEmailValid() && !password.value.isNullOrEmpty()) {
-            loading.value = true
-            mAuth.signInWithEmailAndPassword(email.value!!, password.value!!)
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        loading.value = false
-                        Utils.insertUserInfo(application, mAuth.currentUser?.uid!!)
-                        Log.e(TAG, "signInWithUserPass: $it")
-                        signIn.value = true
-                    } else {
-                        loading.value = false
-                        signIn.value = false
-                        _error.value = it.exception?.message.toString()
+
+
+
+
+
+                        } else {
+                            loading.value = false
+                            signIn.value = false
+                            _error.value = it.exception?.message.toString()
+                        }
                     }
+            } else {
+                if (email.value.isNullOrEmpty())
+                    _error.value = "Email cannot be empty"
+                else if(!isEmailValid()){
+                    _error.value = "Please enter valid email"
+                }else{
+                    _error.value = "Password cannot be empty"
                 }
-        } else {
-            if (email.value.isNullOrEmpty())
-                _error.value = "Email cannot be empty"
-            else if(isEmailValid()==false){
-                _error.value = "Please enter valid email"
-            }else
-                _error.value = "Password cannot be empty"
+
+            }
+
         }
+
+
+
 
     }
 
@@ -102,33 +111,28 @@ class SignUpLoginViewModel @Inject constructor(
 
     }
 
+    fun getOutlet(){
+        firestore.collection("outletAuth").whereEqualTo("email",mAuth.currentUser?.email).addSnapshotListener { value, error ->
+            if (error != null) {
+                Log.e(TAG, "signInWithUserPass: $error")
+                return@addSnapshotListener
+            }
+            if (value != null) {
+                Log.e(TAG, "getOutlet: ${value.documents.get(0).data}", )
+                    val outletAuthModel = value.documents[0].toObject(OutletAuthModel::class.java)
+                    if (outletAuthModel != null) {
+                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
+                        Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
+                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
+                        Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, value.documents.get(0).data?.get("outletID").toString())
 
-    /*  fun getOtp(){
+                }
+            }
+        }
+    }
 
-          if (number.value.isNullOrEmpty()) {
-              _error.value = "Please enter number"
 
-          }else if(!checkContactNumber(number.value!!)){
-              _error.value = "Please enter valid number"
-          }else{
-              viewModelScope.launch{
-                  loading.value=true
-                  val result = repository.getOtp(GetotpDTO(number.value!!))
-                  when (result.status) {
-                      ApiResult.Status.SUCCESS -> {
-                          loading.value=false
-                          getOtpMutableLiveData.value=result.data!!
-                      }
-                      ApiResult.Status.ERROR -> {
-                          loading.value=false
-                          _error.value = result.message!!
-                      }
-                      else -> {}
-                  }
-              }
-          }
 
-      }*/
     fun verifyOtp(verifyOtpDTO: VerifyOtpDTO) {
         viewModelScope.launch {
             loading.value = true

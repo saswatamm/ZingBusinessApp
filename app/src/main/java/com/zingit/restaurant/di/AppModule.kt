@@ -20,8 +20,6 @@ object AppModule {
         return appContext
     }
 
-    @Provides
-    fun provideAuthRepository() = FirebaseRepository()
 
 
 }
