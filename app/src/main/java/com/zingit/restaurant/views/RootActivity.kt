@@ -189,8 +189,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
-        if (navController.currentDestination?.id == R.id.homeFragment) {
+  if (navController.currentDestination?.id == R.id.homeFragment) {
             if (backPressedTime + 2000 > System.currentTimeMillis()) {
                 super.onBackPressed()
             } else {
