@@ -16,16 +16,20 @@
 
         <TextView
             android:id="@+id/tv_order_no"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
+            android:ellipsize="end"
             android:fontFamily="@font/duplet_bold"
+            android:maxLines="1"
+            android:maxEms="10"
             android:text="@{itemMenu.name}"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/amount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,9 +43,9 @@
             android:textSize="16sp"
             android:text="@{`₹`+String.valueOf(itemMenu.price)}"
             android:textStyle="bold"
+            android:layout_marginEnd="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_order_no"
             app:layout_constraintEnd_toStartOf="@id/switch_toggle"
-            app:layout_constraintStart_toEndOf="@+id/tv_order_no"
             app:layout_constraintTop_toTopOf="@id/tv_order_no" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -49,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="@{itemMenu.availableOrNot}"
-            android:layout_marginEnd="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/amount"
             app:layout_constraintBottom_toBottomOf="@id/amount"
