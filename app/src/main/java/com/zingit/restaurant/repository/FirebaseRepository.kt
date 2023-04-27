@@ -44,7 +44,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
             }
 
         } catch (e: Exception) {
-            emit(Resource.Error(e.message!!))
+            emit(Resource.Error(e.message.toString()))
         }
 
     }
