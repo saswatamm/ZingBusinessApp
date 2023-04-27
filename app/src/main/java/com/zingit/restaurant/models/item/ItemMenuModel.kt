@@ -20,6 +20,8 @@ data class ItemMenuModel(
     val takeAwayCharges: Int = 0,
     @SerializedName("vegOrNot")
     @field:JvmField
-    val vegOrNot: Boolean = false
+    val vegOrNot: Boolean = false,
+    @SerializedName("id")
+    val id: String = ""
 
 )

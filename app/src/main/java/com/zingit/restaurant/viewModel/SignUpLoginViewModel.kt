@@ -118,7 +118,6 @@ class SignUpLoginViewModel @Inject constructor(
                 return@addSnapshotListener
             }
             if (value != null) {
-                Log.e(TAG, "getOutlet: ${value.documents.get(0).data}", )
                     val outletAuthModel = value.documents[0].toObject(OutletAuthModel::class.java)
                     if (outletAuthModel != null) {
                         Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
