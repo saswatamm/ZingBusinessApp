@@ -10,6 +10,7 @@
         <item name="colorNavigationItemSelected">@color/white</item>
 <!--        <item name="drawableNavigationItemBackground">@drawable/menu_background_color_state</item>-->
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
 <!--    <style name="Widget.Custom.NavigationView" parent="Widget.MaterialComponents.NavigationView">-->
