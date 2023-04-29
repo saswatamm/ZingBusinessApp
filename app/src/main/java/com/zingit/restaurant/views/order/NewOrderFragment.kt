@@ -5,12 +5,14 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -37,6 +39,9 @@ import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Duration
+import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
@@ -56,17 +61,20 @@ class NewOrderFragment : Fragment() {
     val PERMISSION_BLUETOOTH_ADMIN = 2
     val PERMISSION_BLUETOOTH_CONNECT = 3
     val PERMISSION_BLUETOOTH_SCAN = 4
-    lateinit var printKOTBtn:MaterialButton
-    lateinit var orderModel:OrdersModel
+    lateinit var printKOTBtn: MaterialButton
+    lateinit var orderModel: OrdersModel
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    val targetDuration = Duration.ofMinutes(2)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
-
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -96,6 +104,74 @@ class NewOrderFragment : Fragment() {
                 cancel(orderModel)
             }
 
+            Log.e(TAG, "onCreateView: ${orderModel.placedTime.toDate().time}")
+
+            val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
+
+            val targetTime = givenTime.plus(targetDuration)
+
+            val currentTime = Instant.now()
+
+            val remainingDuration = Duration.between(currentTime, targetTime)
+
+            if (remainingDuration.isNegative || remainingDuration.isZero) {
+                rejectBtn.text = getString(R.string.reject_order)
+                rejectBtn.isEnabled = false
+                rejectBtn.background.setTint(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.textGrey
+                    )
+                )
+            } else {
+
+                val countDownTimer = object : CountDownTimer(remainingDuration.toMillis(), 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        // Calculate the remaining time as a Duration
+
+                        val text = "Reject Order ${
+                            String.format(
+                                "(%02d:%02d)",
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                    TimeUnit.MILLISECONDS.toMinutes(
+                                        millisUntilFinished
+                                    )
+                                )
+                            )
+                        }"
+
+                        rejectBtn.isEnabled = true
+                        // Display the remaining time in a TextView (replace "textView" with your own TextView)
+                        rejectBtn.text = text
+                        rejectBtn.background.setTint(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.colorOnPrimary
+                            )
+                        )
+
+                    }
+
+                    override fun onFinish() {
+                        // The timer has finished, do something here...
+                        rejectBtn.isEnabled = false
+                        rejectBtn.text = getString(R.string.reject_order)
+                        rejectBtn.background.setTint(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.textGrey
+                            )
+                        )
+                    }
+                }
+
+                // Start the countdown timer
+                countDownTimer.start()
+            }
+
+
+
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
             pastOrderAdapter.submitList(orderModel.orderItems)
@@ -105,7 +181,7 @@ class NewOrderFragment : Fragment() {
         }
 
         binding.printKOT.setOnClickListener {
-            printBluetooth(orderModel,orderModel.id)
+            printBluetooth(orderModel, orderModel.id)
         }
 
         return binding.root
@@ -120,7 +196,7 @@ class NewOrderFragment : Fragment() {
         )
         val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         cancelAdapter = CancelItemAdapter(requireContext()) {
-            Log.e(TAG, "cancel: $it", )
+            Log.e(TAG, "cancel: $it")
             if (it == getString(R.string.items_is)) {
                 dialog.dismiss()
                 itemsBottomSheet(ordersModel)
@@ -141,15 +217,20 @@ class NewOrderFragment : Fragment() {
     }
 
 
-    fun itemsBottomSheet(ordersModel:OrdersModel){
-        val binding: BottomCancelSpecificItemBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.bottom_cancel_specific_item, null, false)
+    fun itemsBottomSheet(ordersModel: OrdersModel) {
+        val binding: BottomCancelSpecificItemBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(context),
+            R.layout.bottom_cancel_specific_item,
+            null,
+            false
+        )
         val d1 = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         d1.setCancelable(false)
         d1.setContentView(binding.root)
         d1.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         binding.apply {
             cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
-                Log.e(TAG, "cancel: $it", )
+                Log.e(TAG, "cancel: $it")
             }
             arrayList1.clear()
             recyclerView.adapter = cancelAdapter
@@ -255,7 +336,7 @@ class NewOrderFragment : Fragment() {
 
                 }
             )
-                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,requireContext()))
+                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice, requireContext()))
         }
     }
 
