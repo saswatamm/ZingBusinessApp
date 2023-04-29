@@ -53,6 +53,7 @@
     <string name="food_name">Chicken Shawarma</string>
     <string name="order_prepared">Order Prepared</string>
     <string name="reject">Reject Order (02:19)</string>
+    <string name="reject_order">Reject Order </string>
     <string name="qty">Qty</string>
     <string name="whoops">WHOOPS!\nBoth your Bluetooth and Wifi is not working!</string>
     <string name="dummy">Print Dummy KOT</string>

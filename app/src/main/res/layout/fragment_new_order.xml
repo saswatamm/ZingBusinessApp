@@ -212,13 +212,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
                 android:layout_weight="1"
-                android:backgroundTint="@{viewModel.checkFinish ?  @color/textGrey : @color/colorOnPrimary }"
                 android:fontFamily="@font/duplet_semibold"
                 android:paddingVertical="@dimen/_15sdp"
-                android:text="@{viewModel.remainingTimeFinal}"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:enabled="@{viewModel.checkFinish ? false : true}"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp"
                 app:cornerRadius="@dimen/_5sdp" />
