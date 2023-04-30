@@ -294,8 +294,7 @@ class RootActivity : AppCompatActivity() {
 
 
     private fun printBluetooth(ordersModel: OrdersModel, id: String) {
-        AsyncBluetoothEscPosPrint(
-            applicationContext,
+        AsyncBluetoothEscPosPrint(this,
             object : AsyncEscPosPrint.OnPrintFinished() {
                 override fun onError(
                     asyncEscPosPrinter: AsyncEscPosPrinter?,
@@ -326,7 +325,6 @@ class RootActivity : AppCompatActivity() {
                             transaction.update(sfDocRef, "statusCode", 2)
                         }.addOnSuccessListener {
                             Log.d(TAG, "Transaction success!")
-                            mediaPlayer?.release()
 
                         }
                             .addOnFailureListener { e ->
@@ -347,7 +345,7 @@ class RootActivity : AppCompatActivity() {
                 Utils.getAsyncEscPosPrinter(
                     ordersModel,
                     selectedDevice,
-                    this.applicationContext
+                    this
                 )
             )
     }
