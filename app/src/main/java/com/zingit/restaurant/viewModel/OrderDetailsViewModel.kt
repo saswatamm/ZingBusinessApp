@@ -51,6 +51,10 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         get() = data
     val checkFinish: MutableLiveData<Boolean> = MutableLiveData()
 
+    private val _successMethod: MutableLiveData<Boolean> = MutableLiveData()
+    val successMethod: LiveData<Boolean>
+        get() = _successMethod
+
     private lateinit var timer: CountDownTimer
 
     init {
@@ -88,16 +92,19 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                     loading.value = false
                     data.value = result.data!!.message
                     if (isAccept){
+                        _successMethod.value = true
                         firestore.collection("payment").document(id).update("statusCode",3)
                     }else{
                         firestore.collection("payment").document(id).update("statusCode",-1)
                     }
                 }
                 ApiResult.Status.ERROR -> {
+                    _successMethod.value = false
                     loading.value = false
                     _error.value = result.message!!
                 }
                 else -> {
+                    _successMethod.value = false
                     loading.value = false
                     _error.value = "Something went wrong"
                 }

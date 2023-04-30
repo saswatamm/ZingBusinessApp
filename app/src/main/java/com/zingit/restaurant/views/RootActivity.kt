@@ -57,7 +57,7 @@ class RootActivity : AppCompatActivity() {
     val PERMISSION_BLUETOOTH_ADMIN = 2
     val PERMISSION_BLUETOOTH_CONNECT = 3
     val PERMISSION_BLUETOOTH_SCAN = 4
-   lateinit var mediaPlayer: MediaPlayer
+    var mediaPlayer: MediaPlayer? = null
 
     var firestore = FirebaseFirestore.getInstance()
     var uniqueOrders = HashSet<String>() //To print only unique orders
@@ -159,13 +159,10 @@ class RootActivity : AppCompatActivity() {
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}")
                                         printBluetooth(paymentModel, i.document.id)
-                                        mediaPlayer = MediaPlayer.create(
-                                            this@RootActivity,
-                                            R.raw.sliver_sprint
+                                        mediaPlayer = MediaPlayer.create(applicationContext,
+                                            R.raw.incoming_order
                                         )
-                                        mediaPlayer.reset()
-                                        mediaPlayer.prepare()
-                                        mediaPlayer.start()
+                                        mediaPlayer?.start()
 
                                     } else {
                                         Log.e(
@@ -329,6 +326,7 @@ class RootActivity : AppCompatActivity() {
                             transaction.update(sfDocRef, "statusCode", 2)
                         }.addOnSuccessListener {
                             Log.d(TAG, "Transaction success!")
+                            mediaPlayer?.release()
 
                         }
                             .addOnFailureListener { e ->
