@@ -129,7 +129,7 @@
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:fontFamily="@font/duplet_regular"
-            android:text="@string/date"
+            android:text="Contact:"
             android:layout_marginEnd="@dimen/_5sdp"
             android:textColor="@color/lightGreyText"
             android:textSize="@dimen/_14sdp"

@@ -129,7 +129,7 @@ class NewOrderFragment : Fragment() {
 
             if (remainingDuration.isNegative || remainingDuration.isZero) {
                 rejectBtn.text = getString(R.string.reject_order)
-                rejectBtn.isEnabled = false
+//                rejectBtn.isEnabled = false
                 rejectBtn.background.setTint(
                     ContextCompat.getColor(
                         requireContext(),
@@ -223,26 +223,18 @@ class NewOrderFragment : Fragment() {
 
                 when (i) {
                     R.id.check_full_order -> {
+                        heading.visibility = View.VISIBLE
+                       recyclerView.visibility = View.VISIBLE
+
 
                     }
                     R.id.check_a_particular_item -> {
+                        heading.visibility = View.VISIBLE
+                        recyclerView.visibility = View.VISIBLE
 
                     }
                 }
             })
-
-                   /* radio.setOnCheckedChangeListener { group, checkedId ->
-                when (checkedId) {
-                    binding.checkFullOrder.id -> {
-                        // Option 1 selected
-
-                    }
-                    binding.checkAParticularItem.id -> {
-                        // Option 2 selected
-                    }
-
-                }
-            }*/
             keep.setOnClickListener {
                 dialog.dismiss()
             }
