@@ -223,14 +223,10 @@ class NewOrderFragment : Fragment() {
 
                 when (i) {
                     R.id.check_full_order -> {
-                        heading.visibility = View.VISIBLE
-                       recyclerView.visibility = View.VISIBLE
 
 
                     }
                     R.id.check_a_particular_item -> {
-                        heading.visibility = View.VISIBLE
-                        recyclerView.visibility = View.VISIBLE
 
                     }
                 }
