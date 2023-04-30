@@ -35,7 +35,6 @@ class HomeFragment : Fragment() {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             switchButton.setOnCheckedChangeListener { view, isChecked ->
-                Toast.makeText(requireContext(), "$isChecked", Toast.LENGTH_SHORT).show()
                 if (isChecked) {
                     firebase.collection("outlet")
                         .document(Utils.getUserOutletId(requireContext()).toString())

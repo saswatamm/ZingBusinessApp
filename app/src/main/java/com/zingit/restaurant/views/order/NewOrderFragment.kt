@@ -2,20 +2,22 @@ package com.zingit.restaurant.views.order
 
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
@@ -23,7 +25,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firestore.v1.StructuredQuery.Order
 import com.google.gson.Gson
 import com.zingit.restaurant.R
 import com.zingit.restaurant.adapter.CancelItemAdapter
@@ -128,7 +129,7 @@ class NewOrderFragment : Fragment() {
 
             if (remainingDuration.isNegative || remainingDuration.isZero) {
                 rejectBtn.text = getString(R.string.reject_order)
-                rejectBtn.isEnabled = false
+//                rejectBtn.isEnabled = false
                 rejectBtn.background.setTint(
                     ContextCompat.getColor(
                         requireContext(),
@@ -214,12 +215,29 @@ class NewOrderFragment : Fragment() {
                 itemsBottomSheet(ordersModel)
             }
         }
+
         binding.apply {
             recyclerView.adapter = cancelAdapter
             cancelAdapter.submitList(arrayList)
+            radio.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener { radioGroup, i ->
+
+                when (i) {
+                    R.id.check_full_order -> {
+
+
+                    }
+                    R.id.check_a_particular_item -> {
+
+                    }
+                }
+            })
             keep.setOnClickListener {
                 dialog.dismiss()
             }
+            close.setOnClickListener {
+                dialog.dismiss()
+            }
+
         }
 
         dialog.setCancelable(false)
@@ -252,6 +270,10 @@ class NewOrderFragment : Fragment() {
             keep.setOnClickListener {
                 d1.dismiss()
             }
+            close.setOnClickListener {
+                d1.dismiss()
+            }
+
         }
 
         d1.show()
