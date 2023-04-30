@@ -131,7 +131,7 @@ class OrdersFragment : Fragment() {
                     }*/
 
                     firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
-                        .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko")
+                        .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
                         .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
                         .addSnapshotListener { value, e ->
                             if (e != null) {
@@ -205,7 +205,7 @@ class OrdersFragment : Fragment() {
             }*/
             go.setOnClickListener {
                 firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
-                    .whereEqualTo("outletID", "9i1Q3aRU8AiH0dUAZjko")
+                    .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
                     .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
                     .addSnapshotListener { value, e ->
                         if (e != null) {
@@ -254,7 +254,7 @@ class OrdersFragment : Fragment() {
 
             }
             Handler().postDelayed({
-                query = firestore.collection("payment").whereEqualTo("outletID","9i1Q3aRU8AiH0dUAZjko").whereEqualTo("statusCode",1)
+                query = firestore.collection("payment").whereEqualTo("outletID",Utils.getUserOutletId(requireContext())).whereEqualTo("statusCode",1)
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")
