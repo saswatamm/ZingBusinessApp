@@ -52,18 +52,13 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/test_printer">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
                     <RadioButton
                         android:id="@+id/check_full_order"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:text="Check Full Order"/>
-
+                        android:text="@string/cancel_all"/>
                     <RadioButton
                         android:id="@+id/check_a_particular_item"
                         android:layout_width="wrap_content"
@@ -71,10 +66,7 @@
                         android:layout_marginStart="@dimen/_10sdp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/check_full_order"
-                        android:text="Cancel a Particular Item(s)"/>
-
-                </LinearLayout>
-
+                        android:text="@string/cancel_particular"/>
 
             </RadioGroup>
 

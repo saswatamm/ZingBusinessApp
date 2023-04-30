@@ -78,8 +78,7 @@ class RootActivity : AppCompatActivity() {
         binding.bottomNavigationView.apply {
             navController.let { navController ->
                 NavigationUI.setupWithNavController(
-                    this,
-                    navController
+                    this, navController
                 )
                 setOnItemSelectedListener { item ->
                     NavigationUI.onNavDestinationSelected(item, navController)
@@ -136,8 +135,7 @@ class RootActivity : AppCompatActivity() {
 
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(
-                        value: QuerySnapshot?,
-                        error: FirebaseFirestoreException?
+                        value: QuerySnapshot?, error: FirebaseFirestoreException?
                     ) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")
                         if (error != null) {
@@ -148,29 +146,15 @@ class RootActivity : AppCompatActivity() {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
                             when (i.type) {
                                 DocumentChange.Type.ADDED -> {
-                                    if (!uniqueOrders.contains(
-                                            i.document.data.get("paymentOrderID").toString()
-                                        )
-                                    ) {
-                                        uniqueOrders.add(
-                                            i.document.data.get("paymentOrderID").toString()
-                                        ) // Unique orders are added to prevent repetative printing
-                                        Log.e(TAG, "onEvent: ${i.document.data}")
+                                    if (!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString())) {
+                                        uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}")
                                         printBluetooth(paymentModel, i.document.id)
-                                        mediaPlayer = MediaPlayer.create(applicationContext,
-                                            R.raw.incoming_order
-                                        )
+                                        mediaPlayer = MediaPlayer.create(applicationContext, R.raw.incoming_order)
                                         mediaPlayer?.start()
-
                                     } else {
-                                        Log.e(
-                                            TAG,
-                                            "eventPrinting: ${
-                                                i.document.data.get("paymentOrderID").toString()
-                                            }"
-                                        )
+                                        Log.e(TAG, "eventPrinting: ${i.document.data.get("paymentOrderID").toString()}")
                                     }
                                 }
                                 DocumentChange.Type.MODIFIED -> {
@@ -196,7 +180,7 @@ class RootActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-  if (navController.currentDestination?.id == R.id.homeFragment) {
+        if (navController.currentDestination?.id == R.id.homeFragment) {
             if (backPressedTime + 2000 > System.currentTimeMillis()) {
                 super.onBackPressed()
             } else {
@@ -225,47 +209,34 @@ class RootActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun getConnectedDeviceName(): String? {
         if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH
+                this, Manifest.permission.BLUETOOTH
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.BLUETOOTH),
-                PERMISSION_BLUETOOTH
+                this, arrayOf(Manifest.permission.BLUETOOTH), PERMISSION_BLUETOOTH
             )
         } else if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH_ADMIN
+                this, Manifest.permission.BLUETOOTH_ADMIN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
+                this, arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
             )
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH_CONNECT
+                this, Manifest.permission.BLUETOOTH_CONNECT
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
-                PERMISSION_BLUETOOTH_CONNECT
+                this, arrayOf(Manifest.permission.BLUETOOTH_CONNECT), PERMISSION_BLUETOOTH_CONNECT
             )
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH_SCAN
+                this, Manifest.permission.BLUETOOTH_SCAN
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.BLUETOOTH_SCAN),
-                PERMISSION_BLUETOOTH_SCAN
+                this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), PERMISSION_BLUETOOTH_SCAN
             )
         } else {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -294,58 +265,47 @@ class RootActivity : AppCompatActivity() {
 
 
     private fun printBluetooth(ordersModel: OrdersModel, id: String) {
-        AsyncBluetoothEscPosPrint(this,
-            object : AsyncEscPosPrint.OnPrintFinished() {
-                override fun onError(
-                    asyncEscPosPrinter: AsyncEscPosPrinter?,
-                    codeException: Int
-                ) {
-                    Log.e(
-                        "Async.OnPrintFinished",
-                        "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
-                    )
-                }
-
-                override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
-                    Log.i(
-                        "Async.OnPrintFinished",
-                        "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
-                    )
-
-                    try {
-
-                        val sfDocRef = firestore.collection("payment").document(id)
-                        Toast.makeText(
-                            applicationContext,
-                            "Print is finished ! $id",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        firestore.runTransaction { transaction ->
-                            transaction.update(sfDocRef, "statusCode", 2)
-                        }.addOnSuccessListener {
-                            Log.d(TAG, "Transaction success!")
-
-                        }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Error $e",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                    } catch (e: Exception) {
-                        Toast.makeText(applicationContext, "Error $e", Toast.LENGTH_LONG).show()
-                    }
-                }
-
+        AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
+            override fun onError(
+                asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
+            ) {
+                Log.e(
+                    "Async.OnPrintFinished",
+                    "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
+                )
             }
-        )
-            .execute(
+
+            override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
+                Log.i(
+                    "Async.OnPrintFinished",
+                    "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
+                )
+
+                try {
+
+                    val sfDocRef = firestore.collection("payment").document(id)
+                    Toast.makeText(
+                        applicationContext, "Print is finished ! $id", Toast.LENGTH_SHORT
+                    ).show()
+
+                    firestore.runTransaction { transaction ->
+                        transaction.update(sfDocRef, "statusCode", 2)
+                    }.addOnSuccessListener {
+                        Log.d(TAG, "Transaction success!")
+
+                    }.addOnFailureListener { e ->
+                            Toast.makeText(
+                                applicationContext, "Error $e", Toast.LENGTH_LONG
+                            ).show()
+                        }
+                } catch (e: Exception) {
+                    Toast.makeText(applicationContext, "Error $e", Toast.LENGTH_LONG).show()
+                }
+            }
+
+        }).execute(
                 Utils.getAsyncEscPosPrinter(
-                    ordersModel,
-                    selectedDevice,
-                    this
+                    ordersModel, selectedDevice, this
                 )
             )
     }

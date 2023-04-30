@@ -54,6 +54,8 @@
     <string name="order_prepared">Order Prepared</string>
     <string name="reject">Reject Order (02:19)</string>
     <string name="reject_order">Reject Order </string>
+    <string name="cancel_all">Check Full Order</string>
+    <string name="cancel_particular">Cancel a Particular Item(s)</string>
     <string name="qty">Qty</string>
     <string name="whoops">WHOOPS!\nBoth your Bluetooth and Wifi is not working!</string>
     <string name="dummy">Print Dummy KOT</string>
