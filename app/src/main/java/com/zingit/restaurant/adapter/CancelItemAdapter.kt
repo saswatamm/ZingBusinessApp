@@ -18,7 +18,6 @@ class CancelItemAdapter(val context: Context, val onClick: (String) -> Unit) :
     inner class MyViewHolder(val binding: CheckboxLayoutSingleBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(orderItem: String) {
-
             binding.cancelOrder = orderItem
 
         }
