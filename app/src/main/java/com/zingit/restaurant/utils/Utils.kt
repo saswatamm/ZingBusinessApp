@@ -19,6 +19,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -27,6 +28,7 @@ import androidx.core.content.res.ResourcesCompat.getDrawableForDensity
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.dantsu.escposprinter.connection.DeviceConnection
+import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
 import com.dantsu.escposprinter.textparser.PrinterTextParserImg
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firestore.v1.StructuredQuery.Order
@@ -34,7 +36,12 @@ import com.zingit.restaurant.R
 import com.zingit.restaurant.models.PaymentModel
 import com.zingit.restaurant.models.order.OrderItem
 import com.zingit.restaurant.models.order.OrdersModel
+import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
+import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
+import com.zingit.restaurant.views.order.NewOrderFragment
+import com.zingit.restaurant.views.order.NewOrderFragment.Companion.PERMISSION_BLUETOOTH
+import com.zingit.restaurant.views.order.NewOrderFragment.Companion.PERMISSION_BLUETOOTH_SCAN
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -281,6 +288,102 @@ object Utils {
             for(i in 1..count)
                 spaces += " "
         return spaces
+    }
+
+    fun printBluetooth(activity: Activity,context: Context,ordersModel: OrdersModel, id: String,firestore: FirebaseFirestore,bluetoothConnection: BluetoothConnection) {
+
+
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.BLUETOOTH),
+                PERMISSION_BLUETOOTH
+            )
+        } else if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_ADMIN
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.BLUETOOTH_ADMIN),
+                NewOrderFragment.PERMISSION_BLUETOOTH_ADMIN
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
+                NewOrderFragment.PERMISSION_BLUETOOTH_CONNECT
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_SCAN
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.BLUETOOTH_SCAN),
+                PERMISSION_BLUETOOTH_SCAN
+            )
+        } else {
+            AsyncBluetoothEscPosPrint(
+                context,
+                object : AsyncEscPosPrint.OnPrintFinished() {
+                    override fun onError(
+                        asyncEscPosPrinter: AsyncEscPosPrinter?,
+                        codeException: Int
+                    ) {
+                        Log.e(
+                            "Async.OnPrintFinished",
+                            "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
+                        )
+                    }
+
+                    override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
+                        Log.i(
+                            "Async.OnPrintFinished",
+                            "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
+                        )
+
+                        try {
+
+                            val sfDocRef = firestore.collection("payment").document(id)
+                            Toast.makeText(
+                                context,
+                                "Print is finished ! $id",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            firestore.runTransaction { transaction ->
+                                transaction.update(sfDocRef, "statusCode", 2)
+                            }.addOnSuccessListener {
+                                Log.d(TAG, "Transaction success!")
+
+                            }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(
+                                        context,
+                                        "Error $e",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Error $e", Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                }
+            )
+                .execute(getAsyncEscPosPrinter(ordersModel, bluetoothConnection,context))
+        }
     }
 
 
