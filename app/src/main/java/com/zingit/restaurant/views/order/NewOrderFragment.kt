@@ -247,7 +247,7 @@ class NewOrderFragment : Fragment() {
         val remainingDuration = Duration.between(currentTime, targetTime)
         if (remainingDuration.isNegative || remainingDuration.isZero) {
             rejectBtn.text = getString(R.string.reject_order)
-        //    rejectBtn.isEnabled = false
+            rejectBtn.isEnabled = false
             rejectBtn.background.setTint(
                 ContextCompat.getColor(
                     requireContext(),
