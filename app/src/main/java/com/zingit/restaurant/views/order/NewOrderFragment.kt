@@ -36,6 +36,7 @@ import com.zingit.restaurant.models.item.CancelItemModel
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
+import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
 import java.time.Instant
@@ -52,10 +53,9 @@ class NewOrderFragment : Fragment() {
     lateinit var cancelSpecificItemsAdapter: CancelSpecificItemsAdapter
     private val zingViewModel: OrderDetailsViewModel by viewModels()
     val arrayList = ArrayList<String>()
-    val arrayList1 = ArrayList<String>()
-    val cancelItemModel = ArrayList<CancelItemModel>()
+    private val cancelItemModel = ArrayList<CancelItemModel>()
+    val cancelItemFinalList = ArrayList<CancelItemModel>()
     val firestore = FirebaseFirestore.getInstance()
-    private val selectedDevice: BluetoothConnection? = null
 
     companion object {
        const val PERMISSION_BLUETOOTH = 1
@@ -128,7 +128,14 @@ class NewOrderFragment : Fragment() {
         }
 
         binding.printKOT.setOnClickListener {
-            Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,selectedDevice!!)
+
+
+            RootActivity().selectedDevice?.let { it1 ->
+                Log.e(TAG, "printer blue: $it", )
+                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
+                    it1
+                )
+            }
         }
 
         return binding.root
@@ -193,14 +200,34 @@ class NewOrderFragment : Fragment() {
         d1.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         binding.apply {
             cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
+
+                Log.e(TAG, "itemsBottomSheet: $it", )
+                if(it.isChecked){
+                    cancelItemFinalList.add(it)
+                }else{
+                    cancelItemFinalList.remove(it)
+                }
+
             }
 
             cancelItemModel.clear()
             recyclerView.adapter = cancelSpecificItemsAdapter
-            cancelItemModel.add(CancelItemModel("All Items", false))
+            cancelItemModel.add(CancelItemModel("All Items","0" ,false))
            // arrayList1.add("All Items")
-            cancelItemModel.addAll(ordersModel.orderItems.map { CancelItemModel(it.itemName, false) })
+            cancelItemModel.addAll(ordersModel.orderItems.map { CancelItemModel(it.itemName,it.itemID, false) })
             cancelSpecificItemsAdapter.submitList(cancelItemModel)
+            cancelRefund.setOnClickListener {
+                if (cancelItemFinalList.isNotEmpty()){
+                    for(i in 0 until cancelItemFinalList.size){
+                        firestore.collection("item").document(cancelItemFinalList.get(i).itemId).update("availableOrNot",false)
+                    }
+                    d1.dismiss()
+                    findNavController().popBackStack()
+                }else{
+                    Toast.makeText(requireContext(), "Please Select Item", Toast.LENGTH_SHORT).show()
+                }
+            }
+
             keep.setOnClickListener {
                 d1.dismiss()
             }
@@ -220,7 +247,7 @@ class NewOrderFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun countDownTimer(rejectBtn:MaterialButton){
-        val targetDuration = Duration.ofMinutes(2)
+        val targetDuration = Duration.ofMinutes(5)
         val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
         val targetTime = givenTime.plus(targetDuration)
         val currentTime = Instant.now()

@@ -67,6 +67,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:labelVisibilityMode="labeled"
             app:itemTextColor="@color/black"
+            app:itemTextAppearanceActive="@style/BottomBarStyle"
+            app:itemTextAppearanceInactive="@style/BottomBarStyle"
             app:menu="@menu/bottomtab_menu" />
 
 

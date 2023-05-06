@@ -95,6 +95,7 @@ class CancelSpecificItemsAdapter(val context: Context, val onClick: (CancelItemM
                 }
             }else{
                 onClick(orderItem)
+                notifyDataSetChanged()
             }
 
 
