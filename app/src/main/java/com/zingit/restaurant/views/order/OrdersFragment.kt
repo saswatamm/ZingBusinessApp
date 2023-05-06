@@ -1,6 +1,7 @@
 package com.zingit.restaurant.views.order
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -253,7 +254,7 @@ class OrdersFragment : Fragment() {
 
 
             }
-            Handler().postDelayed({
+         /*   Handler().postDelayed({
                 query = firestore.collection("payment").whereEqualTo("outletID",Utils.getUserOutletId(requireContext())).whereEqualTo("statusCode",1)
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
@@ -269,7 +270,6 @@ class OrdersFragment : Fragment() {
                                     if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
                                     {
                                         uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
-                                        Log.e(TAG, "onEvent: ${i.document.data}")
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}",)
                                         printBluetooth(paymentModel, i.document.id)
@@ -288,7 +288,7 @@ class OrdersFragment : Fragment() {
                         }
                     }
                 })
-            }, 5000)
+            }, 5000)*/
         }
     }
 
@@ -336,16 +336,6 @@ class OrdersFragment : Fragment() {
                 requireActivity(),
                 arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
                 PERMISSION_BLUETOOTH_CONNECT
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.BLUETOOTH_SCAN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.BLUETOOTH_SCAN),
-                PERMISSION_BLUETOOTH_SCAN
             )
         } else {
             AsyncBluetoothEscPosPrint(

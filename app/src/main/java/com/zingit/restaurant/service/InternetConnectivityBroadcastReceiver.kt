@@ -27,13 +27,13 @@ class InternetConnectivityBroadcastReceiver(
 
         val action = p1?.action
 
-        isBluetoothConnected.value = true
-        if (isBluetoothAvailable()) {
-            Log.e(TAG, "onReceive: ${isBluetoothAvailable()}")
-           // isBluetoothConnected.value = true
-        } else {
-            //isBluetoothConnected.value = false
-        }
+//        isBluetoothConnected.value = true
+//        if (isBluetoothAvailable()) {
+//            Log.e(TAG, "onReceive: ${isBluetoothAvailable()}")
+//           // isBluetoothConnected.value = true
+//        } else {
+//            //isBluetoothConnected.value = false
+//        }
         if (BluetoothDevice.ACTION_ACL_CONNECTED == action) {
             //isBluetoothConnected.value = true
 

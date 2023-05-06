@@ -9,44 +9,45 @@ import kotlin.collections.ArrayList
 
 
 data class OrdersModel(
+
     @SerializedName("basePrice")
-    val basePrice: Double=0.0,
+    val basePrice: Double = 0.0,
     @SerializedName("collectedTime")
-    val collectedTime: String="",
+    val collectedTime: String = "",
     @SerializedName("couponDiscount")
-    val couponDiscount: Double=0.0,
+    val couponDiscount: Double = 0.0,
     @SerializedName("id")
-    val id:String="",
+    val id: String = "",
     @SerializedName("campusID")
-    val couponID:String="",
+    val couponID: String = "",
     @SerializedName("orderItems")
     val orderItems: ArrayList<OrderItem> = arrayListOf(),
     @SerializedName("orderType")
-    val orderType:String="",
+    val orderType: String = "",
     @SerializedName("outletID")
-    val outletID:String="",
+    val outletID: String = "",
     @SerializedName("orderNo")
-    val orderNo:String="",
+    val orderNo: String = "",
     @SerializedName("paymentOrderID")
-    val paymentOrderID:String="",
+    val paymentOrderID: String = "",
     @SerializedName("preparedTime")
-    val preparedTime:String="",
+    val preparedTime: String = "",
     @SerializedName("reactionTime")
-    val reactionTime:String="",
+    val reactionTime: String = "",
     @SerializedName("statusCode")
-    val statusCode:Int=0,
+    val statusCode: Int = 0,
     @SerializedName("taxesAndCharges")
-    val taxesAndCharges:Float=0f,
+    val taxesAndCharges: Float = 0f,
     @SerializedName("totalAmountPaid")
-    val totalAmountPaid:Float=0f,
+    val totalAmountPaid: Float = 0f,
     @SerializedName("userID")
-    val userID: String="",
+    val userID: String = "",
     @SerializedName("userName")
-    val userName: String="",
+    val userName: String = "",
     @SerializedName("userNumber")
-    val userNumber: String="",
+    val userNumber: String = "",
     @SerializedName("zingTime")
-    val zingTime: String="",
+    val zingTime: String = "",
     @SerializedName("placedTime")
-    var placedTime: com.google.firebase.Timestamp= com.google.firebase.Timestamp.now(),
+    var placedTime: com.google.firebase.Timestamp = com.google.firebase.Timestamp.now(),
 )
