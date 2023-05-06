@@ -86,7 +86,7 @@ object Utils {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun convertToIsoString(date:Date): String {
+    fun convertToIsoString(date: Date): String {
         // Convert the Timestamp object to a Date object
 
         // Create a SimpleDateFormat to format the Date object
@@ -220,10 +220,10 @@ object Utils {
     }
 
 
-    private fun orderType (payment:OrdersModel):String{
-        if(payment.orderType==null || payment.orderType==""){
+    private fun orderType(payment: OrdersModel): String {
+        if (payment.orderType == null || payment.orderType == "") {
             return "Dine In"
-        }else{
+        } else {
             return payment.orderType
         }
     }
@@ -243,6 +243,66 @@ object Utils {
         ) + "</img>\n";
         /*slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, getDrawableForDensity(
             R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*/
+
+        slip += "[L]\n"
+        slip += "[L]<b>Order type : " + getSpaces("Order type : ",orderType(payment))+orderType(payment)+"\n\n"
+        /*slip += """
+             ${"[R]<font size='normal'>        " + "[R]${orderType(payment)}"}</font>
+
+             """.trimIndent()*/
+
+        slip += "[L]<b>Order No. : " + getSpaces(" Order No.: ", payment.orderNo)+payment.orderNo+"\n\n"
+        /*slip += """
+             ${"[R]<font size='normal'>        " + "[R]${payment.orderNo}"}</font>
+
+             """.trimIndent()*/
+        slip += "[L]<b>" + "Order From : " + getSpaces("Order From : ", payment.userName.split(" ")[0])+payment.userName.split(" ")[0]+"\n\n"
+        /*slip += """
+             ${"[R]<font size='normal'>        " + "[R]${payment.userName.split(" ")[0]}"}</font>
+
+             """.trimIndent()*/
+        //slip += "[L]<font size='big'>" + Dataholder.printingPayment.orderType + "           #" + Dataholder.printingPayment.getPaymentOrderID().substring(Dataholder.printingPayment.getPaymentOrderID().length()-4) + "</font>\n";
+        //slip += "[L]<font size='big'>Order from        " + Dataholder.printingPayment.getUserName().toUpperCase() + "</font>\n";
+        //Add phone no here
+        slip += "[C]<b>=============================================\n\n"
+        for (i in 0 until payment.orderItems.size) {
+            spaces = getSpaces(payment.orderItems.get(i).itemName, "x2")
+            slip += "[L]<font size='big-4'>" + payment.orderItems.get(i).itemName + spaces + "x" + payment.orderItems.get(
+                i
+            ).itemQuantity + "\n\n"
+            "</font>"
+
+
+            /*slip += "[L]<font size='big-4'>${spaces}X" + payment.orderItems.get(i).itemQuantity +"\n\n"
+            "</font>"*/
+
+
+            // """.trimIndent()
+        }
+        slip += "[C]<b>=============================================\n\n"
+        slip += """
+             ${"[R]<font size='big-4'>                        Total Amount: " + payment.basePrice}</font>
+             
+             """.trimIndent()
+        return slip
+    }
+
+
+    /*fun createPrintSlip(
+        payment: OrdersModel,
+        printer: AsyncEscPosPrinter,
+        context: Context
+    ): String? {
+        var slip = ""
+        var spaces = ""
+
+        slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(
+            printer,
+            context.getResources()
+                .getDrawableForDensity(R.drawable.new_zing, DisplayMetrics.DENSITY_HIGH)
+        ) + "</img>\n";
+        *//*slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, getDrawableForDensity(
+            R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*//*
 
         slip += "[L]\n"
         slip += "[L]<b>Order type : "
@@ -273,8 +333,8 @@ object Utils {
             "</font>"
 
 
-            /*slip += "[L]<font size='big-4'>${spaces}X" + payment.orderItems.get(i).itemQuantity +"\n\n"
-            "</font>"*/
+            *//*slip += "[L]<font size='big-4'>${spaces}X" + payment.orderItems.get(i).itemQuantity +"\n\n"
+            "</font>"*//*
 
 
             // """.trimIndent()
@@ -285,7 +345,7 @@ object Utils {
              
              """.trimIndent()
         return slip
-    }
+    }*/
 
     fun checkPermissions(activity: Activity) {
         val permission1 =
@@ -306,7 +366,7 @@ object Utils {
         }
     }
 
-    fun getSpaces(item: String): String {
+    /*fun getSpaces(item: String): String {
         Log.e(TAG, "Item Length ${item.length}")
         var itemLength = item.length
         var spaces = ""
@@ -315,7 +375,19 @@ object Utils {
         for (i in 1..count)
             spaces += " "
         return spaces
+    }*/
+
+    fun getSpaces(item: String, right: String): String {
+        Log.e(TAG, "Item Length ${item.length}")
+        var itemLength = item.length
+        var spaces = ""
+        // var count = if(itemLength>=16) 23 - (itemLength-16) else 17 + (16-itemLength)
+        var count = if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength)+2-right.length
+        for (i in 1..count)
+            spaces += " "
+        return spaces
     }
+
 
     fun printBluetooth(
         activity: Activity,

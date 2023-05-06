@@ -36,6 +36,7 @@ import com.zingit.restaurant.models.item.CancelItemModel
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
+import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
 import java.time.Instant
@@ -55,7 +56,6 @@ class NewOrderFragment : Fragment() {
     private val cancelItemModel = ArrayList<CancelItemModel>()
     val cancelItemFinalList = ArrayList<CancelItemModel>()
     val firestore = FirebaseFirestore.getInstance()
-    private val selectedDevice: BluetoothConnection? = null
 
     companion object {
        const val PERMISSION_BLUETOOTH = 1
@@ -128,7 +128,14 @@ class NewOrderFragment : Fragment() {
         }
 
         binding.printKOT.setOnClickListener {
-            Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,selectedDevice!!)
+
+
+            RootActivity().selectedDevice?.let { it1 ->
+                Log.e(TAG, "printer blue: $it", )
+                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
+                    it1
+                )
+            }
         }
 
         return binding.root
@@ -240,7 +247,7 @@ class NewOrderFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun countDownTimer(rejectBtn:MaterialButton){
-        val targetDuration = Duration.ofMinutes(2)
+        val targetDuration = Duration.ofMinutes(5)
         val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
         val targetTime = givenTime.plus(targetDuration)
         val currentTime = Instant.now()

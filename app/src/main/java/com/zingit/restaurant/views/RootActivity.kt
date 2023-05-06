@@ -62,7 +62,7 @@ class RootActivity : AppCompatActivity() {
     var firestore = FirebaseFirestore.getInstance()
     var uniqueOrders = HashSet<String>() //To print only unique orders
     lateinit var paymentModel: OrdersModel
-    private val selectedDevice: BluetoothConnection? = null
+    val selectedDevice: BluetoothConnection? = null
 
 
     @SuppressLint("MissingPermission", "SuspiciousIndentation")

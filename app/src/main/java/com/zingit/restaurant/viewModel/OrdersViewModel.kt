@@ -66,7 +66,7 @@ class OrdersViewModel @Inject constructor(
                 val currentTime = Timestamp.now().seconds
                 it.forEach { order ->
                     val timeDiff = currentTime  - order.placedTime!!.seconds
-                    if (timeDiff <= 3 * 60 * 60) { // 3 hours in milliseconds
+                    if (timeDiff <= 24 * 60 * 60) { // 3 hours in milliseconds
                         myList.add(order)
                     }
 
