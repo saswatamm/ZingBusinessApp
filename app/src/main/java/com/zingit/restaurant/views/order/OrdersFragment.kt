@@ -105,40 +105,15 @@ class OrdersFragment : Fragment() {
             searchView.setOnEditorActionListener { textView, i, keyEvent ->
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     loader.visibility = View.VISIBLE
-                    /*firestore.collection("payment").get().addOnSuccessListener {
-                        for (document in it) {
-                            Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
-                            if (searchView.text.toString().trim()
-                                    .contains(document.data.get("orderNo").toString())
-                             ) {
-                                Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
-                                val gson = Gson()
-                                loader.visibility = View.GONE
-                                val finalValue = document.toObject(OrdersModel::class.java)
-                                val json = gson.toJson(finalValue)
-                                val bundle = bundleOf("orderModel" to json)
-                                findNavController().navigate(
-                                    R.id.action_ordersFragment_to_newOrderFragment,
-                                    bundle
-                                )
-                                view?.hideKeyboard()
-                                binding.searchView.text.clear()
-                                break
-                            }
-
-
-                        }
-
-                    }*/
 
                     firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
                         .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
                         .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
                         .addSnapshotListener { value, e ->
-                            if (e != null) {
-                                Log.w(TAG, "Listen failed.", e)
+                            Log.e(TAG, "eror: ${e.toString()}", )
+                            if (e == null) {
                                 loader.visibility = View.GONE
-                                //Toast.makeText(requireContext(), "Order does not exist", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), "Order does not exist", Toast.LENGTH_SHORT).show()
                                 view?.hideKeyboard()
                                 binding.searchView.text.clear()
                                 return@addSnapshotListener
