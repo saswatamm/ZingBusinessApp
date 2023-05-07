@@ -86,7 +86,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
                     var orderModel: List<OrdersModel> =
                         value.toObjects(OrdersModel::class.java)
 
-                    orderModel = orderModel.sortedByDescending { it.orderNo } //Orders sorted in descending order
+                    orderModel = orderModel.sortedByDescending { it.placedTime } //Orders sorted in descending order
 
 
 
