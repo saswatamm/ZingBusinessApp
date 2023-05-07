@@ -2,6 +2,7 @@ package com.zingit.restaurant.views.home
 
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -50,12 +51,12 @@ class HomeFragment : Fragment() {
                 }
             }
 
-
             firebase.collection("outlet")
                 .document(Utils.getUserOutletId(requireContext()).toString())
                 .get()
                 .addOnSuccessListener {
-                    Log.e(TAG, "onCreateView: ${it.data}", )
+                    loader.visibility = View.GONE
+                    Log.e(TAG, "dataOpenClose: ${it.data}",)
                     if (it.exists()) {
                         if (it.get("openStatus") == "OPEN") {
                             switchButton.isChecked = true
@@ -69,29 +70,18 @@ class HomeFragment : Fragment() {
                     }
                 }
 
+         /*   Handler().postDelayed({
+                loader.visibility = View.VISIBLE
 
-//            if (switchButton.labelOff=="Close") {
-//                firebase.collection("outlet")
-//                    .document(Utils.getUserOutletId(requireContext()).toString())
-//                    .update("openStatus", "CLOSE")
-//                statusOff.visibility = View.VISIBLE
-//                statusOn.visibility = View.GONE
-//
-//            }
-//            if(switchButton.labelOn=="Open"){
-//                firebase.collection("outlet")
-//                    .document(Utils.getUserOutletId(requireContext()).toString())
-//                    .update("openStatus", "OPEN")
-//                statusOff.visibility = View.GONE
-//                statusOn.visibility = View.VISIBLE
-//            }
 
+
+            }, 2000)*/
+
+
+
+            return binding.root
         }
-
-
-        return binding.root
     }
-
 
 
 
