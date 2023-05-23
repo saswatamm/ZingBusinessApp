@@ -62,7 +62,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
                 Log.d("In FirebaseRepo","Hi")
                 val itemMenuModel: List<ItemMenuModel> =
                     snapShot.toObjects(ItemMenuModel::class.java)
-                Log.d("In FirebaseRepo",itemMenuModel.toString())
+
                 emit(Resource.Success(itemMenuModel!!))
             }
 
