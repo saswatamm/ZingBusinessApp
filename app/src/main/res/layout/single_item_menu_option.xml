@@ -6,7 +6,11 @@
         <variable
             name="itemMenu"
             type="com.zingit.restaurant.models.item.ItemMenuModel" />
-
+        <variable
+            name="active1"
+            type="String"
+            android:value="1"
+            />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +28,7 @@
             android:fontFamily="@font/duplet_bold"
             android:maxLines="1"
             android:maxEms="10"
-            android:text="@{itemMenu.name}"
+            android:text="@{itemMenu.itemName}"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -52,7 +56,7 @@
             android:id="@+id/switch_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="@{itemMenu.availableOrNot}"
+            android:checked="@{ (itemMenu.active==active1) ? true:false }"
             android:layout_marginEnd="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/amount"

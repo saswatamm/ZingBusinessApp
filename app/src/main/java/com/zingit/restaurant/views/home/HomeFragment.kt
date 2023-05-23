@@ -14,6 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.FragmentHomeBinding
 import com.zingit.restaurant.utils.Utils
+import com.zingit.restaurant.views.RootActivity
+import kotlinx.coroutines.tasks.await
 
 
 class HomeFragment : Fragment() {
@@ -37,45 +39,77 @@ class HomeFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             switchButton.setOnCheckedChangeListener { view, isChecked ->
                 if (isChecked) {
-                    firebase.collection("outlet")
+
+//                    firebase.collection("outlet")
+//                        .document(Utils.getUserOutletId(requireContext()).toString())
+//                        .update("openStatus", "OPEN")
+
+                    firebase.collection("test_restaurant")
                         .document(Utils.getUserOutletId(requireContext()).toString())
-                        .update("openStatus", "OPEN")
-                    statusOff.visibility = View.GONE
-                    statusOn.visibility = View.VISIBLE
+                        .update("active", 1)
+                        statusOff.visibility = View.GONE
+                        statusOn.visibility = View.VISIBLE
+
+
+
                 } else {
-                    firebase.collection("outlet")
+//                    firebase.collection("outlet")
+//                        .document(Utils.getUserOutletId(requireContext()).toString())
+//                        .update("openStatus", "CLOSE")
+
+                    firebase.collection("test_restaurant")
                         .document(Utils.getUserOutletId(requireContext()).toString())
-                        .update("openStatus", "CLOSE")
+                        .update("active", 0)
                     statusOff.visibility = View.VISIBLE
                     statusOn.visibility = View.GONE
                 }
             }
 
-            firebase.collection("outlet")
+            firebase.collection("test_restaurant")
                 .document(Utils.getUserOutletId(requireContext()).toString())
                 .get()
                 .addOnSuccessListener {
                     loader.visibility = View.GONE
                     Log.e(TAG, "dataOpenClose: ${it.data}",)
                     if (it.exists()) {
-                        if (it.get("openStatus") == "OPEN") {
+                        if (it.get("active") == 1) {
                             switchButton.isChecked = true
                             statusOff.visibility = View.GONE
                             statusOn.visibility = View.VISIBLE
-                        } else {
+                        }
+                        else {
+                            switchButton.isChecked = false
                             statusOff.visibility = View.VISIBLE
                             statusOn.visibility = View.GONE
-                            switchButton.isChecked = false
                         }
                     }
                 }
+//            firebase.collection("outlet")
+//                .document(Utils.getUserOutletId(requireContext()).toString())
+//                .get()
+//                .addOnSuccessListener {
+//                    loader.visibility = View.GONE
+//                    Log.e(TAG, "dataOpenClose: ${it.data}",)
+//                    if (it.exists()) {
+//                        if (it.get("openStatus") == "OPEN") {
+//                            switchButton.isChecked = true
+//                            statusOff.visibility = View.GONE
+//                            statusOn.visibility = View.VISIBLE
+//                        } else {
+//                            statusOff.visibility = View.VISIBLE
+//                            statusOn.visibility = View.GONE
+//                            switchButton.isChecked = false
+//                        }
+//                    }
+//                }
 
-         /*   Handler().postDelayed({
-                loader.visibility = View.VISIBLE
 
-
-
-            }, 2000)*/
+//            Handler().postDelayed({
+//                loader.visibility = View.VISIBLE
+//
+//
+//
+//            }, 2000)
 
 
 

@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/duplet_regular"
                 android:gravity="center_horizontal"
-                android:text="@{category.category}"
+                android:text="@{category.categoryName}"
                 android:textColor="@color/black"
                 android:maxLines="1"
                 android:maxEms="5"

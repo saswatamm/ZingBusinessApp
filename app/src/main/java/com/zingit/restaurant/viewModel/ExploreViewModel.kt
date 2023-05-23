@@ -40,19 +40,20 @@ constructor(
                 }
                 is Resource.Error -> {
                     _iteMenuData.value = ItemMenuState(isLoading = false,error = it.message ?: "")
+                    Log.d("In ExploreViewModels if error by FirebaseRepor func named getMenuData",it.message.toString())
                 }
                 is Resource.Success -> {
 
                     it.data?.forEachIndexed { index, itemMenuModel ->
-                        tempList.add(CategoryModel(itemMenuModel.category,itemMenuModel.itemImage))
+                        tempList.add(CategoryModel(itemMenuModel.categoryName,itemMenuModel.itemImgUrl))
                     }
                     if(category==null){
-                        val menuFinal = it.data?.filter {it1 -> it1.category == it.data[0].category
+                        val menuFinal = it.data?.filter {it1 -> it1.categoryName == it.data[0].categoryName
                           }?.toList()
-                        Log.e("MenuFinal", "getMenuData: $menuFinal", )
+                        Log.e("MenuFinal", "getMenuDatagg: $menuFinal", )
                         _iteMenuData.value = ItemMenuState(isLoading = false,data = menuFinal)
                     }else{
-                        val menuFinal = it.data?.filter {it1 -> it1.category == category
+                        val menuFinal = it.data?.filter {it1 -> it1.categoryName == category
                         }?.toList()
                         Log.e("MenuFinal", "getMenuData: $menuFinal", )
                         _iteMenuData.value = ItemMenuState(isLoading = false, data = menuFinal)
@@ -60,7 +61,7 @@ constructor(
 
 
 
-                    _categoryData.value = CategoryState(data = tempList.distinctBy { it.category }.toList())
+                    _categoryData.value = CategoryState(data = tempList.distinctBy { it.categoryName }.toList())
                 }
             }
         }.launchIn(viewModelScope)

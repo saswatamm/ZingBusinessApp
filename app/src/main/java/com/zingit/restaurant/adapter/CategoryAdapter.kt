@@ -25,7 +25,7 @@ class CategoryAdapter(
 
         fun bind(categoryModel: CategoryModel, position: Int) {
             binding.category = categoryModel
-            Glide.with(context).load(categoryModel.itemImage).into(binding.profileImage)
+            Glide.with(context).load(categoryModel.itemImgUrl).into(binding.profileImage)
         }
     }
 
@@ -66,7 +66,7 @@ class CategoryDiffUtils : DiffUtil.ItemCallback<CategoryModel>() {
         oldItem: CategoryModel,
         newItem: CategoryModel
     ): Boolean {
-        return oldItem.category == newItem.category
+        return oldItem.categoryName == newItem.categoryName
     }
 
     override fun areContentsTheSame(

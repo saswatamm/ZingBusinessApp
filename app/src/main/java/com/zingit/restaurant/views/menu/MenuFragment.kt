@@ -49,7 +49,8 @@ class MenuFragment : Fragment() {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
                     launch {
                         categoryAdapter = CategoryAdapter(requireContext(),0){
-                            exploreViewModel.getMenuData(it.category)
+                            exploreViewModel.getMenuData(it.categoryName)
+                            Log.d("Menu Fragment:category data",it.toString())
                         }
                         exploreViewModel.categoryData.collect{
                             rvCategory.adapter = categoryAdapter

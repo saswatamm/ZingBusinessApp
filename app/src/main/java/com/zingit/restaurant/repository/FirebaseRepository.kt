@@ -11,6 +11,7 @@ import com.google.firestore.v1.StructuredQuery.Order
 import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.models.order.OrderState
 import com.zingit.restaurant.models.order.OrdersModel
+import com.zingit.restaurant.models.resturant.RestaurantModel
 import com.zingit.restaurant.models.resturant.RestaurantProfileModel
 import com.zingit.restaurant.utils.Resource
 import com.zingit.restaurant.utils.Utils
@@ -32,18 +33,18 @@ class FirebaseRepository @Inject constructor(private val application:Application
         try {
 
             val snapShot =
-                fireStoreDatabase.collection("outlet").document(Utils.getUserOutletId(application)!!).get()
+                fireStoreDatabase.collection("test_restaurant").document(Utils.getUserOutletId(application)!!).get()
                     .await()
 
 
             if (snapShot.exists()) {
-                val restaurantProfileModel: RestaurantProfileModel? =
-                    snapShot.toObject(RestaurantProfileModel::class.java)
-                Log.e(TAG, "getRestaurantProfileDate: ${restaurantProfileModel.toString()}")
-                emit(Resource.Success(restaurantProfileModel!!))
+                val restaurantModel: RestaurantModel? =
+                    snapShot.toObject(RestaurantModel::class.java)
+                Log.e(TAG, "getRestaurantData: ${restaurantModel.toString()}")
+                emit(Resource.Success(restaurantModel!!))
             }
 
-        } catch (e: Exception) {
+        } catch (e: Exception   ) {
             emit(Resource.Error(e.message.toString()))
         }
 
@@ -53,12 +54,15 @@ class FirebaseRepository @Inject constructor(private val application:Application
         Log.e(TAG, "getMenu: ${Utils.getUserOutletId(application)}", )
         emit(Resource.Loading())
         try {
-            val snapShot = fireStoreDatabase.collection("item")
-                .whereEqualTo("outletID", Utils.getUserOutletId(application)).get().await()
+            val snapShot = fireStoreDatabase.collection("test_menu")
+                .whereEqualTo("firebase_restaurant_id", Utils.getUserOutletId(application)).get().await()
             Log.e(TAG, "getMenuData: ${snapShot.documents}")
-            if (snapShot.documents.isNotEmpty()) {
+            Log.e(TAG, "getMenuData: ${snapShot.documents.isNotEmpty()}")
+            if (snapShot.documents.isNotEmpty()){
+                Log.d("In FirebaseRepo","Hi")
                 val itemMenuModel: List<ItemMenuModel> =
                     snapShot.toObjects(ItemMenuModel::class.java)
+                Log.d("In FirebaseRepo",itemMenuModel.toString())
                 emit(Resource.Success(itemMenuModel!!))
             }
 

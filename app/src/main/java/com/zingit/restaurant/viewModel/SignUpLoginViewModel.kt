@@ -114,18 +114,42 @@ class SignUpLoginViewModel @Inject constructor(
             }
             if (value != null) {
                 loading.value = false
-                    val outletAuthModel = value.documents[0].toObject(OutletAuthModel::class.java)
-                    if (outletAuthModel != null) {
-                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-                        Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
-                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-                        Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, value.documents.get(0).data?.get("outletID").toString())
-                        signIn.value = true
+                val outletAuthModel = value.documents[0].toObject(OutletAuthModel::class.java)
+                if (outletAuthModel != null) {
+                    Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
+                    Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
+                    Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
+                    Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, "qWqrW6ajkp3OC3Y4t4KM")
+                    Log.e(TAG, "OutletIdSet:"+Utils.getUserOutletId(application), )
+                    signIn.value = true
 
                 }
             }
         }
     }
+
+//    fun getOutlet(){
+//        loading.value = true
+//        firestore.collection("outletAuth").whereEqualTo("email",mAuth.currentUser?.email).addSnapshotListener { value, error ->
+//            if (error != null) {
+//                loading.value = false
+//                Log.e(TAG, "signInWithUserPass: $error")
+//                return@addSnapshotListener
+//            }
+//            if (value != null) {
+//                loading.value = false
+//                    val outletAuthModel = value.documents[0].toObject(OutletAuthModel::class.java)
+//                    if (outletAuthModel != null) {
+//                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
+//                        Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
+//                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
+//                        Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, value.documents.get(0).data?.get("outletID").toString())
+//                        signIn.value = true
+//
+//                }
+//            }
+//        }
+//    }
 
 
 

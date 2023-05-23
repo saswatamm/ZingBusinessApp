@@ -53,10 +53,12 @@ class SettingsFragment : Fragment() {
             viewLifecycleOwner.lifecycle.coroutineScope.launchWhenCreated {
                 restaurantProfileViewModel.restaurantProfileData.collect{
                 Glide.with(this@SettingsFragment)
-                    .load(it.data?.outletImage)
+                    .load(it.data?.image?.get(0).toString())
                     .centerCrop()
                     .placeholder(R.drawable.ic_launcher_foreground)
                     .into(profileImage)
+
+                    Log.d("restaurant data in SettingsFragment",it.data.toString())
                 }
 
 

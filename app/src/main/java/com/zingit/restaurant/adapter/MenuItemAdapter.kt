@@ -1,6 +1,7 @@
 package com.zingit.restaurant.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -24,7 +25,6 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
 
             binding.itemMenu = itemModel
 
-
         }
     }
 
@@ -43,9 +43,9 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
         holder.binding.apply {
             switchToggle.setOnCheckedChangeListener{ view, isChecked ->
                 if(isChecked){
-                    firestore.collection("item").document(getItem(position).id).update("availableOrNot",true)
+                    firestore.collection("test_menu").document(getItem(position).itemId).update("active","1")
                 }else{
-                    firestore.collection("item").document(getItem(position).id).update("availableOrNot",false)
+                    firestore.collection("test_menu").document(getItem(position).itemId).update("active","0")
                 }
             }
         }
@@ -58,7 +58,7 @@ class MenuDiffUtils : DiffUtil.ItemCallback<ItemMenuModel>() {
         oldItem: ItemMenuModel,
         newItem: ItemMenuModel
     ): Boolean {
-        return oldItem.name == newItem.name
+        return oldItem.itemName == newItem.itemName
     }
 
     override fun areContentsTheSame(
