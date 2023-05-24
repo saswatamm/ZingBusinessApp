@@ -7,9 +7,8 @@
             name="itemMenu"
             type="com.zingit.restaurant.models.item.ItemMenuModel" />
         <variable
-            name="active1"
-            type="String"
-            android:value="1"
+            name="activeornot"
+            type="Boolean"
             />
     </data>
 
@@ -56,7 +55,7 @@
             android:id="@+id/switch_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="@{ (itemMenu.active==active1) ? true:false }"
+            android:checked="@{activeornot}"
             android:layout_marginEnd="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/amount"

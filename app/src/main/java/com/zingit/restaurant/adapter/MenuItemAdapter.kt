@@ -11,6 +11,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.databinding.SingleItemMenuOptionBinding
 
 import com.zingit.restaurant.models.item.ItemMenuModel
+import com.zingit.restaurant.models.item.ItemMenuState
+import com.zingit.restaurant.repository.FirebaseRepository
 import com.zingit.restaurant.utils.Utils
 
 
@@ -18,13 +20,14 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
 
     private  val TAG = "MenuItemAdapter"
     lateinit var firestore: FirebaseFirestore
+    private lateinit var firebaseRepository:FirebaseRepository
 
     inner class MenuViewHolder(val binding: SingleItemMenuOptionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(itemModel: ItemMenuModel){
 
             binding.itemMenu = itemModel
-
+            binding.activeornot = itemModel.active.equals("1")
         }
     }
 
@@ -39,13 +42,14 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
     override fun onBindViewHolder(holder: MenuItemAdapter.MenuViewHolder, position: Int) {
         firestore = FirebaseFirestore.getInstance()
         val itemModel =getItem(position)
+        Log.d("MenuItemAdapter","itemModel:"+itemModel.toString())
         holder.bind(itemModel)
         holder.binding.apply {
             switchToggle.setOnCheckedChangeListener{ view, isChecked ->
                 if(isChecked){
-                    firestore.collection("test_menu").document(getItem(position).itemId).update("active","1")
+                    firestore.collection("test_menu").document(getItem(position).Id).update("active","1")
                 }else{
-                    firestore.collection("test_menu").document(getItem(position).itemId).update("active","0")
+                    firestore.collection("test_menu").document(getItem(position).Id).update("active","0")
                 }
             }
         }

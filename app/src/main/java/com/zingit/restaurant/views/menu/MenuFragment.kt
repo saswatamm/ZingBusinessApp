@@ -50,11 +50,12 @@ class MenuFragment : Fragment() {
                     launch {
                         categoryAdapter = CategoryAdapter(requireContext(),0){
                             exploreViewModel.getMenuData(it.categoryName)
-                            Log.d("Menu Fragment:category data",it.toString())
+                            Log.d(TAG, ".getmenudat : $it")
                         }
                         exploreViewModel.categoryData.collect{
                             rvCategory.adapter = categoryAdapter
                             categoryAdapter.submitList(it.data)
+                            Log.d(TAG,".catdata :"+it.data.toString())
                         }
                     }
                     launch {
@@ -71,10 +72,11 @@ class MenuFragment : Fragment() {
                                 loader.visibility = View.GONE
                                 ll.visibility = View.VISIBLE
                                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
                             }
                             Log.e(TAG, "onCreateView: ${it.data}", )
-                            rvProducts.adapter = menuItemAdapter
                             menuItemAdapter.submitList(it.data)
+                            rvProducts.adapter = menuItemAdapter
 
 
                         }

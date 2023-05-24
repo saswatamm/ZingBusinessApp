@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.FragmentHomeBinding
+import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.views.RootActivity
 import kotlinx.coroutines.tasks.await
@@ -72,15 +73,17 @@ class HomeFragment : Fragment() {
                     loader.visibility = View.GONE
                     Log.e(TAG, "dataOpenClose: ${it.data}",)
                     if (it.exists()) {
-                        if (it.get("active") == 1) {
+                        Log.d("HomeFragment",""+ (it.data?.get("active")))
+                        if (it.data?.get("active") == 1) {
                             switchButton.isChecked = true
                             statusOff.visibility = View.GONE
                             statusOn.visibility = View.VISIBLE
+//                            Log.d("HomeFragment","value of active"+it.get("active"))
                         }
                         else {
-                            switchButton.isChecked = false
                             statusOff.visibility = View.VISIBLE
                             statusOn.visibility = View.GONE
+                            switchButton.isChecked = false
                         }
                     }
                 }

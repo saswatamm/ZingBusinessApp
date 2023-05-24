@@ -57,12 +57,11 @@ class FirebaseRepository @Inject constructor(private val application:Application
             val snapShot = fireStoreDatabase.collection("test_menu")
                 .whereEqualTo("firebase_restaurant_id", Utils.getUserOutletId(application)).get().await()
             Log.e(TAG, "getMenuData: ${snapShot.documents}")
-            Log.e(TAG, "getMenuData: ${snapShot.documents.isNotEmpty()}")
             if (snapShot.documents.isNotEmpty()){
                 Log.d("In FirebaseRepo","Hi")
                 val itemMenuModel: List<ItemMenuModel> =
                     snapShot.toObjects(ItemMenuModel::class.java)
-
+                Log.d(TAG,"Hi :"+itemMenuModel.toString())
                 emit(Resource.Success(itemMenuModel!!))
             }
 
@@ -73,7 +72,27 @@ class FirebaseRepository @Inject constructor(private val application:Application
 
 
     }
-
+//    fun getCategoryData() = flow {
+//        Log.e(TAG, "getCategory of outlet ${Utils.getUserOutletId(application)}", )
+//        emit(Resource.Loading())
+//        try {
+//            val snapShot = fireStoreDatabase.collection("test_category")
+//                .whereEqualTo("firebase_restaurant_id", Utils.getUserOutletId(application)).get().await()
+//            Log.e(TAG, "getCateogryData: ${snapShot.documents}")
+//            if (snapShot.documents.isNotEmpty()){
+//                val itemMenuModel: List<ItemMenuModel> =
+//                    snapShot.toObjects(ItemMenuModel::class.java)
+//                Log.d(TAG,"Hi :"+itemMenuModel.toString())
+//                emit(Resource.Success(itemMenuModel!!))
+//            }
+//
+//
+//        } catch (e: Exception) {
+//            emit(Resource.Error(e.message!!))
+//        }
+//
+//
+//    }
 
     fun getOrder(): Flow<List<OrdersModel>> = callbackFlow {
         Log.e(TAG, "getOrder: ${Utils.getUserOutletId(application)}", )

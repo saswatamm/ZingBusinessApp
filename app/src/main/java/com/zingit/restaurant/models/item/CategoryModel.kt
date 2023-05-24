@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CategoryModel(
     @get:PropertyName("category_name")
-    @set:PropertyName("firebase_addon_group_id")
+    @set:PropertyName("category_name")
     var categoryName: String = "",
     @get:PropertyName("item_image_url")
     @set:PropertyName("item_image_url")
