@@ -25,7 +25,7 @@ class CategoryAdapter(
 
         fun bind(categoryModel: CategoryModel, position: Int) {
             binding.category = categoryModel
-            Glide.with(context).load(categoryModel.itemImgUrl).into(binding.profileImage)
+            Glide.with(context).load(categoryModel.catImgUrl).into(binding.profileImage)
         }
     }
 

@@ -40,6 +40,7 @@
                 app:civ_border_color="#FF000000"
                 android:layout_marginTop="5dp"
                 app:civ_border_width="1dp"
+                android:clickable="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

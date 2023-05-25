@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firestore.v1.StructuredQuery.Order
+import com.zingit.restaurant.models.item.CategoryModel
 
 import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.models.order.OrderState
@@ -35,8 +36,6 @@ class FirebaseRepository @Inject constructor(private val application:Application
             val snapShot =
                 fireStoreDatabase.collection("test_restaurant").document(Utils.getUserOutletId(application)!!).get()
                     .await()
-
-
             if (snapShot.exists()) {
                 val restaurantModel: RestaurantModel? =
                     snapShot.toObject(RestaurantModel::class.java)
@@ -72,27 +71,27 @@ class FirebaseRepository @Inject constructor(private val application:Application
 
 
     }
-//    fun getCategoryData() = flow {
-//        Log.e(TAG, "getCategory of outlet ${Utils.getUserOutletId(application)}", )
-//        emit(Resource.Loading())
-//        try {
-//            val snapShot = fireStoreDatabase.collection("test_category")
-//                .whereEqualTo("firebase_restaurant_id", Utils.getUserOutletId(application)).get().await()
-//            Log.e(TAG, "getCateogryData: ${snapShot.documents}")
-//            if (snapShot.documents.isNotEmpty()){
-//                val itemMenuModel: List<ItemMenuModel> =
-//                    snapShot.toObjects(ItemMenuModel::class.java)
-//                Log.d(TAG,"Hi :"+itemMenuModel.toString())
-//                emit(Resource.Success(itemMenuModel!!))
-//            }
-//
-//
-//        } catch (e: Exception) {
-//            emit(Resource.Error(e.message!!))
-//        }
-//
-//
-//    }
+    fun getCategoryData() = flow {
+        Log.e(TAG, "getCategory of outlet ${Utils.getUserOutletId(application)}", )
+        emit(Resource.Loading())
+        try {
+            val snapShot = fireStoreDatabase.collection("test_category")
+                .whereEqualTo("firebase_restaurant_id", Utils.getUserOutletId(application)).get().await()
+            Log.e(TAG, "getCateogryData: ${snapShot.documents}")
+            if (snapShot.documents.isNotEmpty()){
+                val categoryModel: List<CategoryModel> =
+                    snapShot.toObjects(CategoryModel::class.java)
+                Log.d(TAG,"Hi :"+categoryModel.toString())
+                emit(Resource.Success(categoryModel!!))
+            }
+
+
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message!!))
+        }
+
+
+    }
 
     fun getOrder(): Flow<List<OrdersModel>> = callbackFlow {
         Log.e(TAG, "getOrder: ${Utils.getUserOutletId(application)}", )

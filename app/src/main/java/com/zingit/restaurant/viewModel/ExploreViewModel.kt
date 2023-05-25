@@ -1,5 +1,6 @@
 package com.zingit.restaurant.viewModel
 
+import android.content.ClipData.Item
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,13 +26,39 @@ constructor(
     private val _iteMenuData = MutableStateFlow(ItemMenuState())
     val iteMenuData: StateFlow<ItemMenuState> = _iteMenuData
 
-    private val _categoryData = MutableStateFlow(CategoryState())
-    val categoryData: StateFlow<CategoryState> = _categoryData
+//    private val _categoryData = MutableStateFlow(CategoryState())
+//    val categoryData: StateFlow<CategoryState> = _categoryData
    var tempList:MutableList<CategoryModel> = mutableListOf()
+//My new set of variables
+    private val _categoryData1 = MutableStateFlow(CategoryState())
+    val categoryData1: StateFlow<CategoryState> = _categoryData1
+    var tempList1:MutableList<CategoryModel> = mutableListOf()
 
 
     @JvmOverloads
     fun getMenuData(category:String?=null) {
+
+        firebaseRepository.getCategoryData().onEach {
+            when(it)
+            {
+                is Resource.Loading -> {
+                    _categoryData1.value= CategoryState(isLoading=true)
+                }
+                is Resource.Error -> {
+                    _categoryData1.value= CategoryState(isLoading = false, error = it.message?:"")
+                    Log.d("In ExploreViewModels error by FirebaseRepo func getCategoryData",it.message.toString())
+                }
+                is Resource.Success -> {
+
+                    it.data?.forEachIndexed {index, categoryModel->
+                        tempList1.add(categoryModel)
+                    }
+                    _categoryData1.value = CategoryState(data = tempList1.distinctBy { it.categoryName }.toList())
+                    Log.d("EXpViewModel","_categoryData.value="+_categoryData1.value.toString())
+                }
+            }
+        }.launchIn(viewModelScope)
+
 
         firebaseRepository.getMenuData().onEach {
             when (it) {
@@ -44,16 +71,17 @@ constructor(
                 }
                 is Resource.Success -> {
 
-                    it.data?.forEachIndexed { index, itemMenuModel ->
-                        tempList.add(CategoryModel(itemMenuModel.categoryName,itemMenuModel.itemImgUrl))
-                        Log.d("EXpViewModel","categoryModel:"+tempList.toString())
-                    }
+//                    it.data?.forEachIndexed { index, itemMenuModel ->
+//                        tempList.add(CategoryModel(itemMenuModel.categoryName,itemMenuModel.itemImgUrl))
+//                        Log.d("EXpViewModel","categoryModel:"+tempList.toString())
+//                    }
                     if(category==null){
-                        val menuFinal = it.data?.filter {it1 -> it1.categoryName == it.data[0].categoryName
-                          }?.toList()
-                        Log.e("MenuFinal", "getMenuDataNoCat: $menuFinal", )
+                        val menuFinal = it.data?.filter {it1 -> it1.categoryName == tempList1[0].categoryName   //Here, what if the above
+                          }?.toList()                                                                           //function, that populates templist1
+                        Log.e("MenuFinal", "getMenuDataNoCat: $menuFinal", )                           //,although is in flow, but exectues after this function?
                         _iteMenuData.value = ItemMenuState(isLoading = false,data = menuFinal)
-                    }else{
+                    }
+                    else{
                         val menuFinal = it.data?.filter {it1 -> it1.categoryName == category
                         }?.toList()
                         Log.e("MenuFinal", "getMenuData: $menuFinal", )
@@ -61,9 +89,8 @@ constructor(
                     }
 
 
-
-                    _categoryData.value = CategoryState(data = tempList.distinctBy { it.categoryName }.toList())
-                    Log.d("EXpViewModel","_categoryData.value="+_categoryData.value.toString())
+//                    _categoryData.value = CategoryState(data = tempList1.distinctBy { it.categoryName }.toList())
+//                    Log.d("EXpViewModel","_categoryData.value="+_categoryData.value.toString())
                 }
             }
         }.launchIn(viewModelScope)
