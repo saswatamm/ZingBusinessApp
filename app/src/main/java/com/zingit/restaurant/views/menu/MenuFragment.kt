@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.zingit.restaurant.R
 import com.zingit.restaurant.adapter.CategoryAdapter
 import com.zingit.restaurant.adapter.MenuItemAdapter
+import com.zingit.restaurant.adapter.VariationItemAdapter
 import com.zingit.restaurant.databinding.FragmentMenuBinding
 import com.zingit.restaurant.viewModel.ExploreViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +33,7 @@ class MenuFragment : Fragment() {
     private val exploreViewModel: ExploreViewModel by viewModels()
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var menuItemAdapter: MenuItemAdapter
+    private lateinit var variationsAdapter: VariationItemAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -91,7 +93,6 @@ class MenuFragment : Fragment() {
                             Log.e(TAG, "onCreateView: ${it.data}", )
                             menuItemAdapter.submitList(it.data)
                             rvProducts.adapter = menuItemAdapter
-
 
                         }
                     }

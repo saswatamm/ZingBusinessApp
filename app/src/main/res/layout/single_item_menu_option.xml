@@ -25,8 +25,8 @@
             android:layout_marginTop="5dp"
             android:ellipsize="end"
             android:fontFamily="@font/duplet_bold"
-            android:maxLines="1"
             android:maxEms="10"
+            android:maxLines="1"
             android:text="@{itemMenu.itemName}"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -41,12 +41,12 @@
             android:id="@+id/amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
             android:fontFamily="@font/duplet_regular"
+            android:text="@{`₹`+String.valueOf(itemMenu.price)}"
             android:textColor="@color/textGrey"
             android:textSize="16sp"
-            android:text="@{`₹`+String.valueOf(itemMenu.price)}"
             android:textStyle="bold"
-            android:layout_marginEnd="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_order_no"
             app:layout_constraintEnd_toStartOf="@id/switch_toggle"
             app:layout_constraintTop_toTopOf="@id/tv_order_no" />
@@ -55,13 +55,39 @@
             android:id="@+id/switch_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="@{activeornot}"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:checked="@{activeornot}"
+            android:thumb="@drawable/thumb_selector"
+            app:layout_constraintBottom_toBottomOf="@id/amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/amount"
-            app:layout_constraintBottom_toBottomOf="@id/amount"
-            android:thumb="@drawable/thumb_selector"
             app:track="@drawable/track_selector" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/variationcont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/switch_toggle"
+            >
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/variationcont"
+            android:id="@+id/variation_rv"
+            >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!--        <androidx.recyclerview.widget.RecyclerView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:id="@+id/variationrv"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/tv_order_no"-->
+        <!--            />-->
 
         <View
             android:id="@+id/line2"
@@ -71,9 +97,9 @@
             android:layout_marginTop="10dp"
             android:background="#DAD8D8"
             android:paddingVertical="6dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_order_no" />
 
 

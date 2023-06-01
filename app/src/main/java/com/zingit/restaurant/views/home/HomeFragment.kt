@@ -38,7 +38,7 @@ class HomeFragment : Fragment() {
         firebase = FirebaseFirestore.getInstance()
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-            switchButton.setOnCheckedChangeListener { view, isChecked ->
+            switchButton.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
 
 //                    firebase.collection("outlet")
@@ -51,8 +51,6 @@ class HomeFragment : Fragment() {
                         statusOff.visibility = View.GONE
                         statusOn.visibility = View.VISIBLE
 
-
-
                 } else {
 //                    firebase.collection("outlet")
 //                        .document(Utils.getUserOutletId(requireContext()).toString())
@@ -63,27 +61,32 @@ class HomeFragment : Fragment() {
                         .update("active", 0)
                     statusOff.visibility = View.VISIBLE
                     statusOn.visibility = View.GONE
+                    Log.d(TAG,"else part is executed in oncheckedclicklistener")
                 }
             }
 
             firebase.collection("test_restaurant")
                 .document(Utils.getUserOutletId(requireContext()).toString())
                 .get()
-                .addOnSuccessListener {
-                    loader.visibility = View.GONE
-                    Log.e(TAG, "dataOpenClose: ${it.data}",)
-                    if (it.exists()) {
-                        Log.d("HomeFragment",""+ (it.data?.get("active")))
-                        if (it.data?.get("active") == 1) {
-                            switchButton.isChecked = true
-                            statusOff.visibility = View.GONE
-                            statusOn.visibility = View.VISIBLE
-//                            Log.d("HomeFragment","value of active"+it.get("active"))
-                        }
-                        else {
-                            statusOff.visibility = View.VISIBLE
-                            statusOn.visibility = View.GONE
-                            switchButton.isChecked = false
+                .addOnCompleteListener{task->
+                    if(task.isSuccessful)
+                    {
+                        loader.visibility = View.GONE
+                        Log.e(TAG, "dataOpenClose: ${task.result.data}",)
+                        val data= task.result.data?.get("active").toString()
+                        if (task.result.exists()) {
+                            Log.d(TAG," value in "+data)
+                            if (data.equals("1")) {
+                                switchButton.isChecked = true
+                                statusOff.visibility = View.GONE
+                                statusOn.visibility = View.VISIBLE
+                                Log.d(TAG,"value of active if data comes"+data)
+                            }
+                            else {
+                                statusOff.visibility = View.VISIBLE
+                                statusOn.visibility = View.GONE
+                                switchButton.isChecked = false
+                            }
                         }
                     }
                 }

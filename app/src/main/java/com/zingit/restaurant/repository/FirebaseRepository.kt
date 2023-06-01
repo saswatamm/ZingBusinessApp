@@ -50,7 +50,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
     }
 
     fun getMenuData() = flow {
-        Log.e(TAG, "getMenu: ${Utils.getUserOutletId(application)}", )
+        Log.e(TAG, "getMenu: ${Utils.getUserOutletId(application)}")
         emit(Resource.Loading())
         try {
             val snapShot = fireStoreDatabase.collection("test_menu")
@@ -61,7 +61,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
                 val itemMenuModel: List<ItemMenuModel> =
                     snapShot.toObjects(ItemMenuModel::class.java)
                 Log.d(TAG,"Hi :"+itemMenuModel.toString())
-                emit(Resource.Success(itemMenuModel!!))
+                emit(Resource.Success(itemMenuModel))
             }
 
 
@@ -82,7 +82,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
                 val categoryModel: List<CategoryModel> =
                     snapShot.toObjects(CategoryModel::class.java)
                 Log.d(TAG,"Hi :"+categoryModel.toString())
-                emit(Resource.Success(categoryModel!!))
+                emit(Resource.Success(categoryModel))
             }
 
 
