@@ -52,12 +52,15 @@ class SettingsFragment : Fragment() {
             viewModel = restaurantProfileViewModel
             viewLifecycleOwner.lifecycle.coroutineScope.launchWhenCreated {
                 restaurantProfileViewModel.restaurantProfileData.collect{
-                Glide.with(this@SettingsFragment)
-                    .load(it.data?.image?.get(0).toString())
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .into(profileImage)
+                    if(!it.isLoading && it.data?.image?.isNotEmpty() == true)
+                    {
+                        Glide.with(this@SettingsFragment)
+                            .load(it.data.image[0].toString())
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_launcher_foreground)
+                            .into(profileImage)
 
+                    }
                     Log.d("restaurant data in SettingsFragment",it.data.toString())
                 }
 

@@ -119,7 +119,7 @@ class SignUpLoginViewModel @Inject constructor(
                     Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
                     Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
                     Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-                    Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, "qWqrW6ajkp3OC3Y4t4KM")
+                    Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, "j1NWlFCAw3uhmZ09k4FM")
                     Log.e(TAG, "OutletIdSet:"+Utils.getUserOutletId(application), )
                     signIn.value = true
 

@@ -13,15 +13,16 @@ import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.models.item.VariationsModel
 
 //send menuId from adapter
-class VariationItemAdapter(private val context: Context,private val menuItemId :String):
+class VariationItemAdapter(private val context: Context,private val menuItemId :String,private val variationArray : ArrayList<VariationsModel>):
     ListAdapter<VariationsModel, VariationItemAdapter.VariationViewHolder>(VariationDiffUtils()) {   //send variationsmodel from MenuFragment
 
-    private  val TAG = "VariationItemAdapter"
+    //variationArray passed as args has all the array elements under variation
+    private val TAG = "VariationItemAdapter"
     lateinit var firestore: FirebaseFirestore
 
-    inner class VariationViewHolder(val binding:VariationItemMenuOptionBinding) :RecyclerView.ViewHolder(binding.root)
-    {
-        fun bind(variationsModel: VariationsModel){
+    inner class VariationViewHolder(val binding: VariationItemMenuOptionBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(variationsModel: VariationsModel) {
 
             binding.variaitonMenu = variationsModel
             binding.activeornot = variationsModel.active.equals("1")
@@ -32,31 +33,46 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
         parent: ViewGroup,
         viewType: Int
     ): VariationItemAdapter.VariationViewHolder {
-        val binding=VariationItemMenuOptionBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding = VariationItemMenuOptionBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return VariationViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: VariationItemAdapter.VariationViewHolder, position: Int) {
         firestore = FirebaseFirestore.getInstance()
-        val variationsModel =getItem(position)
-        Log.d("MenuItemAdapter","itemModel:"+variationsModel.toString())
-//        val itemVariation =itemModel.variations
-//        itemVariation.forEach { Log.d("MenuItemAdapte","eachVariation:"+it.toString()) }
-
-//        holder.binding.variationRv.apply {  }
+        val variationsModel = getItem(position)
+        Log.d("MenuItemAdapter", "itemModel:" + variationsModel.toString())
 
         holder.bind(variationsModel)
-//        holder.binding.apply {
-//            variationSwitchToggle.setOnCheckedChangeListener{ view, isChecked ->    //CHANGE THIS
-//                if(isChecked){
-//                    variationsModel.active.equals("1")
-//                    firestore.collection("test_menu").document(menuItemId).update("variations",variationsModel)
-//                }else{
-//                    variationsModel.active.equals("0")
-//                    firestore.collection("test_menu").document(menuItemId).update("variations",variationsModel)
-//                }
-//            }
-//        }
+        holder.binding.apply {
+            variationSwitchToggle.setOnCheckedChangeListener { view, isChecked ->    //CHANGE THIS
+                if (isChecked) {
+
+                    variationArray.forEach {
+                        if (it.variationId == variationsModel.variationId) {
+                            it.active="1"
+                            firestore.collection("test_menu").document(menuItemId)
+                                .update("variations", variationArray)
+                            Log.d(TAG,variationArray.toString())
+                        }
+
+                    }
+
+                } else {
+                    variationArray.forEach {
+                        if (it.variationId == variationsModel.variationId) {
+                            it.active="0"
+                            firestore.collection("test_menu").document(menuItemId)
+                                .update("variations", variationArray)
+                            Log.d(TAG,variationArray.toString())
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 class VariationDiffUtils : DiffUtil.ItemCallback<VariationsModel>() {

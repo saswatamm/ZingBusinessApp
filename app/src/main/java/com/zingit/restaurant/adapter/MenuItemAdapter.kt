@@ -35,7 +35,7 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
             binding.activeornot = itemModel.active.equals("1")
             //Setting up variation rv
 
-            val variationAdapter = VariationItemAdapter(context,itemModel.Id)
+            val variationAdapter = VariationItemAdapter(context,itemModel.Id,itemModel.variations)
             binding.variationRv.layoutManager=LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
             variationAdapter.submitList(itemModel.variations)
             binding.variationRv.adapter=variationAdapter

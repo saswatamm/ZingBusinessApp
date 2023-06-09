@@ -13,8 +13,8 @@ data class RestaurantModel(
     var calculateTaxOnPkg: Int = 0,
     @SerializedName("campusId")
     var campusId: ArrayList<String> = arrayListOf(),
-    @SerializedName("city")
-    val city: String ="",
+//    @SerializedName("city")
+//    val city: String ="",
     @SerializedName("contact")
     val contact: String ="",
     @SerializedName("country")
@@ -59,23 +59,30 @@ data class RestaurantModel(
     @get:PropertyName("restaurant_name")
     @set:PropertyName("restaurant_name")
     var restaurantName: String ="",
-    @get:PropertyName("sc_applicable_on")
-    @set:PropertyName("sc_applicable_on")
-    var scApplicableOn: String ="",
-    @get:PropertyName("sc_calculate_on")
-    @set:PropertyName("sc_calculate_on")
-    var scCalcOn: String ="",
-    @get:PropertyName("sc_type")
-    @set:PropertyName("sc_type")
-    var scType: String ="",
-    @get:PropertyName("sc_value")
-    @set:PropertyName("sc_value")
-    var scValue: String ="",
-    @get:PropertyName("tax_on_sc")
-    @set:PropertyName("tax_on_sc")
-    var taxOnSc: String ="",
+//    @get:PropertyName("sc_applicable_on")
+//    @set:PropertyName("sc_applicable_on")
+//    var scApplicableOn: String ="",
+//    @get:PropertyName("sc_calculate_on")
+//    @set:PropertyName("sc_calculate_on")
+//    var scCalcOn: String ="",
+//    @get:PropertyName("sc_type")
+//    @set:PropertyName("sc_type")
+//    var scType: String ="",
+//    @get:PropertyName("sc_value")
+//    @set:PropertyName("sc_value")
+//    var scValue: String ="",
+//    @get:PropertyName("tax_on_sc")
+//    @set:PropertyName("tax_on_sc")
+//    var taxOnSc: String ="",
     @get:PropertyName("zingTime")
     @set:PropertyName("zingTime")
-    var zingTime: String ="",
+    var zingTime: Int=0,
+//    @get:PropertyName("orderNumberRange")
+//    @set:PropertyName("orderNumberRange")
+//    var orderNumberRange: Double=0.0,
+
+//    @get:PropertyName("orderNumbers")
+//    @set:PropertyName("orderNumbers")
+//    var orderNumbers: HashMap<String,>
 
 )

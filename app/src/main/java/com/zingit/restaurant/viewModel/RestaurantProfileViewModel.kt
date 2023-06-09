@@ -1,5 +1,6 @@
 package com.zingit.restaurant.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zingit.restaurant.models.resturant.RestaurantProfileState
@@ -27,16 +28,20 @@ constructor(
 
 
     fun getUserData() {
+        Log.d("RestaurantProfileViewModel","getUSerData has been called")
         firebaseRepository.getRestaurantProfileDate().onEach {
             when (it) {
                 is Resource.Loading -> {
                     _restaurantProfileData.value = RestaurantProfileState(isLoading = true)
+                    Log.d("RestaurantProfileViewModel","isLoading: ")
                 }
                 is Resource.Error -> {
                     _restaurantProfileData.value = RestaurantProfileState(error = it.message ?: "")
+                    Log.d("RestaurantProfileViewModel","Resource Error: "+it.message)
                 }
                 is Resource.Success -> {
                     _restaurantProfileData.value = RestaurantProfileState(data = it.data)
+                    Log.d("RestaurantProfileViewModel","Resource success:"+it.data)
                 }
             }
         }.launchIn(viewModelScope)

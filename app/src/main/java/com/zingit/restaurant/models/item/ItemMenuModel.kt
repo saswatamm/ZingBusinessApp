@@ -42,8 +42,8 @@ data class ItemMenuModel(
     @get:PropertyName("item_image_url")
     @set:PropertyName("item_image_url")
     var itemImgUrl: String = "",
-    @get:PropertyName("item_order_type")
-    @set:PropertyName("item_order_type")
+    @get:PropertyName("item_ordertype")
+    @set:PropertyName("item_ordertype")
     var itemOrderType: String = "",
     @get:PropertyName("item_packingcharges")
     @set:PropertyName("item_packingcharges")

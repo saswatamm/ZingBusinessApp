@@ -7,13 +7,14 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firestore.v1.StructuredQuery.Order
+import com.zingit.restaurant.models.item.AddonGroupModel
 import com.zingit.restaurant.models.item.CategoryModel
 
 import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.models.order.OrderState
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.models.resturant.RestaurantModel
-import com.zingit.restaurant.models.resturant.RestaurantProfileModel
+//import com.zingit.restaurant.models.resturant.RestaurantProfileModel
 import com.zingit.restaurant.utils.Resource
 import com.zingit.restaurant.utils.Utils
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -40,7 +41,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
                 val restaurantModel: RestaurantModel? =
                     snapShot.toObject(RestaurantModel::class.java)
                 Log.e(TAG, "getRestaurantData: ${restaurantModel.toString()}")
-                emit(Resource.Success(restaurantModel!!))
+                emit(Resource.Success(restaurantModel))
             }
 
         } catch (e: Exception   ) {
@@ -89,8 +90,25 @@ class FirebaseRepository @Inject constructor(private val application:Application
         } catch (e: Exception) {
             emit(Resource.Error(e.message!!))
         }
+    }
 
+    fun getAddonGroupData(id :String) = flow {
+        Log.e(TAG, "getCategory of outlet ${Utils.getUserOutletId(application)}", )
+        emit(Resource.Loading())
+        try {
+            val snapShot = fireStoreDatabase.collection("test_addongroups")
+                .whereEqualTo("firebase_restaurant_id", Utils.getUserOutletId(application)).get().await()
+            Log.e(TAG, "getAddonGroupsData: ${snapShot.documents}")
+            if (snapShot.documents.isNotEmpty()){
+                val addonGroupModel: List<AddonGroupModel> =
+                    snapShot.toObjects(AddonGroupModel::class.java)
+                Log.d(TAG,"Hi :"+addonGroupModel.toString())
+                emit(Resource.Success(addonGroupModel))
+            }
 
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message!!))
+        }
     }
 
     fun getOrder(): Flow<List<OrdersModel>> = callbackFlow {

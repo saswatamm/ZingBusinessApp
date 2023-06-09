@@ -19,9 +19,11 @@ import com.zingit.restaurant.adapter.CategoryAdapter
 import com.zingit.restaurant.adapter.MenuItemAdapter
 import com.zingit.restaurant.adapter.VariationItemAdapter
 import com.zingit.restaurant.databinding.FragmentMenuBinding
+import com.zingit.restaurant.repository.FirebaseRepository
 import com.zingit.restaurant.viewModel.ExploreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -33,7 +35,7 @@ class MenuFragment : Fragment() {
     private val exploreViewModel: ExploreViewModel by viewModels()
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var menuItemAdapter: MenuItemAdapter
-    private lateinit var variationsAdapter: VariationItemAdapter
+//    private lateinit var firebaseRepository:FirebaseRepository
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,7 +95,11 @@ class MenuFragment : Fragment() {
                             Log.e(TAG, "onCreateView: ${it.data}", )
                             menuItemAdapter.submitList(it.data)
                             rvProducts.adapter = menuItemAdapter
-
+                            //EXPERIMENTAL
+//                            firebaseRepository.getAddonGroupData(it.data?.get(0)!!.firebaseRestaurantId).collect(){
+//                                Log.d(TAG,"Value of AddonGroupModel is:"+it.data)
+//                            }
+                            //EXPERIMENTAL
                         }
                     }
                 }
