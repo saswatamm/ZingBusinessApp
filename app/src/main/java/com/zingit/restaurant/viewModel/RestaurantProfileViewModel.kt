@@ -3,6 +3,7 @@ package com.zingit.restaurant.viewModel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.models.resturant.RestaurantProfileState
 import com.zingit.restaurant.repository.FirebaseRepository
 import com.zingit.restaurant.utils.Resource
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
@@ -22,13 +24,14 @@ constructor(
 
     private val _restaurantProfileData = MutableStateFlow(RestaurantProfileState())
     val restaurantProfileData: StateFlow<RestaurantProfileState> = _restaurantProfileData
-
+    private val fireStoreDatabase = FirebaseFirestore.getInstance()
 
 
 
 
     fun getUserData() {
         Log.d("RestaurantProfileViewModel","getUSerData has been called")
+
         firebaseRepository.getRestaurantProfileDate().onEach {
             when (it) {
                 is Resource.Loading -> {
@@ -42,6 +45,10 @@ constructor(
                 is Resource.Success -> {
                     _restaurantProfileData.value = RestaurantProfileState(data = it.data)
                     Log.d("RestaurantProfileViewModel","Resource success:"+it.data)
+                    val snapshot=fireStoreDatabase.collection("test_order")
+                        .whereEqualTo("restaurant.details.restID",
+                            it.data!!.menuSharingCode).get().await()
+                    Log.d("RestaurantProfileViewModel","orderData is:" + snapshot.documents.size)
                 }
             }
         }.launchIn(viewModelScope)

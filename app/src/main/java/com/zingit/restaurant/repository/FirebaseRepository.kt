@@ -139,6 +139,31 @@ class FirebaseRepository @Inject constructor(private val application:Application
 
     }
 
+    fun getTestOrder(restID:String): Flow<List<OrdersModel>> = callbackFlow {
+        Log.e(TAG, "getOrder: ${Utils.getUserOutletId(application)}", )
+        val snapShot = fireStoreDatabase.collection("test_order")
+            .whereEqualTo("restaurant.details.restID",restID).addSnapshotListener { value, error ->
+                if (error != null) {
+//                    trySend(listOf()).isSuccess
+                    Log.d(TAG,"Error in getTestOrder is "+error.toString())
+                    return@addSnapshotListener
+                }
+                if (value != null) {
+
+                    Log.d(TAG,"Order details are:"+value.toString())
+
+//                    var orderModel: List<OrdersModel> =
+//                        value.toObjects(OrdersModel::class.java)
+//
+//                    orderModel = orderModel.sortedByDescending { it.placedTime } //Orders sorted in descending order
+//
+//
+//                    trySend(orderModel).isSuccess
+                }
+            }
+
+        awaitClose { snapShot.remove() }
+    }
 
 
 

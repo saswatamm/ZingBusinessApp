@@ -62,6 +62,7 @@ class SettingsFragment : Fragment() {
 
                     }
                     Log.d("restaurant data in SettingsFragment",it.data.toString())
+
                 }
 
 
