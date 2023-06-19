@@ -46,7 +46,7 @@ class ViewPastOrderFragment : Fragment() {
             pastOrder = orderModel
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter= pastOrderAdapter
-            pastOrderAdapter.submitList(orderModel.orderItems)
+//            pastOrderAdapter.submitList(orderModel.orderItems)
             backArrow.setOnClickListener {
                 findNavController().popBackStack()
             }

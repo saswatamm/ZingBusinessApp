@@ -3,6 +3,21 @@ package com.zingit.restaurant.models.order
 import com.google.firebase.firestore.PropertyName
 
 data class OrderDetailsModel(
+    @get:PropertyName("details")
+    @set:PropertyName("details")
+    var details: OrderModel?=OrderModel(),
+//    var details: ArrayList<OrderModel> = arrayListOf(),
+    )
+    //Gst model has been used as common model for pcgstdetails and dcgstdetails
+data class GstModel(
+    @get:PropertyName("amount")
+    @set:PropertyName("amount")
+    var amount: String = "",
+    @get:PropertyName("gst_liable")
+    @set:PropertyName("gst_liable")
+    var gstLiable: String = "",
+)
+data class OrderModel(
     @get:PropertyName("advanced_order")
     @set:PropertyName("advanced_order")
     var advancedOrder: String = "",
@@ -27,9 +42,9 @@ data class OrderDetailsModel(
     @get:PropertyName("enable_delivery")
     @set:PropertyName("enable_delivery")
     var enableDelivery: Int=0,
-    @get:PropertyName("min_prep_time")
-    @set:PropertyName("min_prep_time")
-    var minPrepTime: String = "",
+//    @get:PropertyName("min_prep_time")
+//    @set:PropertyName("min_prep_time")
+//    var minPrepTime: Long=0,
     @get:PropertyName("orderID")
     @set:PropertyName("orderID")
     var orderId: String = "",
@@ -72,13 +87,4 @@ data class OrderDetailsModel(
     @get:PropertyName("total")
     @set:PropertyName("total")
     var total: String = "",
-    )
-    //Gst model has been used as common model for pcgstdetails and dcgstdetails
-data class GstModel(
-    @get:PropertyName("amount")
-    @set:PropertyName("amount")
-    var amount: String = "",
-    @get:PropertyName("gst_liable")
-    @set:PropertyName("gst_liable")
-    var gstLiable: String = "",
 )

@@ -3,6 +3,13 @@ package com.zingit.restaurant.models.order
 import com.google.firebase.firestore.PropertyName
 
 data class OrderCustomerModel(
+    @get:PropertyName("details")
+    @set:PropertyName("details")
+    var details:OrderCustomerModelDetails?=OrderCustomerModelDetails(),
+//    var details:ArrayList<OrderCustomerModelDetails> = arrayListOf(),
+
+)
+data class OrderCustomerModelDetails(
     @get:PropertyName("address")
     @set:PropertyName("address")
     var address: String = "",
@@ -22,3 +29,4 @@ data class OrderCustomerModel(
     @set:PropertyName("phone")
     var phone: String = "",
 )
+

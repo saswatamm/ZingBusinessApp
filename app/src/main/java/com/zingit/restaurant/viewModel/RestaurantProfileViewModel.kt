@@ -45,10 +45,7 @@ constructor(
                 is Resource.Success -> {
                     _restaurantProfileData.value = RestaurantProfileState(data = it.data)
                     Log.d("RestaurantProfileViewModel","Resource success:"+it.data)
-                    val snapshot=fireStoreDatabase.collection("test_order")
-                        .whereEqualTo("restaurant.details.restID",
-                            it.data!!.menuSharingCode).get().await()
-                    Log.d("RestaurantProfileViewModel","orderData is:" + snapshot.documents.size)
+
                 }
             }
         }.launchIn(viewModelScope)

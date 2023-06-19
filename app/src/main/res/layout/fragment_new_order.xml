@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@{`#`+ pastOrder.orderNo}"
+            android:text="@{`#`}"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintStart_toEndOf="@id/order"
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@{Utils.INSTANCE.formatDate(pastOrder.placedTime.seconds * 1000)}"
+            android:text="{}"
             android:layout_marginTop="@dimen/_10sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@{Utils.INSTANCE.formatTimeHHMM(pastOrder.placedTime.seconds * 1000)}"
+            android:text="@{}"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintStart_toEndOf="@id/time"
@@ -142,7 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@{pastOrder.userNumber}"
+            android:text="@{}"
             android:layout_marginTop="@dimen/_5sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
@@ -189,6 +189,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
+<!--CN below inclick not defined            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/prepared"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_marginEnd="@dimen/_5sdp"-->
+<!--                android:backgroundTint="@color/green"-->
+<!--                android:fontFamily="@font/duplet_semibold"-->
+<!--                android:paddingVertical="@dimen/_15sdp"-->
+<!--                android:text="@string/order_prepared"-->
+<!--                android:textAlignment="center"-->
+<!--                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_prepared_campaign`,true,pastOrder.id)}"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="@dimen/_10sdp"-->
+<!--                app:cornerRadius="@dimen/_5sdp" />-->
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/prepared"
                 android:layout_width="match_parent"
@@ -200,12 +217,10 @@
                 android:paddingVertical="@dimen/_15sdp"
                 android:text="@string/order_prepared"
                 android:textAlignment="center"
-                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_prepared_campaign`,true,pastOrder.id)}"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp"
                 app:cornerRadius="@dimen/_5sdp" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/rejectBtn"
                 android:layout_width="match_parent"

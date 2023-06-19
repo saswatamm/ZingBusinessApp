@@ -1,20 +1,15 @@
 package com.zingit.restaurant.viewModel
 
 import android.util.Log
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 
-import com.zingit.restaurant.models.order.OrderState
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.models.order.SearchState
 import com.zingit.restaurant.repository.FirebaseRepository
-import com.zingit.restaurant.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -31,7 +26,7 @@ class OrdersViewModel @Inject constructor(
     val orderHistoryData: StateFlow<List<OrdersModel>> = _orderHistoryData
     var myList: MutableList<OrdersModel> = mutableListOf()
     
-    private val _orderPrintNew:MutableStateFlow<OrdersModel> = MutableStateFlow(OrdersModel())
+    private val _orderPrintNew:MutableStateFlow<OrdersModel> = MutableStateFlow(OrdersModel(customer = null,order = null, orderItem= null, restaurant = null, tax = null))
     val orderPrintNew:StateFlow<OrdersModel> = _orderPrintNew
 
     private val _orderSearchData = MutableStateFlow(SearchState())
@@ -43,6 +38,7 @@ class OrdersViewModel @Inject constructor(
 
             if (it.isNotEmpty()) {
                 _orderActiveData.value = it
+                Log.d(TAG,"Order Data is :$it")
             }
         }.launchIn(viewModelScope)
 
@@ -59,23 +55,23 @@ class OrdersViewModel @Inject constructor(
 
 
 
-    fun getOrderHistory() {
-        repository.getHistoryOrder().onEach {
-            if (it.isNotEmpty()) {
-                clear()
-                val currentTime = Timestamp.now().seconds
-                it.forEach { order ->
-                    val timeDiff = currentTime  - order.placedTime!!.seconds
-                    if (timeDiff <= 24 * 60 * 60) { // 3 hours in milliseconds
-                        myList.add(order)
-                    }
-
-                }
-                _orderHistoryData.value = myList
-            }
-        }.launchIn(viewModelScope)
-
-    }
+//    fun getOrderHistory() {
+//        repository.getHistoryOrder().onEach {
+//            if (it.isNotEmpty()) {
+//                clear()
+//                val currentTime = Timestamp.now().seconds
+//                it.forEach { order ->
+//                    val timeDiff = currentTime  - order.placedTime!!.seconds
+//                    if (timeDiff <= 24 * 60 * 60) { // 3 hours in milliseconds
+//                        myList.add(order)
+//                    }
+//
+//                }
+//                _orderHistoryData.value = myList
+//            }
+//        }.launchIn(viewModelScope)
+//
+//    }
 
     fun clear() {
         myList.clear()

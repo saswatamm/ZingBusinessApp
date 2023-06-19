@@ -47,7 +47,7 @@ class HistoryFragment : Fragment() {
         gson = Gson()
         val orderModel =  gson.fromJson(data, OrdersModel::class.java)
 
-        orderViewModel.getOrderHistory()
+//CN        orderViewModel.getOrderHistory()
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {

@@ -22,72 +22,72 @@
             app:cardBackgroundColor="@color/grey1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/tv_order_no"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:text="@{`Order #` + history.orderNo}"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/duplet_bold"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"/>
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_order_no"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="10dp"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    android:text="@{`Order #` + history.orderNo}"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:fontFamily="@font/duplet_bold"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_marginTop="20dp"-->
+<!--                    android:layout_marginBottom="20dp"/>-->
 
-                <TextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    app:layout_constraintStart_toEndOf="@id/tv_order_no"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:text="@string/time"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/duplet_regular"
-                    android:textColor="@color/textGrey"
-                    android:textStyle="bold"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_time"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="5dp"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/tv_order_no"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    android:text="@string/time"-->
+<!--                    android:textSize="12sp"-->
+<!--                    android:fontFamily="@font/duplet_regular"-->
+<!--                    android:textColor="@color/textGrey"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_marginTop="15dp"-->
+<!--                    android:layout_marginBottom="15dp"/>-->
 
 
-                <TextView
-                    android:id="@+id/amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@id/view"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginEnd="10dp"
-                    android:text="@{`₹`+ String.valueOf(history.totalAmountPaid)}"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/duplet_regular"
-                    android:textColor="@color/textGrey"
-                    android:textStyle="bold"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"/>
+<!--                <TextView-->
+<!--                    android:id="@+id/amount"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:layout_constraintEnd_toStartOf="@id/view"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:text="@{`₹`+ String.valueOf(history.totalAmountPaid)}"-->
+<!--                    android:textSize="14sp"-->
+<!--                    android:fontFamily="@font/duplet_regular"-->
+<!--                    android:textColor="@color/textGrey"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_marginTop="15dp"-->
+<!--                    android:layout_marginBottom="15dp"/>-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:backgroundTint="@color/black"
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/view"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:backgroundTint="@color/black"-->
 
-                    android:text="@string/view"
-                    android:textAllCaps="false"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                    android:text="@string/view"-->
+<!--                    android:textAllCaps="false"-->
+<!--                    android:textSize="12sp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
         </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

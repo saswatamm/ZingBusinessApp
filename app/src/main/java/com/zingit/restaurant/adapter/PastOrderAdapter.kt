@@ -42,7 +42,8 @@ class PastOrderDiffUtils : DiffUtil.ItemCallback<OrderItem>() {
         oldItem: OrderItem,
         newItem: OrderItem
     ): Boolean {
-        return oldItem.itemID == newItem.itemID
+//        return oldItem.itemID == newItem.itemID
+        return true         //temporary adjustment to function
     }
 
     override fun areContentsTheSame(

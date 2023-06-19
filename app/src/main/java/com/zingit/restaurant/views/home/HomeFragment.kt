@@ -90,6 +90,12 @@ class HomeFragment : Fragment() {
                         }
                     }
                 }
+
+            firebase.collection("test_order")
+                .whereEqualTo("restaurant.details.restID", Utils.getMenuSharingCode(requireContext())).get().addOnCompleteListener {
+                    Log.d(TAG+" order data = ",it.result.documents.get(0).toString())
+                }
+
 //            firebase.collection("outlet")
 //                .document(Utils.getUserOutletId(requireContext()).toString())
 //                .get()

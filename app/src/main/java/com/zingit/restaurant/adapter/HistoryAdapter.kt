@@ -32,13 +32,13 @@ class HistoryAdapter(val context: Context, val onClick: (OrdersModel) -> Unit) :
     override fun onBindViewHolder(holder: HistoryAdapter.MyViewHolder, position: Int) {
         val orderHistory = getItem(position)
         holder.bind(orderHistory)
-        val date = Date(orderHistory.placedTime.seconds * 1000)
-        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-        val formattedTime = dateFormat.format(date)
-        holder.binding.tvTime.text = formattedTime
-        holder.binding.view.setOnClickListener{
-            onClick(orderHistory)
-        }
+//CN        val date = Date(orderHistory.placedTime.seconds * 1000)
+//        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+//        val formattedTime = dateFormat.format(date)
+//        holder.binding.tvTime.text = formattedTime
+//        holder.binding.view.setOnClickListener{
+//            onClick(orderHistory)
+//        }
 
     }
 }
@@ -48,7 +48,8 @@ class HistoryOrderDiffUtils : DiffUtil.ItemCallback<OrdersModel>() {
         oldItem: OrdersModel,
         newItem: OrdersModel
     ): Boolean {
-        return oldItem.paymentOrderID == newItem.paymentOrderID
+//CN        return oldItem.paymentOrderID == newItem.paymentOrderID
+        return true
     }
 
     override fun areContentsTheSame(

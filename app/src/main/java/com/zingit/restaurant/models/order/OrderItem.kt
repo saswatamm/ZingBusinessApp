@@ -1,15 +1,14 @@
 package com.zingit.restaurant.models.order
 
-import android.os.Parcelable
 import com.google.firebase.firestore.PropertyName
-import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
 
 data class OrderItem(
-    var details :ArrayList<orderItemDetails> = arrayListOf()
+    @get:PropertyName("details")
+    @set:PropertyName("details")
+    var details :ArrayList<OrderItemDetails> = arrayListOf()
 )
-data class orderItemDetails(
+data class OrderItemDetails(
     @get:PropertyName("description")
     @set:PropertyName("description")
     var decsription: String = "",
@@ -40,12 +39,12 @@ data class orderItemDetails(
     @get:PropertyName("variation_name")
     @set:PropertyName("variation_name")
     var variationName: String = "",
-    @get:PropertyName("item_tax")
-    @set:PropertyName("item_tax")
-    var itemTax: ArrayList<OrderItemTax> = arrayListOf(),
+//    @get:PropertyName("item_tax")
+//    @set:PropertyName("item_tax")
+//    var itemTax: ArrayList<OrderItemTax> = arrayListOf(),
     @get:PropertyName("AddonItem")
     @set:PropertyName("AddonItem")
-    var addonItem: ArrayList<AddonItemDetails> = arrayListOf(),
+    var addonItem: AddonItemDetails?=AddonItemDetails(),
 )
 
 data class OrderItemTax(
@@ -60,6 +59,11 @@ data class OrderItemTax(
     var name: String = "",
 )
 data class AddonItemDetails(
+    @get:PropertyName("details")
+    @set:PropertyName("details")
+    var details: ArrayList<AddonItem> = arrayListOf(),
+)
+data class AddonItem(
     @get:PropertyName("group_id")
     @set:PropertyName("group_id")
     var groupId: String = "",

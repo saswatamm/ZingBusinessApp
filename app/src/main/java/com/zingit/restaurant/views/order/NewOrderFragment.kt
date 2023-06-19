@@ -78,7 +78,7 @@ class NewOrderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_order, container, false)
+//CN        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_order, container, false)
 
 
 
@@ -118,10 +118,10 @@ class NewOrderFragment : Fragment() {
            checking the timer --->PlaceTime Order
            Below Function
            */
-            countDownTimer(rejectBtn)
+//  CN          countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
-            pastOrderAdapter.submitList(orderModel.orderItems)
+//  CN          pastOrderAdapter.submitList(orderModel.orderItems)
             backArrow.setOnClickListener {
                 findNavController().popBackStack()
             }
@@ -130,12 +130,12 @@ class NewOrderFragment : Fragment() {
         binding.printKOT.setOnClickListener {
 
 
-            RootActivity().selectedDevice?.let { it1 ->
-                Log.e(TAG, "printer blue: $it", )
-                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
-                    it1
-                )
-            }
+// CN           RootActivity().selectedDevice?.let { it1 ->
+//                Log.e(TAG, "printer blue: $it", )
+//                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
+//                    it1
+//                )
+//            }
         }
 
         return binding.root
@@ -214,7 +214,7 @@ class NewOrderFragment : Fragment() {
             recyclerView.adapter = cancelSpecificItemsAdapter
             cancelItemModel.add(CancelItemModel("All Items","0" ,false))
            // arrayList1.add("All Items")
-            cancelItemModel.addAll(ordersModel.orderItems.map { CancelItemModel(it.itemName,it.itemID, false) })
+//CN            cancelItemModel.addAll(ordersModel.orderItems.map { CancelItemModel(it.itemName,it.itemID, false) })
             cancelSpecificItemsAdapter.submitList(cancelItemModel)
             cancelRefund.setOnClickListener {
                 if (cancelItemFinalList.isNotEmpty()){
@@ -245,73 +245,73 @@ class NewOrderFragment : Fragment() {
 
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun countDownTimer(rejectBtn:MaterialButton){
-        val targetDuration = Duration.ofMinutes(5)
-        val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
-        val targetTime = givenTime.plus(targetDuration)
-        val currentTime = Instant.now()
-        val remainingDuration = Duration.between(currentTime, targetTime)
-        if (remainingDuration.isNegative || remainingDuration.isZero) {
-            rejectBtn.text = getString(R.string.reject_order)
-            rejectBtn.isEnabled = false
-            rejectBtn.background.setTint(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.textGrey
-                )
-            )
-        } else {
-            val countDownTimer = @RequiresApi(Build.VERSION_CODES.O)
-            object : CountDownTimer(remainingDuration.toMillis(), 1000) {
-                override fun onTick(millisUntilFinished: Long) {
-                    // Calculate the remaining time as a Duration
-
-                    val text = "Reject Order ${
-                        String.format(
-                            "(%02d:%02d)",
-                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
-                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                                TimeUnit.MILLISECONDS.toMinutes(
-                                    millisUntilFinished
-                                )
-                            )
-                        )
-                    }"
-
-                    rejectBtn.isEnabled = true
-                    // Display the remaining time in a TextView (replace "textView" with your own TextView)
-                    rejectBtn.text = text
-                    rejectBtn.background.setTint(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.colorOnPrimary
-                        )
-                    )
-
-                }
-
-                override fun onFinish() {
-                    // The timer has finished, do something here...
-                    rejectBtn.isEnabled = false
-                    rejectBtn.text = getString(R.string.reject_order)
-                    rejectBtn.background.setTint(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.textGrey
-                        )
-                    )
-                }
-            }
-            // Start the countdown timer
-            countDownTimer.start()
-
-
-        }
-
-
-
-    }
+//CN    @RequiresApi(Build.VERSION_CODES.O)
+//    fun countDownTimer(rejectBtn:MaterialButton){
+//        val targetDuration = Duration.ofMinutes(5)
+//        val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
+//        val targetTime = givenTime.plus(targetDuration)
+//        val currentTime = Instant.now()
+//        val remainingDuration = Duration.between(currentTime, targetTime)
+//        if (remainingDuration.isNegative || remainingDuration.isZero) {
+//            rejectBtn.text = getString(R.string.reject_order)
+//            rejectBtn.isEnabled = false
+//            rejectBtn.background.setTint(
+//                ContextCompat.getColor(
+//                    requireContext(),
+//                    R.color.textGrey
+//                )
+//            )
+//        } else {
+//            val countDownTimer = @RequiresApi(Build.VERSION_CODES.O)
+//            object : CountDownTimer(remainingDuration.toMillis(), 1000) {
+//                override fun onTick(millisUntilFinished: Long) {
+//                    // Calculate the remaining time as a Duration
+//
+//                    val text = "Reject Order ${
+//                        String.format(
+//                            "(%02d:%02d)",
+//                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+//                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+//                                TimeUnit.MILLISECONDS.toMinutes(
+//                                    millisUntilFinished
+//                                )
+//                            )
+//                        )
+//                    }"
+//
+//                    rejectBtn.isEnabled = true
+//                    // Display the remaining time in a TextView (replace "textView" with your own TextView)
+//                    rejectBtn.text = text
+//                    rejectBtn.background.setTint(
+//                        ContextCompat.getColor(
+//                            requireContext(),
+//                            R.color.colorOnPrimary
+//                        )
+//                    )
+//
+//                }
+//
+//                override fun onFinish() {
+//                    // The timer has finished, do something here...
+//                    rejectBtn.isEnabled = false
+//                    rejectBtn.text = getString(R.string.reject_order)
+//                    rejectBtn.background.setTint(
+//                        ContextCompat.getColor(
+//                            requireContext(),
+//                            R.color.textGrey
+//                        )
+//                    )
+//                }
+//            }
+//            // Start the countdown timer
+//            countDownTimer.start()
+//
+//
+//        }
+//
+//
+//
+//    }
 
 
 }
