@@ -72,6 +72,10 @@ class SettingsFragment : Fragment() {
             help.setOnClickListener {
                 findNavController().navigate(R.id.action_settingsFragment_to_helpFragment)
             }
+            transactions.setOnClickListener{
+                findNavController().navigate(R.id.action_settingsFragment_to_transactionfragment)
+        }
+
             testPrinter.setOnClickListener {
                 testPrinter()
             }

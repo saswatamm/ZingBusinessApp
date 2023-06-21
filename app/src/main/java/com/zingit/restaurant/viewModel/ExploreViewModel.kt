@@ -83,10 +83,10 @@ constructor(
                                     Log.e("MenuFinal", "getMenuData: $menuFinal", )
                                     _iteMenuData.value = ItemMenuState(isLoading = false, data = menuFinal)
                                 }
-                                //EXPERIMENTAL
-                                    firebaseRepository.getAddonGroupData(it.data?.get(0)!!.firebaseRestaurantId).collect{
-                                        Log.d("ExploreViewModel","Value of AddonGroupModel is:"+it.data)
-                                    }
+//                                //EXPERIMENTAL
+//                                    firebaseRepository.getAddonGroupData(it.data?.get(0)!!.firebaseRestaurantId).collect{
+//                                        Log.d("ExploreViewModel","Value of AddonGroupModel is:"+it.data)
+//                                    }
 
                                 //EXPERIMENTAL
 

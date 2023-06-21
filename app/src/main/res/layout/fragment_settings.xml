@@ -214,6 +214,29 @@
                     app:layout_constraintTop_toBottomOf="@id/legal" />
 
                 <TextView
+                    android:id="@+id/transactions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_25sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:fontFamily="@font/duplet_bold"
+                    android:text="@string/transactions"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp"
+                    app:layout_constraintBottom_toTopOf="@id/line7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/line5" />
+                <View
+                    android:id="@+id/line7"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_15sdp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintTop_toBottomOf="@id/transactions" />
+
+                <TextView
                     android:id="@+id/logout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -225,7 +248,8 @@
                     android:textSize="@dimen/_12sdp"
                     app:layout_constraintBottom_toTopOf="@id/line6"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/line5" />
+                    app:layout_constraintTop_toBottomOf="@id/line7" />
+
 
                 <View
                     android:id="@+id/line6"

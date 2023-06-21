@@ -43,8 +43,7 @@ class ActiveOrderDiffUtils : DiffUtil.ItemCallback<OrdersModel>() {
         oldItem: OrdersModel,
         newItem: OrdersModel
     ): Boolean {
-//        return oldItem.order!!.orderId == newItem.order!!.orderId
-        return true
+        return oldItem.order!!.details!!.orderId == newItem.order!!.details!!.orderId
     }
 
     override fun areContentsTheSame(

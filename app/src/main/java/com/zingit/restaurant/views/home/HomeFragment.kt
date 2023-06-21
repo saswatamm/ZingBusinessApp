@@ -50,6 +50,7 @@ class HomeFragment : Fragment() {
                         .update("active", 1)
                         statusOff.visibility = View.GONE
                         statusOn.visibility = View.VISIBLE
+                        switchButton.text
 
                 } else {
 //                    firebase.collection("outlet")

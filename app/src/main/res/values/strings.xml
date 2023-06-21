@@ -8,6 +8,8 @@
     <string name="order_id">Order</string>
     <string name="order_id_">Order ID</string>
     <string name="date">Date</string>
+    <string name="total_earnings">Total Earnings</string>
+    <string name="total_orders">Total Orders</string>
     <string name="amount">₹100</string>
     <string name="_time">Time</string>
     <string name="number">Number</string>
@@ -28,6 +30,7 @@
     <string name="need_help"><u>Need help with login?</u></string>
     <string name="register_as_partner">Register as a Partner</string>
     <string name="logout">Logout</string>
+    <string name="transactions">Transactions</string>
     <string name="logout_">Logout?</string>
     <string name="search_by_orderId">Search by Order ID</string>
     <string name="enter_phone_number">Enter Phone Number</string>
@@ -69,11 +72,11 @@
     <string name="mark_as">Mark the item that is not available</string>
     <string name="not_accept">Not accepting orders currently</string>
     <string name="delivery">Delivery Restrictions</string>
-    <string name ="too_order">Too many orders</string>
+    <string name="too_order">Too many orders</string>
     <string name="items_is">Item(s) is not available</string>
     <string name="canel_refund">Cancel &amp; Refund</string>
     <string name="select_the_reason">Select the reason for cancelling this order</string>
-    <string name ="keep">Keep Order</string>
+    <string name="keep">Keep Order</string>
     <string name="deactivated_">Deactivate Account</string>
     <string name="order_no">Order #1B12</string>
     <string name="order_no_">#1B12</string>
@@ -86,4 +89,18 @@
     <string name="order_will_appear_history">Your Orders history will appear here!</string>
     <string name="read_the_instructions">Read the <a href='https://www.google.com'>Instructions</a> and <a href='https://www.google.com'>T/C</a> </string>
     <string name="print_kot">Print KOT</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>

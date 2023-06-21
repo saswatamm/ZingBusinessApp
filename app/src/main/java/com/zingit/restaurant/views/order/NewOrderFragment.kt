@@ -78,7 +78,7 @@ class NewOrderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//CN        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_order, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_order, container, false)
 
 
 
@@ -121,7 +121,7 @@ class NewOrderFragment : Fragment() {
 //  CN          countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
-//  CN          pastOrderAdapter.submitList(orderModel.orderItems)
+            pastOrderAdapter.submitList(orderModel.orderItem?.details)
             backArrow.setOnClickListener {
                 findNavController().popBackStack()
             }
@@ -214,7 +214,7 @@ class NewOrderFragment : Fragment() {
             recyclerView.adapter = cancelSpecificItemsAdapter
             cancelItemModel.add(CancelItemModel("All Items","0" ,false))
            // arrayList1.add("All Items")
-//CN            cancelItemModel.addAll(ordersModel.orderItems.map { CancelItemModel(it.itemName,it.itemID, false) })
+            cancelItemModel.addAll(ordersModel.orderItem!!.details.map { CancelItemModel(it.name,it.id, false) })
             cancelSpecificItemsAdapter.submitList(cancelItemModel)
             cancelRefund.setOnClickListener {
                 if (cancelItemFinalList.isNotEmpty()){
