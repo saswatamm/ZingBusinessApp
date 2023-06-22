@@ -118,7 +118,7 @@ class NewOrderFragment : Fragment() {
            checking the timer --->PlaceTime Order
            Below Function
            */
-//  CN          countDownTimer(rejectBtn)
+//            countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
             pastOrderAdapter.submitList(orderModel.orderItem?.details)
@@ -130,12 +130,16 @@ class NewOrderFragment : Fragment() {
         binding.printKOT.setOnClickListener {
 
 
-// CN           RootActivity().selectedDevice?.let { it1 ->
-//                Log.e(TAG, "printer blue: $it", )
+            RootActivity().selectedDevice?.let { it1 ->
+                Log.e(TAG, "printer blue: $it", )
 //                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
 //                    it1
 //                )
-//            }
+                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,
+                    orderModel.order?.details!!.orderId,firestore,
+                    it1
+                )
+            }
         }
 
         return binding.root
@@ -245,10 +249,11 @@ class NewOrderFragment : Fragment() {
 
 
 
-//CN    @RequiresApi(Build.VERSION_CODES.O)
+//    @RequiresApi(Build.VERSION_CODES.O)
 //    fun countDownTimer(rejectBtn:MaterialButton){
 //        val targetDuration = Duration.ofMinutes(5)
-//        val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
+////old        val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
+//        val givenTime = Instant.parse(orderModel.order?.details!!.createdOn)
 //        val targetTime = givenTime.plus(targetDuration)
 //        val currentTime = Instant.now()
 //        val remainingDuration = Duration.between(currentTime, targetTime)

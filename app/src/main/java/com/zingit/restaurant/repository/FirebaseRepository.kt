@@ -187,7 +187,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
         val snapShot = fireStoreDatabase.collection("payment")
             .whereEqualTo("outletID", Utils.getUserOutletId(application)).whereEqualTo("statusCode",1).addSnapshotListener { value, error ->
                 if (error != null) {
-                    trySend(OrdersModel(null,null, null,null,null,)).isSuccess
+                    trySend(OrdersModel(null,null, null,null,null,null,null)).isSuccess
                     return@addSnapshotListener
                 }
                 if (value != null) {

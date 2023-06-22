@@ -126,7 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/single_item_ticket"
+            tools:listitem="@layout/volume_item"
             app:layout_constraintTop_toBottomOf="@id/date_value_tv"
              />
 

@@ -158,7 +158,6 @@
             tools:listitem="@layout/instant_orders"
             tools:itemCount="2"
             android:layout_marginBottom="10dp"
-
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"/>
 

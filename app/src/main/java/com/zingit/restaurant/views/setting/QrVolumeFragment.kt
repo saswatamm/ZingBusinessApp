@@ -1,5 +1,6 @@
 package com.zingit.restaurant.views.setting
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,6 +19,8 @@ import com.zingit.restaurant.databinding.FragmentQrVolumeBinding
 import com.zingit.restaurant.models.VolumeModel
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.internal.assertThreadDoesntHoldLock
+import java.util.Calendar
+import javax.xml.datatype.DatatypeConstants.MONTHS
 
 
 @AndroidEntryPoint
@@ -41,11 +44,31 @@ class QrVolumeFragment : Fragment() {
             itemList.add(VolumeModel("88222",true,"100"))
         }
 
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        binding.dateValueTv.text=day.toString()+"."+(month+1).toString()+"."+year.toString()
+
+        val dpd = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+
+            // Display Selected date in textbox
+            binding.dateValueTv.setText("" + dayOfMonth + "." + (monthOfYear+1) + "." + year)
+
+        }, year, month, day)
+
+
+
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                     qrVolumeAdapter= QrVolumeAdapter(itemList)
                     qrVolumeRv.adapter=qrVolumeAdapter
+
+                calendarIcon.setOnClickListener {
+                    dpd.show()
+                }
 
             }
 

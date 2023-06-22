@@ -3,8 +3,10 @@ package com.zingit.restaurant.adapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -63,6 +65,12 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
                 }else{
                     firestore.collection("test_menu").document(getItem(position).Id).update("active","0")
                 }
+            }
+
+            if(itemModel.variations.size>0)
+            {
+                holder.binding.switchToggle.visibility=View.GONE
+                holder.binding.amount.visibility=View.GONE
             }
         }
     }

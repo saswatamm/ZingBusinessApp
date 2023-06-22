@@ -46,6 +46,7 @@
             android:textColor="@color/textGrey"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/tv_order_no"
             app:layout_constraintEnd_toStartOf="@id/switch_toggle"
             app:layout_constraintTop_toTopOf="@id/tv_order_no" />
@@ -56,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
             android:checked="@{activeornot}"
+            android:visibility="visible"
             android:thumb="@drawable/thumb_selector"
             app:layout_constraintBottom_toBottomOf="@id/amount"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,6 +75,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/variationcont"
             android:id="@+id/variation_rv"
+            android:layout_marginTop="@dimen/_4sdp"
             >
 
         </androidx.recyclerview.widget.RecyclerView>

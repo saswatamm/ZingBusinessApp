@@ -1,7 +1,6 @@
 package com.zingit.restaurant.models.order
 
 import com.google.firebase.firestore.PropertyName
-import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -22,4 +21,10 @@ data class OrdersModel(
     @get:PropertyName("tax")
     @set:PropertyName("tax")
     var tax:OrderTax?=OrderTax(),
+    @get:PropertyName("status")
+    @set:PropertyName("status")
+    var status: String?="",
+    @get:PropertyName("cancel_reason")
+    @set:PropertyName("cancel_reason")
+    var cancelReason:String?="",
 )

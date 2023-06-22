@@ -95,11 +95,6 @@ class MenuFragment : Fragment() {
                             Log.e(TAG, "onCreateView: ${it.data}", )
                             menuItemAdapter.submitList(it.data)
                             rvProducts.adapter = menuItemAdapter
-                            //EXPERIMENTAL
-//                            firebaseRepository.getAddonGroupData(it.data?.get(0)!!.firebaseRestaurantId).collect(){
-//                                Log.d(TAG,"Value of AddonGroupModel is:"+it.data)
-//                            }
-                            //EXPERIMENTAL
                         }
                     }
                 }

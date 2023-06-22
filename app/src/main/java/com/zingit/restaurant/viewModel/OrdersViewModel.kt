@@ -3,14 +3,12 @@ package com.zingit.restaurant.viewModel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Timestamp
 
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.models.order.SearchState
 import com.zingit.restaurant.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import java.util.*
 import javax.inject.Inject
 
 
@@ -26,7 +24,7 @@ class OrdersViewModel @Inject constructor(
     val orderHistoryData: StateFlow<List<OrdersModel>> = _orderHistoryData
     var myList: MutableList<OrdersModel> = mutableListOf()
     
-    private val _orderPrintNew:MutableStateFlow<OrdersModel> = MutableStateFlow(OrdersModel(customer = null,order = null, orderItem= null, restaurant = null, tax = null))
+    private val _orderPrintNew:MutableStateFlow<OrdersModel> = MutableStateFlow(OrdersModel(customer = null,order = null, orderItem= null, restaurant = null, tax = null,null,null))
     val orderPrintNew:StateFlow<OrdersModel> = _orderPrintNew
 
     private val _orderSearchData = MutableStateFlow(SearchState())

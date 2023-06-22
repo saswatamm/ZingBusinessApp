@@ -149,8 +149,8 @@ class RootActivity : AppCompatActivity() {
                                     if (!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString())) {
                                         uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
-//                                        Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}")
-//                                        printBluetooth(paymentModel, i.document.id)
+                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details!!.size}")
+                                        printBluetooth(paymentModel, i.document.id)
                                         mediaPlayer = MediaPlayer.create(applicationContext, R.raw.incoming_order)
                                         mediaPlayer?.start()
                                     } else {
@@ -264,51 +264,51 @@ class RootActivity : AppCompatActivity() {
     }
 
 
-//    private fun printBluetooth(ordersModel: OrdersModel, id: String) {
-//        AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
-//            override fun onError(
-//                asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
-//            ) {
-//                Log.e(
-//                    "Async.OnPrintFinished",
-//                    "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
-//                )
-//            }
-//
-//            override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
-//                Log.i(
-//                    "Async.OnPrintFinished",
-//                    "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
-//                )
-//
-//                try {
-//
-//                    val sfDocRef = firestore.collection("payment").document(id)
-//                    Toast.makeText(
-//                        applicationContext, "Print is finished ! $id", Toast.LENGTH_SHORT
-//                    ).show()
-//
-//                    firestore.runTransaction { transaction ->
-//                        transaction.update(sfDocRef, "statusCode", 2)
-//                    }.addOnSuccessListener {
-//                        Log.d(TAG, "Transaction success!")
-//
-//                    }.addOnFailureListener { e ->
-//                            Toast.makeText(
-//                                applicationContext, "Error $e", Toast.LENGTH_LONG
-//                            ).show()
-//                        }
-//                } catch (e: Exception) {
-//                    Toast.makeText(applicationContext, "Error $e", Toast.LENGTH_LONG).show()
-//                }
-//            }
-//
-//        }).execute(
-//                Utils.getAsyncEscPosPrinter(
-//                    ordersModel, selectedDevice, this
-//                )
-//            )
-//    }
+    private fun printBluetooth(ordersModel: OrdersModel, id: String) {
+        AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
+            override fun onError(
+                asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
+            ) {
+                Log.e(
+                    "Async.OnPrintFinished",
+                    "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
+                )
+            }
+
+            override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
+                Log.i(
+                    "Async.OnPrintFinished",
+                    "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
+                )
+
+                try {
+
+                    val sfDocRef = firestore.collection("payment").document(id)
+                    Toast.makeText(
+                        applicationContext, "Print is finished ! $id", Toast.LENGTH_SHORT
+                    ).show()
+
+                    firestore.runTransaction { transaction ->
+                        transaction.update(sfDocRef, "statusCode", 2)
+                    }.addOnSuccessListener {
+                        Log.d(TAG, "Transaction success!")
+
+                    }.addOnFailureListener { e ->
+                            Toast.makeText(
+                                applicationContext, "Error $e", Toast.LENGTH_LONG
+                            ).show()
+                        }
+                } catch (e: Exception) {
+                    Toast.makeText(applicationContext, "Error $e", Toast.LENGTH_LONG).show()
+                }
+            }
+
+        }).execute(
+                Utils.getAsyncEscPosPrinter(
+                    ordersModel, selectedDevice, this
+                )
+            )
+    }
 }
 
 
