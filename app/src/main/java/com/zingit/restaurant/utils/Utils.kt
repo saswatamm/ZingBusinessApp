@@ -478,6 +478,7 @@ object Utils {
                         try {
 
                             val sfDocRef = firestore.collection("payment").document(id)
+                            //Here sfDocRef willm also not work
 //                            val query = firestore.collection("prod_order")
                             Toast.makeText(
                                 context,
