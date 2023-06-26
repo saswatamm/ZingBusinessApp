@@ -1,6 +1,11 @@
 package com.zingit.restaurant.views.order
 
 
+import android.Manifest
+import android.app.Activity
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -10,11 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -33,7 +40,7 @@ import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
+import java.lang.reflect.Method
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -125,22 +132,78 @@ class NewOrderFragment : Fragment() {
             }
         }
 
+
         binding.printKOT.setOnClickListener {
             Log.d(TAG,"SelectedDevice is"+RootActivity().selectedDevice.toString())
-            RootActivity().selectedDevice?.let { it1 ->
-                Log.e(TAG, "printer blue: $it")
-//                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
+//            RootActivity().selectedDevice?.let { it1 ->
+//                Log.e(TAG, "printer blue: $it")
+////                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
+////                    it1
+////                )
+//                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,
+//                    orderModel.order?.details!!.orderId,firestore,
 //                    it1
 //                )
+//            }
+
                 Utils.printBluetooth(requireActivity(),requireContext(),orderModel,
                     orderModel.order?.details!!.orderId,firestore,
-                    it1
+                    BluetoothConnection(getConnectedDeviceName())
                 )
 
-            }
         }
 
         return binding.root
+    }
+    private fun getConnectedDeviceName(): BluetoothDevice? {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.BLUETOOTH
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH), PERMISSION_BLUETOOTH
+            )
+        } else if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.BLUETOOTH_ADMIN
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH_CONNECT), PERMISSION_BLUETOOTH_CONNECT
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.BLUETOOTH_SCAN
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH_SCAN), PERMISSION_BLUETOOTH_SCAN
+            )
+        } else {
+            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            val connectedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+            for (device in connectedDevices!!) {
+                if (isConnected(device)) {
+                    return device
+                }
+            }
+
+        }
+        return null
+    }
+    private fun isConnected(device: BluetoothDevice): Boolean {
+        return try {
+            val m: Method = device.javaClass.getMethod("isConnected")
+
+            m.invoke(device) as Boolean
+        } catch (e: Exception) {
+            throw IllegalStateException(e)
+        }
     }
 
     fun cancel(ordersModel: OrdersModel) {

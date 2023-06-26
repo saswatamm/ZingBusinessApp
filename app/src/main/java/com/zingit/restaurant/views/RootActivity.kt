@@ -62,7 +62,7 @@ class RootActivity : AppCompatActivity() {
     var firestore = FirebaseFirestore.getInstance()
     var uniqueOrders = HashSet<String>() //To print only unique orders
     lateinit var paymentModel: OrdersModel
-    val selectedDevice: BluetoothConnection? = null
+    var selectedDevice: BluetoothConnection? = null
 
 
     @SuppressLint("MissingPermission", "SuspiciousIndentation")
@@ -207,12 +207,11 @@ class RootActivity : AppCompatActivity() {
             addAction("android.bluetooth.device.action.ACL_DISCONNECTED")
             addAction("android.bluetooth.adapter.action.STATE_CHANGED")
         })
-
-
+        selectedDevice= BluetoothConnection(getConnectedDeviceName())
     }
 
 
-    private fun getConnectedDeviceName(): String? {
+    private fun getConnectedDeviceName(): BluetoothDevice? {
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.BLUETOOTH
             ) != PackageManager.PERMISSION_GRANTED
@@ -246,18 +245,19 @@ class RootActivity : AppCompatActivity() {
             val connectedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
             for (device in connectedDevices!!) {
                 if (isConnected(device)) {
-                    return device.name
+                    return device
                 }
             }
+
         }
-
-
         return null
     }
+
 
     private fun isConnected(device: BluetoothDevice): Boolean {
         return try {
             val m: Method = device.javaClass.getMethod("isConnected")
+
             m.invoke(device) as Boolean
         } catch (e: Exception) {
             throw IllegalStateException(e)
@@ -265,12 +265,12 @@ class RootActivity : AppCompatActivity() {
     }
 
 
+
     private fun printBluetooth(ordersModel: OrdersModel, id: String) {
         AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
             override fun onError(
                 asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
             ) {
-                Log.d(TAG+"selectedDevice is:",selectedDevice.toString())
                 Log.e(
                     "Async.OnPrintFinished",
                     "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
@@ -284,7 +284,8 @@ class RootActivity : AppCompatActivity() {
                 )
 
                 try {
-                    Log.d(TAG+"selectedDevice is:",selectedDevice.toString())
+
+                    Log.d(TAG+"selectedDevice is:", selectedDevice.toString())
                     val sfDocRef = firestore.collection("prod_order").document(id)
                     Toast.makeText(
                         applicationContext, "Print is finished ! $id", Toast.LENGTH_SHORT
