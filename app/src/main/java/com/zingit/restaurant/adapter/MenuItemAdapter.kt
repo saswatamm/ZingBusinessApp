@@ -61,9 +61,9 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
         holder.binding.apply {
             switchToggle.setOnCheckedChangeListener{ view, isChecked ->
                 if(isChecked){
-                    firestore.collection("test_menu").document(getItem(position).Id).update("active","1")
+                    firestore.collection("prod_menu").document(getItem(position).Id).update("active","1")
                 }else{
-                    firestore.collection("test_menu").document(getItem(position).Id).update("active","0")
+                    firestore.collection("prod_menu").document(getItem(position).Id).update("active","0")
                 }
             }
 

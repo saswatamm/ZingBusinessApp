@@ -30,11 +30,11 @@ data class RestaurantModel(
     @set:PropertyName("is_petpooja_integrated")
     var isPetpoojaIntegrated:  Boolean =false,
     @SerializedName("landmark")
-    val landmark: String ="",
+    val landmark: String="",
     @SerializedName("latitude")
-    val latitude: String ="",
+    val latitude: Double=0.0,
     @SerializedName("longitude")
-    val longitude: String ="",
+    val longitude: Double=0.0,
     @get:PropertyName("menusharingcode")
     @set:PropertyName("menusharingcode") //Check
     var menuSharingCode: String ="",
@@ -50,29 +50,12 @@ data class RestaurantModel(
     @get:PropertyName("packaging_charge_type")
     @set:PropertyName("packaging_charge_type")
     var pkgChargeType: String ="",
-    @get:PropertyName("pc_taxes_id")
-    @set:PropertyName("pc_taxes_id")
-    var pcTaxesId: String ="",
     @get:PropertyName("petpooja_restaurant_id")
     @set:PropertyName("petpooja_restaurant_id")
     var petpoojaRestaurantId: String ="",
     @get:PropertyName("restaurant_name")
     @set:PropertyName("restaurant_name")
     var restaurantName: String ="",
-//    @get:PropertyName("sc_applicable_on")
-//    @set:PropertyName("sc_applicable_on")
-//    var scApplicableOn: String ="",
-//    @get:PropertyName("sc_calculate_on")
-//    @set:PropertyName("sc_calculate_on")
-//    var scCalcOn: String ="",
-//    @get:PropertyName("sc_type")
-//    @set:PropertyName("sc_type")
-//    var scType: String ="",
-//    @get:PropertyName("sc_value")
-//    @set:PropertyName("sc_value")
-//    var scValue: String ="",
-//    @get:PropertyName("tax_on_sc")
-//    @set:PropertyName("tax_on_sc")
 //    var taxOnSc: String ="",
     @get:PropertyName("zingTime")
     @set:PropertyName("zingTime")
@@ -80,9 +63,8 @@ data class RestaurantModel(
 //    @get:PropertyName("orderNumberRange")
 //    @set:PropertyName("orderNumberRange")
 //    var orderNumberRange: Double=0.0,
+    @get:PropertyName("cuisine")
+    @set:PropertyName("cuisine")
+    var cuisine: ArrayList<String> = arrayListOf(),
 
-//    @get:PropertyName("orderNumbers")
-//    @set:PropertyName("orderNumbers")
-//    var orderNumbers: HashMap<String,>
-
-)
+    )

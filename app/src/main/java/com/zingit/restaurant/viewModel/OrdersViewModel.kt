@@ -24,7 +24,7 @@ class OrdersViewModel @Inject constructor(
     val orderHistoryData: StateFlow<List<OrdersModel>> = _orderHistoryData
     var myList: MutableList<OrdersModel> = mutableListOf()
     
-    private val _orderPrintNew:MutableStateFlow<OrdersModel> = MutableStateFlow(OrdersModel(customer = null,order = null, orderItem= null, restaurant = null, tax = null,null,null))
+    private val _orderPrintNew:MutableStateFlow<OrdersModel> = MutableStateFlow(OrdersModel(customer = null,order = null, orderItem= null, restaurant = null, tax = null,null))
     val orderPrintNew:StateFlow<OrdersModel> = _orderPrintNew
 
     private val _orderSearchData = MutableStateFlow(SearchState())

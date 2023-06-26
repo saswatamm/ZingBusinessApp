@@ -21,10 +21,13 @@ data class OrdersModel(
     @get:PropertyName("tax")
     @set:PropertyName("tax")
     var tax:OrderTax?=OrderTax(),
-    @get:PropertyName("status")
-    @set:PropertyName("status")
-    var status: String?="",
-    @get:PropertyName("cancel_reason")
-    @set:PropertyName("cancel_reason")
-    var cancelReason:String?="",
+//    @get:PropertyName("status")
+//    @set:PropertyName("status")
+//    var status: String?="",
+    @get:PropertyName("zingDetails")
+    @set:PropertyName("zingDetails")
+    var zingDetails: OrderZingDetails?=OrderZingDetails(),
+//    @get:PropertyName("cancel_reason")
+//    @set:PropertyName("cancel_reason")
+//    var cancelReason:String?="",
 )

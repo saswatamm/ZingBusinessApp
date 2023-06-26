@@ -45,6 +45,7 @@ import com.zingit.restaurant.views.order.NewOrderFragment.Companion.PERMISSION_B
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
@@ -91,6 +92,16 @@ object Utils {
 
         // Create a SimpleDateFormat to format the Date object
         val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        // Format the Date object into a string in the desired format
+        return formatter.format(date)
+    }
+  @RequiresApi(Build.VERSION_CODES.O)
+    fun convertToIsoString1(date: String?): String {
+        // Convert the Timestamp object to a Date object
+
+        // Create a SimpleDateFormat to format the Date object
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         formatter.timeZone = TimeZone.getTimeZone("UTC")
         // Format the Date object into a string in the desired format
         return formatter.format(date)
@@ -373,16 +384,16 @@ object Utils {
         }
     }
 
-    /*fun getSpaces(item: String): String {
-        Log.e(TAG, "Item Length ${item.length}")
-        var itemLength = item.length
-        var spaces = ""
-        // var count = if(itemLength>=16) 23 - (itemLength-16) else 17 + (16-itemLength)
-        var count = if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength)
-        for (i in 1..count)
-            spaces += " "
-        return spaces
-    }*/
+//    fun getSpaces(item: String): String {
+//        Log.e(TAG, "Item Length ${item.length}")
+//        var itemLength = item.length
+//        var spaces = ""
+//        // var count = if(itemLength>=16) 23 - (itemLength-16) else 17 + (16-itemLength)
+//        var count = if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength)
+//        for (i in 1..count)
+//            spaces += " "
+//        return spaces
+//    }
 
     fun getSpaces(item: String, right: String): String {
         Log.e(TAG, "Item Length ${item.length}")
@@ -404,8 +415,6 @@ object Utils {
         firestore: FirebaseFirestore,
         bluetoothConnection: BluetoothConnection
     ) {
-
-
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.BLUETOOTH
@@ -469,6 +478,7 @@ object Utils {
                         try {
 
                             val sfDocRef = firestore.collection("payment").document(id)
+//                            val query = firestore.collection("prod_order")
                             Toast.makeText(
                                 context,
                                 "Print is finished ! $id",

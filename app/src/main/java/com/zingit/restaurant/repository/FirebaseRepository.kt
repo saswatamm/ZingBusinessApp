@@ -29,7 +29,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
         try {
 
             val snapShot =
-                fireStoreDatabase.collection("test_restaurant").document(Utils.getUserOutletId(application)!!).get()
+                fireStoreDatabase.collection("prod_restaurant").document(Utils.getUserOutletId(application)!!).get()
                     .await()
             if (snapShot.exists()) {
                 val restaurantModel: RestaurantModel? =
@@ -48,7 +48,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
         Log.e(TAG, "getMenu: ${Utils.getUserOutletId(application)}")
         emit(Resource.Loading())
         try {
-            val snapShot = fireStoreDatabase.collection("test_menu")
+            val snapShot = fireStoreDatabase.collection("prod_menu")
                 .whereEqualTo("firebase_restaurant_id", Utils.getUserOutletId(application)).get().await()
             Log.e(TAG, "getMenuData: ${snapShot.documents}")
             if (snapShot.documents.isNotEmpty()){
@@ -70,7 +70,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
         Log.e(TAG, "getCategory of outlet ${Utils.getUserOutletId(application)}", )
         emit(Resource.Loading())
         try {
-            val snapShot = fireStoreDatabase.collection("test_category")
+            val snapShot = fireStoreDatabase.collection("prod_category")
                 .whereEqualTo("firebase_restaurant_id", Utils.getUserOutletId(application)).get().await()
             Log.e(TAG, "getCateogryData: ${snapShot.documents}")
             if (snapShot.documents.isNotEmpty()){
@@ -111,8 +111,8 @@ class FirebaseRepository @Inject constructor(private val application:Application
 //            .whereEqualTo("restaurant.details.restID",
 //                Utils.getMenuSharingCode(application)).get().await()
 
-        val snapShot = fireStoreDatabase.collection("test_order")
-            .whereEqualTo("restaurant.details.restID", Utils.getMenuSharingCode(application)).addSnapshotListener { value, error ->
+        val snapShot = fireStoreDatabase.collection("prod_order")
+            .whereEqualTo("restaurant.details.restaurant_id", Utils.getMenuSharingCode(application)).addSnapshotListener { value, error ->
                 if (error != null) {
                     trySend(listOf()).isSuccess
                     return@addSnapshotListener
@@ -187,7 +187,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
         val snapShot = fireStoreDatabase.collection("payment")
             .whereEqualTo("outletID", Utils.getUserOutletId(application)).whereEqualTo("statusCode",1).addSnapshotListener { value, error ->
                 if (error != null) {
-                    trySend(OrdersModel(null,null, null,null,null,null,null)).isSuccess
+                    trySend(OrdersModel(null,null, null,null,null,null)).isSuccess
                     return@addSnapshotListener
                 }
                 if (value != null) {

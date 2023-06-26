@@ -229,8 +229,8 @@ class OrdersFragment : Fragment() {
 
 
             }
-         /*   Handler().postDelayed({
-                query = firestore.collection("payment").whereEqualTo("outletID",Utils.getUserOutletId(requireContext())).whereEqualTo("statusCode",1)
+            Handler().postDelayed({
+                query = firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status",1)
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")
@@ -246,7 +246,8 @@ class OrdersFragment : Fragment() {
                                     {
                                         uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
-                                        Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}",)
+                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
+//                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
                                         printBluetooth(paymentModel, i.document.id)
                                     }
                                     else{
@@ -263,7 +264,7 @@ class OrdersFragment : Fragment() {
                         }
                     }
                 })
-            }, 5000)*/
+            }, 5000)
         }
     }
 
@@ -334,7 +335,8 @@ class OrdersFragment : Fragment() {
 
                         try {
 
-                            val sfDocRef = firestore.collection("payment").document(id)
+//                            val sfDocRef = firestore.collection("payment").document(id)
+                            val sfDocRef = firestore.collection("test_order").document(id)
                             Toast.makeText(
                                 requireContext(),
                                 "Print is finished ! $id",

@@ -1,8 +1,6 @@
 package com.zingit.restaurant.views.order
 
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -10,16 +8,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -38,8 +33,11 @@ import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
 
@@ -118,7 +116,7 @@ class NewOrderFragment : Fragment() {
            checking the timer --->PlaceTime Order
            Below Function
            */
-//            countDownTimer(rejectBtn)
+            countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
             pastOrderAdapter.submitList(orderModel.orderItem?.details)
@@ -128,10 +126,9 @@ class NewOrderFragment : Fragment() {
         }
 
         binding.printKOT.setOnClickListener {
-
-
+            Log.d(TAG,"SelectedDevice is"+RootActivity().selectedDevice.toString())
             RootActivity().selectedDevice?.let { it1 ->
-                Log.e(TAG, "printer blue: $it", )
+                Log.e(TAG, "printer blue: $it")
 //                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
 //                    it1
 //                )
@@ -139,6 +136,7 @@ class NewOrderFragment : Fragment() {
                     orderModel.order?.details!!.orderId,firestore,
                     it1
                 )
+
             }
         }
 
@@ -205,7 +203,7 @@ class NewOrderFragment : Fragment() {
         binding.apply {
             cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
 
-                Log.e(TAG, "itemsBottomSheet: $it", )
+                Log.e(TAG, "itemsBottomSheet: $it")
                 if(it.isChecked){
                     cancelItemFinalList.add(it)
                 }else{
@@ -249,74 +247,84 @@ class NewOrderFragment : Fragment() {
 
 
 
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    fun countDownTimer(rejectBtn:MaterialButton){
-//        val targetDuration = Duration.ofMinutes(5)
-////old        val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun countDownTimer(rejectBtn:MaterialButton){
+        val targetDuration = Duration.ofMinutes(5)
+//old        val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
 //        val givenTime = Instant.parse(orderModel.order?.details!!.createdOn)
-//        val targetTime = givenTime.plus(targetDuration)
-//        val currentTime = Instant.now()
-//        val remainingDuration = Duration.between(currentTime, targetTime)
-//        if (remainingDuration.isNegative || remainingDuration.isZero) {
-//            rejectBtn.text = getString(R.string.reject_order)
-//            rejectBtn.isEnabled = false
-//            rejectBtn.background.setTint(
-//                ContextCompat.getColor(
-//                    requireContext(),
-//                    R.color.textGrey
-//                )
-//            )
-//        } else {
-//            val countDownTimer = @RequiresApi(Build.VERSION_CODES.O)
-//            object : CountDownTimer(remainingDuration.toMillis(), 1000) {
-//                override fun onTick(millisUntilFinished: Long) {
-//                    // Calculate the remaining time as a Duration
-//
-//                    val text = "Reject Order ${
-//                        String.format(
-//                            "(%02d:%02d)",
-//                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
-//                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-//                                TimeUnit.MILLISECONDS.toMinutes(
-//                                    millisUntilFinished
-//                                )
-//                            )
-//                        )
-//                    }"
-//
-//                    rejectBtn.isEnabled = true
-//                    // Display the remaining time in a TextView (replace "textView" with your own TextView)
-//                    rejectBtn.text = text
-//                    rejectBtn.background.setTint(
-//                        ContextCompat.getColor(
-//                            requireContext(),
-//                            R.color.colorOnPrimary
-//                        )
-//                    )
-//
-//                }
-//
-//                override fun onFinish() {
-//                    // The timer has finished, do something here...
-//                    rejectBtn.isEnabled = false
-//                    rejectBtn.text = getString(R.string.reject_order)
-//                    rejectBtn.background.setTint(
-//                        ContextCompat.getColor(
-//                            requireContext(),
-//                            R.color.textGrey
-//                        )
-//                    )
-//                }
-//            }
-//            // Start the countdown timer
-//            countDownTimer.start()
-//
-//
-//        }
-//
-//
-//
-//    }
+//        val givenTime = Instant.parse(LocalDateTime.parse(orderModel.order?.details!!.createdOn,
+//            DateTimeFormatter.ISO_LOCAL_DATE_TIME).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+        //ggz REPLACEMENT OF OLDER UTILS.CONVERTTOISOSTRING FUNCTION starts
+        val time=orderModel.order?.details!!.createdOn.substringAfter(" ")
+        val date=orderModel.order?.details!!.createdOn.substringBefore(" ")
+        val dateTime=date+"T"+time
+        val ldt = LocalDateTime.parse(dateTime)
+        val givenTime=ldt.atZone(ZoneId.systemDefault()).toInstant()
+        //REPLACEMENT OF OLDER UTILS.CONVERTTOISOSTRING FUNCTION ends
+        Log.d(TAG,givenTime.toString())
+        val targetTime = givenTime.plus(targetDuration)
+        val currentTime = Instant.now()
+        val remainingDuration = Duration.between(currentTime, targetTime)
+        if (remainingDuration.isNegative || remainingDuration.isZero) {
+            rejectBtn.text = getString(R.string.reject_order)
+            rejectBtn.isEnabled = false
+            rejectBtn.background.setTint(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.textGrey
+                )
+            )
+        } else {
+            val countDownTimer = @RequiresApi(Build.VERSION_CODES.O)
+            object : CountDownTimer(remainingDuration.toMillis(), 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // Calculate the remaining time as a Duration
+
+                    val text = "Reject Order ${
+                        String.format(
+                            "(%02d:%02d)",
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(
+                                    millisUntilFinished
+                                )
+                            )
+                        )
+                    }"
+
+                    rejectBtn.isEnabled = true
+                    // Display the remaining time in a TextView (replace "textView" with your own TextView)
+                    rejectBtn.text = text
+                    rejectBtn.background.setTint(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.colorOnPrimary
+                        )
+                    )
+
+                }
+
+                override fun onFinish() {
+                    // The timer has finished, do something here...
+                    rejectBtn.isEnabled = false
+                    rejectBtn.text = getString(R.string.reject_order)
+                    rejectBtn.background.setTint(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.textGrey
+                        )
+                    )
+                }
+            }
+            // Start the countdown timer
+            countDownTimer.start()
+
+
+        }
+
+
+
+    }
 
 
 }

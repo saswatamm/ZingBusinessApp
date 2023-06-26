@@ -129,9 +129,12 @@ class RootActivity : AppCompatActivity() {
 
 
             Handler().postDelayed({
-                var query = firestore.collection("payment")
-                    .whereEqualTo("outletID", Utils.getUserOutletId(this))
-                    .whereEqualTo("statusCode", 1)
+//                var query = firestore.collection("payment")
+//                    .whereEqualTo("outletID", Utils.getUserOutletId(this))
+//                    .whereEqualTo("statusCode", 1)
+                var query = firestore.collection("prod_order")
+                    .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(this))
+                    .whereEqualTo("zingDetails.status", 0)
 
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(
@@ -146,8 +149,8 @@ class RootActivity : AppCompatActivity() {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
                             when (i.type) {
                                 DocumentChange.Type.ADDED -> {
-                                    if (!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString())) {
-                                        uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
+                                    if (!uniqueOrders.contains(i.document.data.get("order.details.orderID").toString())) {
+                                        uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details!!.size}")
                                         printBluetooth(paymentModel, i.document.id)
@@ -249,8 +252,6 @@ class RootActivity : AppCompatActivity() {
         }
 
 
-
-
         return null
     }
 
@@ -269,6 +270,7 @@ class RootActivity : AppCompatActivity() {
             override fun onError(
                 asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
             ) {
+                Log.d(TAG+"selectedDevice is:",selectedDevice.toString())
                 Log.e(
                     "Async.OnPrintFinished",
                     "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
@@ -282,8 +284,8 @@ class RootActivity : AppCompatActivity() {
                 )
 
                 try {
-
-                    val sfDocRef = firestore.collection("payment").document(id)
+                    Log.d(TAG+"selectedDevice is:",selectedDevice.toString())
+                    val sfDocRef = firestore.collection("prod_order").document(id)
                     Toast.makeText(
                         applicationContext, "Print is finished ! $id", Toast.LENGTH_SHORT
                     ).show()

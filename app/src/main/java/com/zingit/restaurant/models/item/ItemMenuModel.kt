@@ -12,8 +12,8 @@ data class ItemMenuModel(
     @get:PropertyName("category_name")
     @set:PropertyName("category_name")
     var categoryName: String = "",
-    @get:PropertyName("firebase_category_id")
-    @set:PropertyName("firebase_category_id")
+    @get:PropertyName("firebase_categoryid")
+    @set:PropertyName("firebase_categoryid")
     var firebaseCategoryId: String = "",
     @get:PropertyName("firebase_item_tax")
     @set:PropertyName("firebase_item_tax")
@@ -75,9 +75,6 @@ data class ItemMenuModel(
     @get:PropertyName("petpooja_category_id")
     @set:PropertyName("petpooja_category_id")
     var petpoojaCategoryId: String = "",
-    @get:PropertyName("petpooja_item_tax")
-    @set:PropertyName("petpooja_item_tax")
-    var petpoojaItemTax: String = "",
     @get:PropertyName("petpooja_restaurant_id")
     @set:PropertyName("petpooja_restaurant_id")
     var petpoojaRestaurantId: String = "",

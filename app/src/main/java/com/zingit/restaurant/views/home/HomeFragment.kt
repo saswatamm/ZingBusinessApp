@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
 //                        .document(Utils.getUserOutletId(requireContext()).toString())
 //                        .update("openStatus", "OPEN")
 
-                    firebase.collection("test_restaurant")
+                    firebase.collection("prod_restaurant")
                         .document(Utils.getUserOutletId(requireContext()).toString())
                         .update("active", 1)
                         statusOff.visibility = View.GONE
@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
 //                        .document(Utils.getUserOutletId(requireContext()).toString())
 //                        .update("openStatus", "CLOSE")
 
-                    firebase.collection("test_restaurant")
+                    firebase.collection("prod_restaurant")
                         .document(Utils.getUserOutletId(requireContext()).toString())
                         .update("active", 0)
                     statusOff.visibility = View.VISIBLE
@@ -66,7 +66,7 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            firebase.collection("test_restaurant")
+            firebase.collection("prod_restaurant")
                 .document(Utils.getUserOutletId(requireContext()).toString())
                 .get()
                 .addOnCompleteListener{task->
@@ -92,10 +92,10 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-            firebase.collection("test_order")
-                .whereEqualTo("restaurant.details.restID", Utils.getMenuSharingCode(requireContext())).get().addOnCompleteListener {
-                    Log.d(TAG+" order data = ",it.result.documents.get(0).toString())
-                }
+//CNN date: 25/06            firebase.collection("test_order")
+//                .whereEqualTo("restaurant.details.restID", Utils.getMenuSharingCode(requireContext())).get().addOnCompleteListener {
+//                    Log.d(TAG+" order data = ",it.result.documents.get(0).toString())
+//                }
 
 //            firebase.collection("outlet")
 //                .document(Utils.getUserOutletId(requireContext()).toString())

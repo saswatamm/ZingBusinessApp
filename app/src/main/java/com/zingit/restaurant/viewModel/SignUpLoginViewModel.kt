@@ -119,7 +119,7 @@ class SignUpLoginViewModel @Inject constructor(
                     Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
                     Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
                     Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-                    Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, "j1NWlFCAw3uhmZ09k4FM","az0uw9ce")
+                    Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, "ksSGAXGLELBpP8LA5S1G","ksSGAXGLELBpP8LA5S1G")
                     Log.e(TAG, "OutletIdSet:"+Utils.getUserOutletId(application), )
                     signIn.value = true
 
@@ -127,30 +127,6 @@ class SignUpLoginViewModel @Inject constructor(
             }
         }
     }
-
-//    fun getOutlet(){
-//        loading.value = true
-//        firestore.collection("outletAuth").whereEqualTo("email",mAuth.currentUser?.email).addSnapshotListener { value, error ->
-//            if (error != null) {
-//                loading.value = false
-//                Log.e(TAG, "signInWithUserPass: $error")
-//                return@addSnapshotListener
-//            }
-//            if (value != null) {
-//                loading.value = false
-//                    val outletAuthModel = value.documents[0].toObject(OutletAuthModel::class.java)
-//                    if (outletAuthModel != null) {
-//                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-//                        Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
-//                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-//                        Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, value.documents.get(0).data?.get("outletID").toString())
-//                        signIn.value = true
-//
-//                }
-//            }
-//        }
-//    }
-
 
 
     fun verifyOtp(verifyOtpDTO: VerifyOtpDTO) {

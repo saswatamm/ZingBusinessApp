@@ -19,8 +19,8 @@ data class CategoryModel(
     @get:PropertyName("categoryid")
     @set:PropertyName("categoryid")
     var categoryId: String = "",
-    @get:PropertyName("categorytimings")
-    @set:PropertyName("categorytimings")
+    @get:PropertyName("category_timings")
+    @set:PropertyName("category_timings")
     var categorytimings: String = "",
     @get:PropertyName("firebase_restaurant_id")
     @set:PropertyName("firebase_restaurant_id")
