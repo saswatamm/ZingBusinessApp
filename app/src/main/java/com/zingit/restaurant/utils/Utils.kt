@@ -35,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.zingit.restaurant.R
 import com.zingit.restaurant.models.order.OrderItem
+import com.zingit.restaurant.models.order.OrderItemDetails
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
@@ -156,16 +157,15 @@ object Utils {
         return dateFormat.format(date).toString().toUpperCase()
     }
 
-    fun getItemsMapType(list: ArrayList<OrderItem>): HashMap<String, Int> {
+    fun getItemsMapType(list: ArrayList<OrderItemDetails>): HashMap<String, Int> {
         val hashMap = HashMap<String, Int>()
 
-
-//        for (i in 0 until list.size) {
-//            val itemName = list[i].
-//            val itemQuantity = list[i].itemQuantity
-//            val mapped = hashMapOf(Pair(first = itemName, second = itemQuantity.toInt()))
-//            hashMap.putAll(mapped)
-//        }
+        for (i in 0 until list.size) {
+            val itemName = list[i].name
+            val itemQuantity = list[i].quantity
+            val mapped = hashMapOf(Pair(first = itemName, second = itemQuantity.toInt()))
+            hashMap.putAll(mapped)
+        }
         return hashMap
 
     }
