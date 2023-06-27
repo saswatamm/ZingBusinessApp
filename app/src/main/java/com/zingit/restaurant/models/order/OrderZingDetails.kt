@@ -48,10 +48,10 @@ data class OrderZingDetails(
     var refundReason: String?="",
     @get:PropertyName("status")
     @set:PropertyName("status")
-    var status: Int=0,
-    @get:PropertyName("tableNumber")
-    @set:PropertyName("tableNumber")
-    var tableNumber: String?="",
+    var status: String?="",
+//    @get:PropertyName("tableNumber")
+//    @set:PropertyName("tableNumber")
+//    var tableNumber: String?="",
     @get:PropertyName("ticketStatus")
     @set:PropertyName("ticketStatus")
     var ticketStatus: String?="",

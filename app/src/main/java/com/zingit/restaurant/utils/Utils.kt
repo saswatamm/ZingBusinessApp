@@ -464,7 +464,6 @@ object Utils {
                         )
                         try {
                             Log.d(TAG, "id passed to printBluetooth is ${id}")
-                            //Here sfDocRef willm also not work
                             firestore.collection("prod_order")
                                 .whereEqualTo("order.details.orderID", id).get()
                                 .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
@@ -476,7 +475,7 @@ object Utils {
                                                 transaction.update(
                                                     documentSnapshot.reference,
                                                     "zingDetails.status",
-                                                    2
+                                                    "2"
                                                 )
                                             }.addOnSuccessListener {
                                                 Log.d(TAG, "Transaction success! new")

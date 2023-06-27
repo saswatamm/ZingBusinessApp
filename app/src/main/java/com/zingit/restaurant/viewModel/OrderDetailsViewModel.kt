@@ -5,6 +5,7 @@ import android.content.ContentValues.TAG
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat.stopForeground
@@ -14,7 +15,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.gson.Gson
 import com.zingit.restaurant.R
 import com.zingit.restaurant.models.ApiResult
@@ -93,6 +96,32 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                     data.value = result.data!!.message
                     if (isAccept){
                         _successMethod.value = true
+                        firestore.collection("prod_order")
+                            .whereEqualTo("order.details.orderID", id).get()
+                            .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
+                                if (task.isSuccessful) {
+                                    for (documentSnapshot in task.result.documents) {
+                                        // here you can get the id.
+                                        Log.d(TAG, "Document got is ${documentSnapshot.data}")
+                                        firestore.runTransaction { transaction ->
+                                            transaction.update(
+                                                documentSnapshot.reference,
+                                                "zingDetails.status",
+                                                "5"
+                                            )
+                                        }.addOnSuccessListener {
+
+                                        }
+                                            .addOnFailureListener { e ->
+                                                Log.d(TAG,""+e.toString())
+                                            }
+                                        // you can apply your actions...
+                                    }
+                                } else {
+                                    Log.d(TAG, "Error in getting document ref")
+                                }
+                            })
+
                         firestore.collection("payment").document(id).update("statusCode",3)
                     }else{
                         firestore.collection("payment").document(id).update("statusCode",-1)

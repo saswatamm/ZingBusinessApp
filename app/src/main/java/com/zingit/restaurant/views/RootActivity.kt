@@ -134,7 +134,7 @@ class RootActivity : AppCompatActivity() {
 //                    .whereEqualTo("statusCode", 1)
                 var query = firestore.collection("prod_order")
                     .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(this))
-                    .whereEqualTo("zingDetails.status", 0)
+                    .whereEqualTo("zingDetails.status", "0")
 
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(
@@ -292,7 +292,7 @@ class RootActivity : AppCompatActivity() {
                     ).show()
 
                     firestore.runTransaction { transaction ->
-                        transaction.update(sfDocRef, "statusCode", 2)
+                        transaction.update(sfDocRef, "statusCode", "2")
                     }.addOnSuccessListener {
                         Log.d(TAG, "Transaction success!")
 
