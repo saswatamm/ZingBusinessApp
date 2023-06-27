@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.MenuCategoryLayoutBinding
 import com.zingit.restaurant.models.item.CategoryModel
 
@@ -25,7 +26,7 @@ class CategoryAdapter(
 
         fun bind(categoryModel: CategoryModel, position: Int) {
             binding.category = categoryModel
-            Glide.with(context).load(categoryModel.catImgUrl).into(binding.profileImage)
+            Glide.with(context).load(categoryModel.catImgUrl).placeholder(R.drawable.category_placeholder).into(binding.profileImage)
         }
     }
 
