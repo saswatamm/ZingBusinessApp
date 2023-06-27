@@ -13,27 +13,27 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.res.ResourcesCompat.getDrawableForDensity
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.dantsu.escposprinter.connection.DeviceConnection
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
 import com.dantsu.escposprinter.textparser.PrinterTextParserImg
+import com.google.android.gms.common.api.Api.Client
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firestore.v1.StructuredQuery.Order
+import com.google.firebase.firestore.QuerySnapshot
 import com.zingit.restaurant.R
-import com.zingit.restaurant.models.PaymentModel
 import com.zingit.restaurant.models.order.OrderItem
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
@@ -42,22 +42,10 @@ import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
 import com.zingit.restaurant.views.order.NewOrderFragment
 import com.zingit.restaurant.views.order.NewOrderFragment.Companion.PERMISSION_BLUETOOTH
 import com.zingit.restaurant.views.order.NewOrderFragment.Companion.PERMISSION_BLUETOOTH_SCAN
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
-import kotlin.time.Duration.Companion.seconds
 
 
 object Utils {
@@ -474,32 +462,47 @@ object Utils {
                             "Async.OnPrintFinished",
                             "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
                         )
-
                         try {
-
-                            val sfDocRef = firestore.collection("payment").document(id)
+                            Log.d(TAG, "id passed to printBluetooth is ${id}")
                             //Here sfDocRef willm also not work
-//                            val query = firestore.collection("prod_order")
+                            firestore.collection("prod_order")
+                                .whereEqualTo("order.details.orderID", id).get()
+                                .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
+                                    if (task.isSuccessful) {
+                                        for (documentSnapshot in task.result.documents) {
+                                            // here you can get the id.
+                                            Log.d(TAG, "Document got is ${documentSnapshot.data}")
+                                            firestore.runTransaction { transaction ->
+                                                transaction.update(
+                                                    documentSnapshot.reference,
+                                                    "zingDetails.status",
+                                                    2
+                                                )
+                                            }.addOnSuccessListener {
+                                                Log.d(TAG, "Transaction success! new")
+
+                                            }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Error $e",
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                }
+                                            // you can apply your actions...
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error in getting document ref")
+                                    }
+                                })
                             Toast.makeText(
                                 context,
                                 "Print is finished ! $id",
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                            firestore.runTransaction { transaction ->
-                                transaction.update(sfDocRef, "statusCode", 2)
-                            }.addOnSuccessListener {
-                                Log.d(TAG, "Transaction success!")
-
-                            }
-                                .addOnFailureListener { e ->
-                                    Toast.makeText(
-                                        context,
-                                        "Error $e",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                        } catch (e: Exception) {
+                        }
+                         catch (e: Exception) {
                             Toast.makeText(context, "Error $e", Toast.LENGTH_LONG).show()
                         }
                     }

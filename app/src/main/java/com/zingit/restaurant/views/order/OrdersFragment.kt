@@ -230,7 +230,7 @@ class OrdersFragment : Fragment() {
 
             }
             Handler().postDelayed({
-                query = firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status",1)
+                query = firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status",0)
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")
@@ -242,16 +242,16 @@ class OrdersFragment : Fragment() {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
                             when(i.type){
                                 DocumentChange.Type.ADDED -> {
-                                    if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
+                                    if(!uniqueOrders.contains(i.document.data.get("order.details.orderID").toString()))
                                     {
-                                        uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
+                                        uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
 //                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
                                         printBluetooth(paymentModel, i.document.id)
                                     }
                                     else{
-                                        Log.e(TAG,"eventPrinting: ${i.document.data.get("paymentOrderID").toString()}")   //Commented it out as already mentioned in HomeFragment
+                                        Log.e(TAG,"eventPrinting: ${i.document.data.get("order.details.orderID").toString()}")   //Commented it out as already mentioned in HomeFragment
                                     }
                                 }
                                 DocumentChange.Type.MODIFIED -> {

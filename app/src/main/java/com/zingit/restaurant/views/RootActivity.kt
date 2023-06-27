@@ -157,7 +157,7 @@ class RootActivity : AppCompatActivity() {
                                         mediaPlayer = MediaPlayer.create(applicationContext, R.raw.incoming_order)
                                         mediaPlayer?.start()
                                     } else {
-                                        Log.e(TAG, "eventPrinting: ${i.document.data.get("paymentOrderID").toString()}")
+                                        Log.e(TAG, "eventPrinting: ${i.document.data.get("order.details.orderID").toString()}")
                                     }
                                 }
                                 DocumentChange.Type.MODIFIED -> {

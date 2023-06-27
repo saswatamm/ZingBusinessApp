@@ -26,7 +26,7 @@ android {
         dev {
             dimension "default"
 //            applicationIdSuffix ".dev"
-            versionCode 27
+            versionCode 31
             versionName "1.0"
         }
         staging{
