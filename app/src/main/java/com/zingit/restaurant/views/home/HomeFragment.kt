@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
 
                     firebase.collection("prod_restaurant")
                         .document(Utils.getUserOutletId(requireContext()).toString())
-                        .update("active", 1)
+                        .update("active", "1")
                         statusOff.visibility = View.GONE
                         statusOn.visibility = View.VISIBLE
                         switchButton.text
@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
 
                     firebase.collection("prod_restaurant")
                         .document(Utils.getUserOutletId(requireContext()).toString())
-                        .update("active", 0)
+                        .update("active", "0")
                     statusOff.visibility = View.VISIBLE
                     statusOn.visibility = View.GONE
                     Log.d(TAG,"else part is executed in oncheckedclicklistener")
