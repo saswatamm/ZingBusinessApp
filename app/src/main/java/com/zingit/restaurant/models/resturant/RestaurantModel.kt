@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class RestaurantModel(
     @SerializedName("active")
-    val active: Int=0,
+    val active: String="",
     @SerializedName("address")
     val address: String="",
     @get:PropertyName("calculate_tax_on_packaging")
