@@ -26,19 +26,6 @@
 
             />
 
-<!--        <TextView-->
-<!--            android:id="@+id/from_user"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/_10sdp"-->
-<!--            android:text="@{`from ` + String.valueOf(orderModel.userName)}"-->
-<!--            android:textColor="@{orderModel.statusCode==1?@color/white:@color/darkGreyText}"-->
-<!--            android:fontFamily="@font/duplet_semibold"-->
-<!--            android:textSize="12sp"-->
-<!--            android:gravity="center"-->
-<!--            app:layout_constraintTop_toTopOf="@id/ticket"-->
-<!--            app:layout_constraintStart_toStartOf="@id/ticket"-->
-<!--            app:layout_constraintEnd_toEndOf="@id/ticket"/>-->
         <TextView
             android:id="@+id/from_user"
             android:layout_width="match_parent"
