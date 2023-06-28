@@ -156,8 +156,8 @@ class FirebaseRepository @Inject constructor(private val application:Application
 
     fun recentOrder(): Flow<OrdersModel> = callbackFlow {
         Log.e(TAG, "getRecent: ${Utils.getUserOutletId(application)}", )
-        val snapShot = fireStoreDatabase.collection("payment")
-            .whereEqualTo("outletID", Utils.getUserOutletId(application)).whereEqualTo("statusCode",1).addSnapshotListener { value, error ->
+        val snapShot = fireStoreDatabase.collection("prod_order")
+            .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(application)).whereEqualTo("status","0").addSnapshotListener { value, error ->
                 if (error != null) {
                     trySend(OrdersModel(null,null, null,null,null,null)).isSuccess
                     return@addSnapshotListener

@@ -243,7 +243,7 @@ class OrdersFragment : Fragment() {
                         }
                     }
                 })
-            }, 5000)
+            }, 5)
         }
     }
 
