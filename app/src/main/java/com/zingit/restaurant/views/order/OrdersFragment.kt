@@ -209,8 +209,7 @@ class OrdersFragment : Fragment() {
             }
 
             Handler().postDelayed({
-                query = firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status","0")
-                query.addSnapshotListener(object : EventListener<QuerySnapshot> {
+                firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status","0").addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")
                         if (error != null) {
@@ -227,14 +226,18 @@ class OrdersFragment : Fragment() {
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
 //                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
-                                        printBluetooth(paymentModel, i.document.id)
+//                                        printBluetooth(paymentModel, i.document.id)
                                     }
                                     else{
                                         Log.e(TAG,"eventPrinting: ${i.document.data.get("order.details.orderID").toString()}")   //Commented it out as already mentioned in HomeFragment
                                     }
+                                    //Check this once
+                                    paymentModel = i.document.toObject(OrdersModel::class.java)
+                                    printBluetooth(paymentModel, i.document.id)
+
                                 }
                                 DocumentChange.Type.MODIFIED -> {
-                                    Log.e(TAG, "onEvent: ${i.document.data}")
+                                    Log.e(TAG, "onEvent: in Modified ${i.document.data}")
                                 }
                                 DocumentChange.Type.REMOVED -> {
                                     Log.e(TAG, "onEvent: ${i.document.data}")
