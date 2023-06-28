@@ -122,7 +122,6 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                                 }
                             })
 
-                        firestore.collection("payment").document(id).update("statusCode",3)
                     }else{
                         firestore.collection("payment").document(id).update("statusCode",-1)
                     }

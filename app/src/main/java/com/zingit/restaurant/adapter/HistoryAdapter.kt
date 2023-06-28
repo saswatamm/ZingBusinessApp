@@ -1,8 +1,10 @@
 package com.zingit.restaurant.adapter
 
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +12,8 @@ import com.zingit.restaurant.databinding.SingleItemHistoryBinding
 import com.zingit.restaurant.databinding.SingleItemTicketBinding
 import com.zingit.restaurant.models.order.OrdersModel
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class HistoryAdapter(val context: Context, val onClick: (OrdersModel) -> Unit) :
@@ -29,10 +33,22 @@ class HistoryAdapter(val context: Context, val onClick: (OrdersModel) -> Unit) :
         return MyViewHolder(binding)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: HistoryAdapter.MyViewHolder, position: Int) {
         val orderHistory = getItem(position)
         holder.bind(orderHistory)
-//CN        val date = Date(orderHistory.placedTime.seconds * 1000)
+
+        val dateString=orderHistory.order?.details!!.createdOn.substringBefore(" ")
+//Check whats happening here once
+        val date = LocalDate.parse(dateString, DateTimeFormatter.ISO_DATE)
+
+        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val formattedTime = dateFormat.format(date)
+        holder.binding.tvTime.text = formattedTime
+        holder.binding.view.setOnClickListener{
+            onClick(orderHistory)
+        }
+//        val date = Date(orderHistory.placedTime.seconds * 1000)
 //        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
 //        val formattedTime = dateFormat.format(date)
 //        holder.binding.tvTime.text = formattedTime
@@ -48,7 +64,7 @@ class HistoryOrderDiffUtils : DiffUtil.ItemCallback<OrdersModel>() {
         oldItem: OrdersModel,
         newItem: OrdersModel
     ): Boolean {
-//CN        return oldItem.paymentOrderID == newItem.paymentOrderID
+        return oldItem.order?.details?.orderId == newItem.order?.details?.orderId
         return true
     }
 

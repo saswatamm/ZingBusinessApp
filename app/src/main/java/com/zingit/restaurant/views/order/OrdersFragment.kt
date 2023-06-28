@@ -230,7 +230,7 @@ class OrdersFragment : Fragment() {
 
             }
             Handler().postDelayed({
-                query = firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status",0)
+                query = firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status","0")
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")

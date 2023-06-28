@@ -1,14 +1,19 @@
 package com.zingit.restaurant.viewModel
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Timestamp
 
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.models.order.SearchState
 import com.zingit.restaurant.repository.FirebaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 
@@ -53,23 +58,36 @@ class OrdersViewModel @Inject constructor(
 
 
 
-//    fun getOrderHistory() {
-//        repository.getHistoryOrder().onEach {
-//            if (it.isNotEmpty()) {
-//                clear()
-//                val currentTime = Timestamp.now().seconds
-//                it.forEach { order ->
-//                    val timeDiff = currentTime  - order.placedTime!!.seconds
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getOrderHistory() {
+        repository.getHistoryOrder().onEach {
+            if (it.isNotEmpty()) {
+                clear()
+
+                it.forEach { orderModel ->
+                    val currentTime = Timestamp.now().seconds
+                    val time=orderModel.order?.details!!.createdOn.substringAfter(" ")
+                    val date=orderModel.order?.details!!.createdOn.substringBefore(" ")
+                    val dateTime=date+"T"+time
+                    val ldt = LocalDateTime.parse(dateTime)
+                    val seconds=ldt.atZone(ZoneOffset.UTC).toEpochSecond()
+                    Log.d(TAG,"getOrderHistory currentTime order time is"+ currentTime+" "+seconds)
+                    val timeDiff = currentTime  - seconds
+                    if (timeDiff <= 24 * 60 * 60) { // 3 hours in milliseconds
+                        myList.add(orderModel)
+                    }
+
+//CN                    val timeDiff = currentTime  - order.placedTime!!.seconds
 //                    if (timeDiff <= 24 * 60 * 60) { // 3 hours in milliseconds
 //                        myList.add(order)
 //                    }
-//
-//                }
-//                _orderHistoryData.value = myList
-//            }
-//        }.launchIn(viewModelScope)
-//
-//    }
+
+                }
+                _orderHistoryData.value = myList
+            }
+        }.launchIn(viewModelScope)
+
+    }
 
     fun clear() {
         myList.clear()
