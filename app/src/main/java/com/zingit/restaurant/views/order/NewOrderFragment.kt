@@ -99,10 +99,6 @@ class NewOrderFragment : Fragment() {
 
             zingViewModel.successMethod.observe(viewLifecycleOwner){
                 if(it){
-//                    val hashMap:HashMap<String,Int> = hashMapOf()
-//                    hashMap.put("TEST",1)
-//                    zingViewModel.whatsappToUser(orderModel.customer?.details!!.name,orderModel.order?.details!!.orderId,hashMap,
-//                        orderModel.customer?.details!!.phone,orderModel.order?.details!!.orderType,true,orderModel.order?.details!!.orderId)
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 }else{

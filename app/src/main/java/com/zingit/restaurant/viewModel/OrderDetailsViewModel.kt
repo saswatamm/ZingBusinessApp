@@ -89,7 +89,6 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                     "15"
                 )
             )
-
             when (result.status) {
                 ApiResult.Status.SUCCESS -> {
                     loading.value = false
