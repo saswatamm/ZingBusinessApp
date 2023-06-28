@@ -170,7 +170,7 @@ class RootActivity : AppCompatActivity() {
                         }
                     }
                 })
-            }, 5000)
+            }, 5)
 
         }
 
@@ -292,9 +292,9 @@ class RootActivity : AppCompatActivity() {
                     ).show()
 
                     firestore.runTransaction { transaction ->
-                        transaction.update(sfDocRef, "statusCode", "2")
+                        transaction.update(sfDocRef, "zingDetails.status", "2")
                     }.addOnSuccessListener {
-                        Log.d(TAG, "Transaction success!")
+                        Log.d(TAG, "Transaction success! in RootActivity")
 
                     }.addOnFailureListener { e ->
                             Toast.makeText(

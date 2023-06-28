@@ -102,6 +102,8 @@ class OrdersFragment : Fragment() {
 
         binding.apply {
 
+
+
             searchView.setOnEditorActionListener { textView, i, keyEvent ->
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     loader.visibility = View.VISIBLE
@@ -154,33 +156,6 @@ class OrdersFragment : Fragment() {
                     false
                 }
             }
-            /*go.setOnClickListener {
-                firestore.collection("payment").whereGreaterThan("statusCode",0).whereLessThan("statusCode",3).whereEqualTo("outletID","9i1Q3aRU8AiH0dUAZjko").get().addOnSuccessListener {
-                    for (document in it) {
-                        Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
-                        if (searchView.text.toString().trim()
-                                .contains(document.data.get("orderNo").toString())
-                        ) {
-                            Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
-                            val gson = Gson()
-                            loader.visibility = View.GONE
-                            val finalValue = document.toObject(OrdersModel::class.java)
-                            val json = gson.toJson(finalValue)
-                            val bundle = bundleOf("orderModel" to json)
-                            findNavController().navigate(
-                                R.id.action_ordersFragment_to_newOrderFragment,
-                                bundle
-                            )
-                            view?.hideKeyboard()
-                            binding.searchView.text.clear()
-                            break
-                        }
-
-                    }
-
-                }
-
-            }*/
             go.setOnClickListener {
 //                firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
 //                    .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
@@ -231,9 +206,8 @@ class OrdersFragment : Fragment() {
                         Log.e(TAG, "onViewCreated: $it")
                     }
                 }
-
-
             }
+
             Handler().postDelayed({
                 query = firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status","0")
                 query.addSnapshotListener(object : EventListener<QuerySnapshot> {
@@ -339,17 +313,15 @@ class OrdersFragment : Fragment() {
                         )
 
                         try {
-
-//                            val sfDocRef = firestore.collection("payment").document(id)
-                            val sfDocRef = firestore.collection("test_order").document(id)
+                            val sfDocRef = firestore.collection("prod_order").document(id)
                             Toast.makeText(
                                 requireContext(),
-                                "Print is finished ! $id",
+                                "Print is finished in OrdersFragment ! $id",
                                 Toast.LENGTH_SHORT
                             ).show()
-
+                            Log.d(TAG,"Print is finished in OrdersFragment !"+ id)
                             firestore.runTransaction { transaction ->
-                                transaction.update(sfDocRef, "statusCode", 2)
+                                transaction.update(sfDocRef, "zingDetails.status", "2")
                             }.addOnSuccessListener {
                                 Log.d(TAG, "Transaction success!")
 
