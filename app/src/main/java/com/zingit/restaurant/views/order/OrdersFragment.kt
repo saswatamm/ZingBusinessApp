@@ -106,9 +106,12 @@ class OrdersFragment : Fragment() {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     loader.visibility = View.VISIBLE
 
-                    firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
-                        .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
-                        .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+//                    firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
+//                        .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
+//                        .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+                    firestore.collection("prod_order").whereEqualTo("order.details.orderID", searchView.text.toString())
+                        .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(requireContext()))
+                        .whereGreaterThan("zingDetails.status", "0")
                         .addSnapshotListener { value, e ->
                             Log.e(TAG, "eror: ${e.toString()}", )
                             if (e == null) {
@@ -130,7 +133,6 @@ class OrdersFragment : Fragment() {
                                 binding.searchView.text.clear()
                             } else {
                                 val gson = Gson()
-
                                 for (doc in value!!) {
                                     val finalValue = doc.toObject(OrdersModel::class.java)
                                     val json = gson.toJson(finalValue)
@@ -180,9 +182,12 @@ class OrdersFragment : Fragment() {
 
             }*/
             go.setOnClickListener {
-                firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
-                    .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
-                    .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+//                firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
+//                    .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
+//                    .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+                firestore.collection("prod_order").whereEqualTo("order.details.orderID", searchView.text.toString())
+                    .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(requireContext()))
+                    .whereGreaterThan("zingDetails.status", "0")
                     .addSnapshotListener { value, e ->
                         if (e != null) {
                             Log.w(TAG, "Listen failed.", e)
