@@ -145,12 +145,12 @@ class FirebaseRepository @Inject constructor(private val application:Application
                 if (value != null) {
                     val orderModel: List<OrdersModel> =
                         value.toObjects(OrdersModel::class.java)
-                    trySend(orderModel).isSuccess
+                    Log.d(TAG,"History Order data is"+orderModel.toString())
+                    trySend(orderModel)
                 }
             }
 
         awaitClose { snapShot.remove() }
-
 
     }
 

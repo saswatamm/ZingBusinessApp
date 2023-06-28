@@ -63,7 +63,6 @@ class OrdersViewModel @Inject constructor(
         repository.getHistoryOrder().onEach {
             if (it.isNotEmpty()) {
                 clear()
-
                 it.forEach { orderModel ->
                     val currentTime = Timestamp.now().seconds
                     val time=orderModel.order?.details!!.createdOn.substringAfter(" ")
@@ -71,7 +70,6 @@ class OrdersViewModel @Inject constructor(
                     val dateTime=date+"T"+time
                     val ldt = LocalDateTime.parse(dateTime)
                     val seconds=ldt.atZone(ZoneOffset.UTC).toEpochSecond()
-                    Log.d(TAG,"getOrderHistory currentTime order time is"+ currentTime+" "+seconds)
                     val timeDiff = currentTime  - seconds
                     if (timeDiff <= 24 * 60 * 60) { // 3 hours in milliseconds
                         myList.add(orderModel)

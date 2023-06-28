@@ -9,12 +9,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zingit.restaurant.databinding.SingleItemHistoryBinding
-import com.zingit.restaurant.databinding.SingleItemTicketBinding
 import com.zingit.restaurant.models.order.OrdersModel
+import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 class HistoryAdapter(val context: Context, val onClick: (OrdersModel) -> Unit) :
     ListAdapter<OrdersModel, HistoryAdapter.MyViewHolder>(HistoryOrderDiffUtils()) {
@@ -38,13 +37,16 @@ class HistoryAdapter(val context: Context, val onClick: (OrdersModel) -> Unit) :
         val orderHistory = getItem(position)
         holder.bind(orderHistory)
 
-        val dateString=orderHistory.order?.details!!.createdOn.substringBefore(" ")
 //Check whats happening here once
-        val date = LocalDate.parse(dateString, DateTimeFormatter.ISO_DATE)
+        val timeString=orderHistory.order?.details!!.createdOn.substringAfter(" ")
+        val dateString=orderHistory.order?.details!!.createdOn.substringBefore(" ")
+        val dateTime=dateString+"T"+timeString
+        val outputFormat: DateFormat = SimpleDateFormat("hh:mm a", Locale.US)
+        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val date = inputFormat.parse(dateTime)
+        val outputText = outputFormat.format(date)
 
-        val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-        val formattedTime = dateFormat.format(date)
-        holder.binding.tvTime.text = formattedTime
+        holder.binding.tvTime.text = outputText
         holder.binding.view.setOnClickListener{
             onClick(orderHistory)
         }

@@ -62,7 +62,6 @@ class HistoryFragment : Fragment() {
                         R.id.action_ordersFragment_to_viewPastOrderFragment,
                         bundle
                     )
-
                 }
                 orderViewModel.orderHistoryData.collect {
                     loader.visibility = View.VISIBLE
@@ -82,8 +81,6 @@ class HistoryFragment : Fragment() {
                         historyRv.adapter = orderHistoryAdapter
                         orderHistoryAdapter.submitList(it)
                     }
-
-
                 }
             }
             return binding.root
