@@ -36,11 +36,6 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
             binding.itemMenu = itemModel
             binding.activeornot = itemModel.active.equals("1")
             //Setting up variation rv
-
-            val variationAdapter = VariationItemAdapter(context,itemModel.Id,itemModel.variations)
-            binding.variationRv.layoutManager=LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
-            variationAdapter.submitList(itemModel.variations)
-            binding.variationRv.adapter=variationAdapter
         }
     }
 
@@ -57,22 +52,48 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
         val itemModel =getItem(position)
         Log.d("MenuItemAdapter","itemModel:"+itemModel.toString())
 
-        holder.bind(itemModel)
+        val variationAdapter = VariationItemAdapter(context,itemModel.Id,itemModel.variations)
+        variationAdapter.submitList(itemModel.variations)
+
         holder.binding.apply {
             switchToggle.setOnCheckedChangeListener{ view, isChecked ->
                 if(isChecked){
                     firestore.collection("prod_menu").document(getItem(position).Id).update("active","1")
                 }else{
                     firestore.collection("prod_menu").document(getItem(position).Id).update("active","0")
+                    itemModel.variations.forEach{
+                        it.active="0"
+                    }
+                    firestore.collection("prod_menu").document(getItem(position).Id).update("variations",itemModel.variations)
+                    //This updates all variations in db but not in ui implement properly
+                }
+            }
+            itemModel.variations.forEach {
+                if (it.active=="1")
+                    return@forEach
+                else
+                {
+                    Log.d("MenuItemAdapter","all variations are zero here"+it)
+                    firestore.collection("prod_menu").document(getItem(position).Id).update("active","0")
+                    switchToggle.isChecked = false
+
                 }
             }
 
-            if(itemModel.variations.size>0)
-            {
-                holder.binding.switchToggle.visibility=View.GONE
-                holder.binding.amount.visibility=View.GONE
+//            if(itemModel.variations.size>0)
+//            {
+//                holder.binding.switchToggle.visibility=View.GONE
+//                holder.binding.amount.visibility=View.GONE
+//            }
+            variationRv.apply {
+                layoutManager=LinearLayoutManager(holder.binding.root.context,LinearLayoutManager.VERTICAL,false)
+                adapter=variationAdapter
+                setRecycledViewPool(viewPool)
             }
+
         }
+        holder.binding.executePendingBindings()
+        holder.bind(itemModel)
     }
 
 

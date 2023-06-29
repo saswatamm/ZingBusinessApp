@@ -65,7 +65,6 @@ class FirebaseRepository @Inject constructor(private val application:Application
             emit(Resource.Error(e.message!!))
         }
 
-
     }
     fun getCategoryData() = flow {
         Log.e(TAG, "getCategory of outlet ${Utils.getUserOutletId(application)}", )

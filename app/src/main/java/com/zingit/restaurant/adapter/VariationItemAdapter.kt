@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Adapter
+import android.widget.AdapterView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -49,12 +51,12 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
         holder.bind(variationsModel)
         holder.binding.apply {
             variationSwitchToggle.setOnCheckedChangeListener { view, isChecked ->    //CHANGE THIS
-                if (isChecked) {
 
+                if (isChecked) {
                     variationArray.forEach {
                         if (it.variationId == variationsModel.variationId) {
                             it.active="1"
-                            firestore.collection("test_menu").document(menuItemId)
+                            firestore.collection("prod_menu").document(menuItemId)
                                 .update("variations", variationArray)
                             Log.d(TAG,variationArray.toString())
                         }
@@ -65,14 +67,17 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
                     variationArray.forEach {
                         if (it.variationId == variationsModel.variationId) {
                             it.active="0"
-                            firestore.collection("test_menu").document(menuItemId)
+                            firestore.collection("prod_menu").document(menuItemId)
                                 .update("variations", variationArray)
                             Log.d(TAG,variationArray.toString())
                         }
                     }
                 }
+
             }
         }
+
+
     }
 }
 class VariationDiffUtils : DiffUtil.ItemCallback<VariationsModel>() {
