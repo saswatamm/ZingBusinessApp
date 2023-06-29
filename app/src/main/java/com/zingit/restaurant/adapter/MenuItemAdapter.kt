@@ -20,6 +20,7 @@ import com.zingit.restaurant.models.item.ItemMenuState
 import com.zingit.restaurant.models.item.VariationsModel
 import com.zingit.restaurant.repository.FirebaseRepository
 import com.zingit.restaurant.utils.Utils
+import com.zingit.restaurant.viewModel.ExploreViewModel
 import kotlin.coroutines.coroutineContext
 
 
@@ -34,7 +35,7 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
         RecyclerView.ViewHolder(binding.root) {
         fun bind(itemModel: ItemMenuModel){
             binding.itemMenu = itemModel
-            binding.activeornot = itemModel.active.equals("1")
+            binding.activeornot = itemModel.active=="1"
             //Setting up variation rv
         }
     }
@@ -49,53 +50,44 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
 
     override fun onBindViewHolder(holder: MenuItemAdapter.MenuViewHolder, position: Int) {
         firestore = FirebaseFirestore.getInstance()
-        val itemModel =getItem(position)
-        Log.d("MenuItemAdapter","itemModel:"+itemModel.toString())
-
+        var itemModel =getItem(position)
         val variationAdapter = VariationItemAdapter(context,itemModel.Id,itemModel.variations)
-        variationAdapter.submitList(itemModel.variations)
 
         holder.binding.apply {
-            switchToggle.setOnCheckedChangeListener{ view, isChecked ->
-                if(isChecked){
-                    firestore.collection("prod_menu").document(getItem(position).Id).update("active","1")
-                }else{
-                    firestore.collection("prod_menu").document(getItem(position).Id).update("active","0")
-                    itemModel.variations.forEach{
-                        it.active="0"
-                    }
-                    firestore.collection("prod_menu").document(getItem(position).Id).update("variations",itemModel.variations)
-                    //This updates all variations in db but not in ui implement properly
-                }
-            }
-            itemModel.variations.forEach {
-                if (it.active=="1")
-                    return@forEach
-                else
-                {
-                    Log.d("MenuItemAdapter","all variations are zero here"+it)
-                    firestore.collection("prod_menu").document(getItem(position).Id).update("active","0")
-                    switchToggle.isChecked = false
+
+            switchToggle.setOnCheckedChangeListener { view, isChecked ->
+                if (isChecked) {
+                    firestore.collection("prod_menu").document(getItem(position).Id)
+                        .update("active", "1")
+                    itemModel.active="1"
+
+                } else {
+                    firestore.collection("prod_menu").document(getItem(position).Id)
+                        .update("active", "0")
+                        itemModel.active="0"
+//                    itemModel.variations.forEach {
+//                        it.active = "0"
+//                    }
+//                    firestore.collection("prod_menu").document(getItem(position).Id)
+//                        .update("variations", itemModel.variations)
 
                 }
             }
 
-//            if(itemModel.variations.size>0)
-//            {
-//                holder.binding.switchToggle.visibility=View.GONE
-//                holder.binding.amount.visibility=View.GONE
-//            }
             variationRv.apply {
-                layoutManager=LinearLayoutManager(holder.binding.root.context,LinearLayoutManager.VERTICAL,false)
-                adapter=variationAdapter
+                layoutManager = LinearLayoutManager(
+                    holder.binding.root.context,
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
+                adapter = variationAdapter
                 setRecycledViewPool(viewPool)
             }
-
         }
+        variationAdapter.submitList(itemModel.variations)
         holder.binding.executePendingBindings()
         holder.bind(itemModel)
     }
-
 
 }
 
@@ -104,7 +96,7 @@ class MenuDiffUtils : DiffUtil.ItemCallback<ItemMenuModel>() {
         oldItem: ItemMenuModel,
         newItem: ItemMenuModel
     ): Boolean {
-        return oldItem.itemName == newItem.itemName
+        return (oldItem.itemName == newItem.itemName && oldItem.variations==newItem.variations)
     }
 
     override fun areContentsTheSame(

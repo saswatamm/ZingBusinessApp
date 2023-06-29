@@ -4,15 +4,14 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Adapter
-import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.databinding.VariationItemMenuOptionBinding
-import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.models.item.VariationsModel
+
 
 //send menuId from adapter
 class VariationItemAdapter(private val context: Context,private val menuItemId :String,private val variationArray : ArrayList<VariationsModel>):
@@ -25,7 +24,6 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
     inner class VariationViewHolder(val binding: VariationItemMenuOptionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(variationsModel: VariationsModel) {
-
             binding.variaitonMenu = variationsModel
             binding.activeornot = variationsModel.active.equals("1")
         }
@@ -51,7 +49,6 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
         holder.bind(variationsModel)
         holder.binding.apply {
             variationSwitchToggle.setOnCheckedChangeListener { view, isChecked ->    //CHANGE THIS
-
                 if (isChecked) {
                     variationArray.forEach {
                         if (it.variationId == variationsModel.variationId) {
@@ -59,8 +56,8 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
                             firestore.collection("prod_menu").document(menuItemId)
                                 .update("variations", variationArray)
                             Log.d(TAG,variationArray.toString())
+                            variationsModel.active="1"
                         }
-
                     }
 
                 } else {
@@ -70,8 +67,17 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
                             firestore.collection("prod_menu").document(menuItemId)
                                 .update("variations", variationArray)
                             Log.d(TAG,variationArray.toString())
+                            variationsModel.active="0"
                         }
                     }
+
+//                    if(variationArray.all { it.active=="0" })
+//                    {
+//                        firestore.collection("prod_menu").document(menuItemId)
+//                            .update("active", "0")
+//                        Log.d(TAG,"All variations are zero")
+//                    }
+
                 }
 
             }

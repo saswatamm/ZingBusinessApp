@@ -56,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
-            android:checked="@{activeornot}"
+            android:checked='@{activeornot}'
             android:visibility="visible"
             android:thumb="@drawable/thumb_selector"
             app:layout_constraintBottom_toBottomOf="@id/amount"

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ItemMenuModel(
     @SerializedName("active")
-    val active: String="",
+    var active: String="",
     @get:PropertyName("addons")
     @set:PropertyName("addons")
     var addons: ArrayList<AddOnModel> = arrayListOf(),
