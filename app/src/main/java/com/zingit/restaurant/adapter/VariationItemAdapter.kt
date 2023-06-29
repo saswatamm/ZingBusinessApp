@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.databinding.VariationItemMenuOptionBinding
+import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.models.item.VariationsModel
 
 
@@ -27,6 +28,7 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
             binding.variaitonMenu = variationsModel
             binding.activeornot = variationsModel.active.equals("1")
         }
+
     }
 
     override fun onCreateViewHolder(
@@ -43,7 +45,7 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
 
     override fun onBindViewHolder(holder: VariationItemAdapter.VariationViewHolder, position: Int) {
         firestore = FirebaseFirestore.getInstance()
-        val variationsModel = getItem(position)
+        var variationsModel = getItem(position)
         Log.d("MenuItemAdapter", "itemModel:" + variationsModel.toString())
 
         holder.bind(variationsModel)
@@ -71,12 +73,12 @@ class VariationItemAdapter(private val context: Context,private val menuItemId :
                         }
                     }
 
-//                    if(variationArray.all { it.active=="0" })
-//                    {
-//                        firestore.collection("prod_menu").document(menuItemId)
-//                            .update("active", "0")
-//                        Log.d(TAG,"All variations are zero")
-//                    }
+                    if(variationArray.all { it.active=="0" })
+                    {
+                        firestore.collection("prod_menu").document(menuItemId)
+                            .update("active", "0")
+                        Log.d(TAG,"All variations are zero")
+                    }
 
                 }
 

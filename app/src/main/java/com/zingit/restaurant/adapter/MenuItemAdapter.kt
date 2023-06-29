@@ -3,25 +3,16 @@ package com.zingit.restaurant.adapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.core.view.isVisible
+import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.databinding.SingleItemMenuOptionBinding
-
 import com.zingit.restaurant.models.item.ItemMenuModel
-import com.zingit.restaurant.models.item.ItemMenuState
-import com.zingit.restaurant.models.item.VariationsModel
 import com.zingit.restaurant.repository.FirebaseRepository
-import com.zingit.restaurant.utils.Utils
-import com.zingit.restaurant.viewModel.ExploreViewModel
-import kotlin.coroutines.coroutineContext
 
 
 class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel, MenuItemAdapter.MenuViewHolder>(MenuDiffUtils()) {
@@ -65,12 +56,13 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
                     firestore.collection("prod_menu").document(getItem(position).Id)
                         .update("active", "0")
                         itemModel.active="0"
-//                    itemModel.variations.forEach {
-//                        it.active = "0"
-//                    }
-//                    firestore.collection("prod_menu").document(getItem(position).Id)
-//                        .update("variations", itemModel.variations)
+                    itemModel.variations.forEach {
+                        it.active = "0"
+                    }
+                    firestore.collection("prod_menu").document(getItem(position).Id)
+                        .update("variations", itemModel.variations)
 
+                    holder.binding.variationRv.post(Runnable { variationAdapter.notifyDataSetChanged() })
                 }
             }
 
@@ -84,6 +76,7 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
                 setRecycledViewPool(viewPool)
             }
         }
+
         variationAdapter.submitList(itemModel.variations)
         holder.binding.executePendingBindings()
         holder.bind(itemModel)
@@ -96,13 +89,14 @@ class MenuDiffUtils : DiffUtil.ItemCallback<ItemMenuModel>() {
         oldItem: ItemMenuModel,
         newItem: ItemMenuModel
     ): Boolean {
-        return (oldItem.itemName == newItem.itemName && oldItem.variations==newItem.variations)
+        return (oldItem.itemName == newItem.itemName)
     }
 
     override fun areContentsTheSame(
         oldItem: ItemMenuModel,
         newItem: ItemMenuModel
     ): Boolean {
+
         return oldItem == newItem
     }
 
