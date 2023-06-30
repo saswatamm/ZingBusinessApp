@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@{`#`}"
+            android:text="@{`#`+pastOrder.order.details.orderId}"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintStart_toEndOf="@id/order"
@@ -79,27 +79,13 @@
             app:layout_constraintTop_toBottomOf="@id/back_arrow"
             app:layout_constraintEnd_toStartOf="@id/dateTime"/>
 
-<!--        <TextView-->
-<!--            android:id="@+id/dateTime"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/_2sdp"-->
-<!--            android:fontFamily="@font/duplet_bold"-->
-<!--            android:text="@{Utils.INSTANCE.formatDate(pastOrder.placedTime.seconds * 1000)}"-->
-<!--            android:layout_marginTop="@dimen/_10sdp"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="@dimen/_14sdp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            android:layout_marginEnd="@dimen/_10sdp"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/back_arrow"/>-->
-
         <TextView
             android:id="@+id/dateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
             android:fontFamily="@font/duplet_bold"
-            android:text="@{}"
+            android:text="@{pastOrder.order.details.preorderDate}"
             android:layout_marginTop="@dimen/_10sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
