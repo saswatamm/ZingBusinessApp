@@ -56,13 +56,13 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
                     firestore.collection("prod_menu").document(getItem(position).Id)
                         .update("active", "0")
                         itemModel.active="0"
-                    itemModel.variations.forEach {
-                        it.active = "0"
-                    }
-                    firestore.collection("prod_menu").document(getItem(position).Id)
-                        .update("variations", itemModel.variations)
+//                    itemModel.variations.forEach {
+//                        it.active = "0"
+//                    }
+//                    firestore.collection("prod_menu").document(getItem(position).Id)
+//                        .update("variations", itemModel.variations)
 
-                    holder.binding.variationRv.post(Runnable { variationAdapter.notifyDataSetChanged() })
+//                    holder.binding.variationRv.post(Runnable { variationAdapter.notifyDataSetChanged() })
                 }
             }
 
@@ -76,7 +76,6 @@ class MenuItemAdapter(private val context: Context) : ListAdapter<ItemMenuModel,
                 setRecycledViewPool(viewPool)
             }
         }
-
         variationAdapter.submitList(itemModel.variations)
         holder.binding.executePendingBindings()
         holder.bind(itemModel)
@@ -89,7 +88,8 @@ class MenuDiffUtils : DiffUtil.ItemCallback<ItemMenuModel>() {
         oldItem: ItemMenuModel,
         newItem: ItemMenuModel
     ): Boolean {
-        return (oldItem.itemName == newItem.itemName)
+
+        return (oldItem.itemName == newItem.itemName && oldItem.active ==newItem.active)
     }
 
     override fun areContentsTheSame(

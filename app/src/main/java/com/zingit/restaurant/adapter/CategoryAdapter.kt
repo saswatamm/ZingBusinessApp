@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.MenuCategoryLayoutBinding
 import com.zingit.restaurant.models.item.CategoryModel
+import com.zingit.restaurant.views.menu.MenuFragment
 
 class CategoryAdapter(
     private val context: Context,
@@ -46,7 +47,8 @@ class CategoryAdapter(
         val categoryModel = getItem(position)
         holder.bind(categoryModel, position)
 
-        holder.binding.root.setOnClickListener {
+
+        holder.binding.profileImage.setOnClickListener {
             selectedPosition = position
             notifyDataSetChanged()
             onClick(categoryModel)

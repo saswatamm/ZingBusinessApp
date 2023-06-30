@@ -93,7 +93,8 @@ class VariationDiffUtils : DiffUtil.ItemCallback<VariationsModel>() {
         oldItem: VariationsModel,
         newItem: VariationsModel
     ): Boolean {
-        return oldItem.name == newItem.name
+
+        return (oldItem.name == newItem.name )
     }
 
     override fun areContentsTheSame(
