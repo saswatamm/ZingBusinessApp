@@ -267,6 +267,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_25sdp"
                     android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
                     android:fontFamily="@font/duplet_bold"
                     android:text="@string/request_deactivated"
                     android:textColor="@color/colorPrimaryDark"
