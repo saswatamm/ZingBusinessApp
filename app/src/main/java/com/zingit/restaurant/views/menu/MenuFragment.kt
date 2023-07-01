@@ -116,6 +116,7 @@ class MenuFragment : Fragment() {
                             Log.e(TAG, "onCreateView: ${it.data}")
                             menuItemAdapter.submitList(it.data)
                             rvProducts.adapter = menuItemAdapter
+
                         }
                     }
                 }
