@@ -6,6 +6,7 @@ import kotlin.collections.ArrayList
 
 
 data class OrdersModel(
+
     @get:PropertyName("customer")
     @set:PropertyName("customer")
     var customer: OrderCustomerModel?=OrderCustomerModel(),

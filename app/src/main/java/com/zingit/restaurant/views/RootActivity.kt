@@ -264,7 +264,7 @@ class RootActivity : AppCompatActivity() {
 
 
 
-    private fun printBluetooth(ordersModel: OrdersModel, id: String) {
+     fun printBluetooth(ordersModel: OrdersModel, id: String) {
         AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
             override fun onError(
                 asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int

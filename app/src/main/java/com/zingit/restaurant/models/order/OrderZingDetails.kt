@@ -4,6 +4,9 @@ import com.google.firebase.firestore.PropertyName
 import com.google.gson.annotations.SerializedName
 
 data class OrderZingDetails(
+    @get:PropertyName("id")
+    @set:PropertyName("id")
+    var id: String?="",
     @get:PropertyName("acceptedTimestamp")
     @set:PropertyName("acceptedTimestamp")
     var acceptedTimestamp: String?="",

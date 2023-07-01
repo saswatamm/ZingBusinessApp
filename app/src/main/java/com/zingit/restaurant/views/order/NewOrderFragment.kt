@@ -144,12 +144,9 @@ class NewOrderFragment : Fragment() {
 //                    orderModel.order?.details!!.orderId,firestore,
 //                    it1
 //                )
-//            }
+//
 
-                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,
-                    orderModel.order?.details!!.orderId,firestore,
-                    BluetoothConnection(getConnectedDeviceName())
-                )
+              RootActivity().printBluetooth(orderModel,orderModel.zingDetails?.id!!)
 
         }
 
