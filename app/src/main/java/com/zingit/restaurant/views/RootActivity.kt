@@ -4,13 +4,18 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
+import android.os.Message
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -30,6 +35,8 @@ import com.google.firebase.firestore.*
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.ActivityHomeMainBinding
 import com.zingit.restaurant.models.order.OrdersModel
+import com.zingit.restaurant.service.BluetoothService
+import com.zingit.restaurant.service.Constants
 import com.zingit.restaurant.service.InternetConnectivityBroadcastReceiver
 import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
@@ -46,6 +53,8 @@ import kotlin.system.exitProcess
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeMainBinding
+    private var mService: BluetoothService? = null
+    private var mConnectedDeviceName: String? = null
     private var backPressedTime: Long = 0
     lateinit var navController: NavController
     var destination_id = R.id.homeFragment
@@ -208,6 +217,28 @@ class RootActivity : AppCompatActivity() {
             addAction("android.bluetooth.adapter.action.STATE_CHANGED")
         })
         selectedDevice= BluetoothConnection(getConnectedDeviceName())
+        mService = BluetoothService(this, mHandler)
+    }
+
+
+    private val mHandler = object : Handler() {
+         override fun handleMessage(msg: Message) {
+            val activity = this@RootActivity
+            when (msg.what) {
+                Constants.DEVICE_SELECTED -> {
+                    // save the connected device's name
+                    mConnectedDeviceName = msg.data.getString(Constants.DEVICE_NAME)
+                    if (null != activity) {
+                        val message = "Connected to " + mConnectedDeviceName!!
+                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                Constants.MESSAGE_TOAST -> if (null != activity) {
+                    Toast.makeText(activity, msg.data.getString(Constants.TOAST),
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
 
@@ -285,33 +316,35 @@ class RootActivity : AppCompatActivity() {
 
                 try {
 
-                    Log.d(TAG+"selectedDevice is:", selectedDevice.toString())
-                    val sfDocRef = firestore.collection("prod_order").document(id)
+                    val sfDocRef = firestore.collection("payment").document(id)
                     Toast.makeText(
                         applicationContext, "Print is finished ! $id", Toast.LENGTH_SHORT
                     ).show()
 
                     firestore.runTransaction { transaction ->
-                        transaction.update(sfDocRef, "zingDetails.status", "2")
+                        transaction.update(sfDocRef, "statusCode", 2)
                     }.addOnSuccessListener {
-                        Log.d(TAG, "Transaction success! in RootActivity")
+                        Log.d(TAG, "Transaction success!")
 
                     }.addOnFailureListener { e ->
-                            Toast.makeText(
-                                applicationContext, "Error $e", Toast.LENGTH_LONG
-                            ).show()
-                        }
+                        Toast.makeText(
+                            applicationContext, "Error $e", Toast.LENGTH_LONG
+                        ).show()
+                    }
                 } catch (e: Exception) {
                     Toast.makeText(applicationContext, "Error $e", Toast.LENGTH_LONG).show()
                 }
             }
 
         }).execute(
-                Utils.getAsyncEscPosPrinter(
-                    ordersModel, selectedDevice, this
-                )
+            Utils.getAsyncEscPosPrinter(
+                ordersModel, selectedDevice, this
             )
+        )
     }
+
+
+
 }
 
 
