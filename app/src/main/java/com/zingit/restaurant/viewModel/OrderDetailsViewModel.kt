@@ -20,10 +20,14 @@ import com.zingit.restaurant.R
 import com.zingit.restaurant.models.ApiResult
 import com.zingit.restaurant.models.WhatsappRequestModel
 import com.zingit.restaurant.models.order.OrdersModel
+import com.zingit.restaurant.models.refund.RefundModel
+import com.zingit.restaurant.models.refund.RequestRefund
+import com.zingit.restaurant.network.Constants
 import com.zingit.restaurant.repository.ZingRepository
 import com.zingit.restaurant.service.CountdownService
 import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.utils.Utils.hideKeyboard
+import dagger.Provides
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,6 +50,10 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     private val _error: MutableLiveData<String> = MutableLiveData()
     val error: LiveData<String>
         get() = _error
+
+    private val refund: MutableLiveData<RefundModel> = MutableLiveData()
+    val refundLiveData: LiveData<RefundModel>
+        get() = refund
     private val data: MutableLiveData<String> = MutableLiveData()
     val dataLivedata: LiveData<String>
         get() = data
@@ -63,6 +71,34 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     }
 
 
+
+    fun getRefund(amount:Double,merchantId:String,originalTransactionId:String,refundTransactionId:String){
+        Constants.PROD_URL = "https://us-central1-zing-user.cloudfunctions.net/"
+        Log.e(TAG, "getRefund: ${Constants.PROD_URL}", )
+        viewModelScope.launch {
+            loading.value = true
+            val result = repository.getRefund(RequestRefund(amount,merchantId,originalTransactionId,refundTransactionId))
+            when (result.status) {
+                ApiResult.Status.SUCCESS -> {
+                    loading.value = false
+                    refund.value = result.data!!
+                }
+                ApiResult.Status.ERROR -> {
+                    loading.value = false
+                    _error.value = result.message!!
+                }
+                else -> {
+                    loading.value = false
+                    _error.value = result.message!!
+                }
+            }
+        }
+
+
+
+    }
+
+
     fun whatsappToUser(
         userName: String,
         orderNumber: String,
@@ -72,6 +108,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         isAccept : Boolean,
         id: String
     ) {
+        Constants.PROD_URL= "https://cy4eialxu7.execute-api.ap-south-1.amazonaws.com"
         viewModelScope.launch {
             loading.value = true
             val result = repository.callWhatsapp(

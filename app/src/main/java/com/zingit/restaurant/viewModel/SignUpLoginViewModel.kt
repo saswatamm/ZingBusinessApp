@@ -116,9 +116,6 @@ class SignUpLoginViewModel @Inject constructor(
                 loading.value = false
                     val outletAuthModel = value.documents[0].toObject(OutletAuthModel::class.java)
                     if (outletAuthModel != null) {
-                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-                        Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
-                        Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
                         Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, value.documents.get(0).data?.get("outletID").toString())
                         signIn.value = true
 
@@ -127,25 +124,6 @@ class SignUpLoginViewModel @Inject constructor(
         }
     }
 
-
-
-    fun verifyOtp(verifyOtpDTO: VerifyOtpDTO) {
-        viewModelScope.launch {
-            loading.value = true
-            val result = repository.verifyOtp(verifyOtpDTO)
-            when (result.status) {
-                ApiResult.Status.SUCCESS -> {
-                    loading.value = false
-                    verifyOtpMutableLiveData.value = result.data!!
-                }
-                ApiResult.Status.ERROR -> {
-                    loading.value = false
-                    _error.value = result.message!!
-                }
-                else -> {}
-            }
-        }
-    }
 
 
     fun whatsappToUser(

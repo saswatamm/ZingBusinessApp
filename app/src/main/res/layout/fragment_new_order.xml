@@ -212,6 +212,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
                 android:layout_weight="1"
+                android:onClick="@{() -> viewModel.getRefund(pastOrder.totalAmountPaid,pastOrder.userID,pastOrder.paymentOrderID,pastOrder.id)}"
                 android:fontFamily="@font/duplet_semibold"
                 android:paddingVertical="@dimen/_15sdp"
                 android:textAlignment="center"
@@ -245,5 +246,3 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 
-<!--
-    android:onClick="@{() -> viewModel.checkFinish == false ? viewModel.whatsappToUser(pastOrder.userName,pastOrder.orderNo,Utils.INSTANCE.getItemsMapType(pastOrder.orderItems),pastOrder.userNumber,`order_declined_campaign`,false,pastOrder.id) : null}"-->
