@@ -305,7 +305,7 @@ class RootActivity : AppCompatActivity() {
 
         }).execute(
             Utils.getAsyncEscPosPrinter(
-                ordersModel, selectedDevice, this
+                ordersModel, selectedDevice, this@RootActivity
             )
         )
     }
