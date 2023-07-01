@@ -4,29 +4,23 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.ComponentName
-import android.content.Context
+
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
-import android.os.Message
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -35,25 +29,18 @@ import com.google.firebase.firestore.*
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.ActivityHomeMainBinding
 import com.zingit.restaurant.models.order.OrdersModel
-import com.zingit.restaurant.service.BluetoothService
-import com.zingit.restaurant.service.Constants
 import com.zingit.restaurant.service.InternetConnectivityBroadcastReceiver
 import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.launch
 import java.lang.reflect.Method
-import kotlin.system.exitProcess
 
 
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeMainBinding
-    private var mService: BluetoothService? = null
     private var mConnectedDeviceName: String? = null
     private var backPressedTime: Long = 0
     lateinit var navController: NavController
@@ -217,29 +204,9 @@ class RootActivity : AppCompatActivity() {
             addAction("android.bluetooth.adapter.action.STATE_CHANGED")
         })
         selectedDevice= BluetoothConnection(getConnectedDeviceName())
-        mService = BluetoothService(this, mHandler)
     }
 
 
-    private val mHandler = object : Handler() {
-         override fun handleMessage(msg: Message) {
-            val activity = this@RootActivity
-            when (msg.what) {
-                Constants.DEVICE_SELECTED -> {
-                    // save the connected device's name
-                    mConnectedDeviceName = msg.data.getString(Constants.DEVICE_NAME)
-                    if (null != activity) {
-                        val message = "Connected to " + mConnectedDeviceName!!
-                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-                Constants.MESSAGE_TOAST -> if (null != activity) {
-                    Toast.makeText(activity, msg.data.getString(Constants.TOAST),
-                        Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
 
 
     private fun getConnectedDeviceName(): BluetoothDevice? {
