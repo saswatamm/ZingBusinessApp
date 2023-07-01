@@ -507,7 +507,7 @@ object Utils {
 
                 }
             )
-                .execute(getAsyncEscPosPrinter(ordersModel, bluetoothConnection, context))
+                .execute(getAsyncEscPosPrinter(ordersModel, bluetoothConnection, activity))
         }
     }
 
