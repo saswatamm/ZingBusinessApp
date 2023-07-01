@@ -218,11 +218,11 @@ object Utils {
     fun getAsyncEscPosPrinter(
         orderModel: OrdersModel,
         printerConnection: DeviceConnection?,
-        context: Context
+        activity: Activity
     ): AsyncEscPosPrinter? {
         val format = SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss")
         val printer = AsyncEscPosPrinter(printerConnection, 203, 48f, 32)
-        return printer.addTextToPrint(createPrintSlip(orderModel, printer, context))
+        return printer.addTextToPrint(createPrintSlip(orderModel, printer, activity))
     }
 
 
@@ -237,15 +237,14 @@ object Utils {
     fun createPrintSlip(
         payment: OrdersModel,
         printer: AsyncEscPosPrinter,
-        context: Context
+        activity: Activity
     ): String? {
         var slip = ""
         var spaces = ""
 
         slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(
             printer,
-            context.getResources()
-                .getDrawableForDensity(R.drawable.new_zing, DisplayMetrics.DENSITY_HIGH)
+            activity.resources.getDrawableForDensity(R.drawable.new_zing, DisplayMetrics.DENSITY_HIGH)
         ) + "</img>\n";
         /*slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, getDrawableForDensity(
             R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*/
