@@ -244,7 +244,7 @@ object Utils {
 
         slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(
             printer,
-            context.resources.getDrawableForDensity(R.drawable.new_zing, DisplayMetrics.DENSITY_HIGH)
+            ContextCompat.getDrawable(context, R.drawable.new_zing)!!
         ) + "</img>\n";
         /*slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, getDrawableForDensity(
             R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*/
