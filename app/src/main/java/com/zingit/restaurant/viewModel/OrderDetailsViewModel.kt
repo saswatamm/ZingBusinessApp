@@ -43,7 +43,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     private val loading: MutableLiveData<Boolean> = MutableLiveData()
     val loadingLivedata: LiveData<Boolean>
         get() = loading
-    lateinit var firestore: FirebaseFirestore
+    var firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     val remainingTimeFinal: MutableLiveData<String> = MutableLiveData()
 
     private val _error: MutableLiveData<String> = MutableLiveData()
@@ -61,7 +61,6 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     private lateinit var timer: CountDownTimer
 
     init {
-        firestore = FirebaseFirestore.getInstance()
         startCountdownTimer()
     }
 
@@ -122,7 +121,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                             })
 
                     }else{
-                        firestore.collection("payment").document(id).update("statusCode",-1)
+                        //firestore.collection("payment").document(id).update("statusCode",-1)
                     }
                 }
                 ApiResult.Status.ERROR -> {

@@ -41,6 +41,7 @@
             android:text="@string/zing"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_30sdp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -49,13 +50,13 @@
             android:id="@+id/order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/duplet_regular"
             android:text="@string/order_id_"
             android:textColor="@color/lightGreyText"
             android:textSize="@dimen/_14sdp"
+            android:paddingTop="16dp"
             app:layout_constraintStart_toStartOf="@id/back_arrow"
-            app:layout_constraintTop_toBottomOf="@id/back_arrow" />
+            app:layout_constraintTop_toBottomOf="@+id/branding" />
 
         <TextView
             android:id="@+id/oderId"
@@ -65,37 +66,36 @@
             android:fontFamily="@font/duplet_bold"
             android:text="@{`#`+pastOrder.order.details.orderId}"
             android:textColor="@color/black"
+            android:paddingTop="16dp"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintStart_toEndOf="@id/order"
-            app:layout_constraintTop_toTopOf="@id/order" />
+            app:layout_constraintTop_toBottomOf="@+id/branding" />
 
         <TextView
             android:id="@+id/date"
+            android:paddingTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:fontFamily="@font/duplet_regular"
             android:text="@string/date"
-            android:layout_marginEnd="@dimen/_5sdp"
             android:textColor="@color/lightGreyText"
             android:textSize="@dimen/_14sdp"
-            app:layout_constraintTop_toBottomOf="@id/back_arrow"
-            app:layout_constraintEnd_toStartOf="@id/dateTime"/>
+            app:layout_constraintEnd_toStartOf="@id/dateTime"
+            app:layout_constraintTop_toBottomOf="@+id/branding" />
 
         <TextView
             android:id="@+id/dateTime"
+            android:paddingTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             android:fontFamily="@font/duplet_bold"
             android:text="@{ pastOrder.order.details.preorderDate}"
-            android:layout_marginTop="@dimen/_10sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/back_arrow"/>
+            app:layout_constraintTop_toBottomOf="@+id/branding" />
 
 
         <TextView
@@ -174,9 +174,11 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/item_single_order_layout"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line" />
+            app:layout_constraintTop_toBottomOf="@id/line"
+            app:layout_constraintVertical_bias="1.0"
+            tools:listitem="@layout/item_single_order_layout" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -189,24 +191,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/prepared"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/_5sdp"
-                android:backgroundTint="@color/green"
-                android:fontFamily="@font/duplet_semibold"
-                android:paddingVertical="@dimen/_15sdp"
-                android:text="@string/order_prepared"
-                android:textAlignment="center"
-                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.customer.details.name,pastOrder.order.details.orderId,Utils.INSTANCE.getItemsMapType(pastOrder.orderItem.details),pastOrder.customer.details.phone,`order_prepared_campaign`,true,pastOrder.order.details.orderId)}"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_10sdp"
-                app:cornerRadius="@dimen/_5sdp" />
-
-<!--            <com.google.android.material.button.MaterialButton-->
+            <!--            <com.google.android.material.button.MaterialButton-->
 <!--                android:id="@+id/prepared"-->
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="wrap_content"-->
@@ -222,11 +207,30 @@
 <!--                android:textSize="@dimen/_10sdp"-->
 <!--                app:cornerRadius="@dimen/_5sdp" />-->
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/prepared"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/green"
+                android:fontFamily="@font/duplet_semibold"
+                android:letterSpacing="0.03"
+                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.customer.details.name,pastOrder.order.details.orderId,Utils.INSTANCE.getItemsMapType(pastOrder.orderItem.details),pastOrder.customer.details.phone,`order_prepared_campaign`,true,pastOrder.order.details.orderId)}"
+                android:paddingVertical="@dimen/_15sdp"
+                android:text="@string/order_prepared"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10sdp"
+                app:cornerRadius="@dimen/_5sdp" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/rejectBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
                 android:layout_weight="1"
+                android:letterSpacing="0.03"
                 android:fontFamily="@font/duplet_semibold"
                 android:paddingVertical="@dimen/_15sdp"
                 android:textAlignment="center"
@@ -242,6 +246,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
+            android:letterSpacing="0.03"
             android:layout_marginStart="@dimen/_10sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

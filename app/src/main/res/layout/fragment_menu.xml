@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/duplet_italic"
-                    android:hint="@string/search_by_orderId"
+                    android:hint="Search by Item Name"
                     android:singleLine="true"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"

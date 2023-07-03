@@ -85,7 +85,8 @@ object Utils {
         // Format the Date object into a string in the desired format
         return formatter.format(date)
     }
-  @RequiresApi(Build.VERSION_CODES.O)
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun convertToIsoString1(date: String?): String {
         // Convert the Timestamp object to a Date object
 
@@ -107,7 +108,7 @@ object Utils {
         account_id: String,
         email: String,
         outlet_id: String,
-        menu_sharing_code:String,
+        menu_sharing_code: String,
     ) {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
@@ -230,7 +231,21 @@ object Utils {
         if (payment.order?.details!!.orderType == null || payment.order?.details!!.orderType == "") {
             return "Dine In"
         } else {
-            return payment.order?.details!!.orderType
+            var tableNo = payment.zingDetails?.tableNumber;
+            var flag = 0;
+            if(tableNo == "" || tableNo == "-1")
+                flag = -1;
+            var ordertype = payment.order?.details!!.orderType
+            if(ordertype == "D") {
+                ordertype = "Dine-in";
+                if(flag==0)
+                {
+                    ordertype = "$ordertype (# $tableNo)"
+                }
+            }
+            else if(ordertype =="P")
+                ordertype = "Takeaway"
+            return ordertype
         }
     }
 
@@ -250,18 +265,24 @@ object Utils {
             R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*/
 
         slip += "[L]\n"
-        slip += "[L]<b>Order type : " + getSpaces("Order type : ",orderType(payment))+orderType(payment)+"\n\n"
+        slip += "[L]<b>Order type : " + getSpaces("Order type : ", orderType(payment)) + orderType(payment) + "\n\n"
         /*slip += """
              ${"[R]<font size='normal'>        " + "[R]${orderType(payment)}"}</font>
 
              """.trimIndent()*/
 
-        slip += "[L]<b>Order No. : " + getSpaces(" Order No.: ", payment.order?.details!!.orderId)+payment.order?.details!!.orderId+"\n\n"
+        slip += "[L]<b>Order No. : " + getSpaces(
+            " Order No.: ",
+            payment.order?.details!!.orderId
+        ) + payment.order?.details!!.orderId + "\n\n"
         /*slip += """
              ${"[R]<font size='normal'>        " + "[R]${payment.orderNo}"}</font>
 
              """.trimIndent()*/
-        slip += "[L]<b>" + "Order From : " + getSpaces("Order From : ", payment.customer?.details!!.name.split(" ")[0])+payment.customer?.details!!.name.split(" ")[0]+"\n\n"
+        slip += "[L]<b>" + "Order From : " + getSpaces(
+            "Order From : ",
+            payment.customer?.details!!.name.split(" ")[0]
+        ) + payment.customer?.details!!.name.split(" ")[0] + "\n\n"
         /*slip += """
              ${"[R]<font size='normal'>        " + "[R]${payment.userName.split(" ")[0]}"}</font>
 
@@ -272,9 +293,12 @@ object Utils {
         slip += "[C]<b>=============================================\n\n"
         for (i in 0 until payment.orderItem?.details!!.size) {
             spaces = getSpaces(payment.orderItem!!.details.get(i).name, "x2")
-            slip += "[L]<font size='big-4'>" + payment.orderItem!!.details.get(i).name + spaces + "x" + payment.orderItem!!.details.get(
-                i
-            ).quantity + "\n\n"
+            var variation = payment.orderItem!!.details.get(i).variationName;
+            if(variation != "")
+            {
+                variation = " ($variation) ";
+            }
+            slip += "[L]<font size='big-4'>" + payment.orderItem!!.details[i].name + variation + spaces + "x" + payment.orderItem!!.details.get(i).quantity + "\n\n"
             "</font>"
 
 
@@ -286,7 +310,7 @@ object Utils {
         }
         slip += "[C]<b>=============================================\n\n"
         slip += """
-             ${"[R]<font size='big-4'>                        Total Amount: " + payment.order!!.details!!.total}</font>
+             ${"[R]<font size='big-4'>           Total Amount (incl. taxes): ₹" + payment.order!!.details!!.total}</font>
 
              """.trimIndent()
         return slip
@@ -387,7 +411,8 @@ object Utils {
         var itemLength = item.length
         var spaces = ""
         // var count = if(itemLength>=16) 23 - (itemLength-16) else 17 + (16-itemLength)
-        var count = if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength)+2-right.length
+        var count =
+            if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength) + 2 - right.length
         for (i in 1..count)
             spaces += " "
         return spaces
@@ -499,8 +524,7 @@ object Utils {
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                        }
-                         catch (e: Exception) {
+                        } catch (e: Exception) {
                             Toast.makeText(context, "Error $e", Toast.LENGTH_LONG).show()
                         }
                     }

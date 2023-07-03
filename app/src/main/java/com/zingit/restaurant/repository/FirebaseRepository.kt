@@ -76,7 +76,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
             if (snapShot.documents.isNotEmpty()){
                 val categoryModel: List<CategoryModel> =
                     snapShot.toObjects(CategoryModel::class.java)
-                Log.d(TAG,"Hi :"+categoryModel.toString())
+                Log.d(TAG, "Hi :$categoryModel")
                 emit(Resource.Success(categoryModel))
             }
 
@@ -96,7 +96,7 @@ class FirebaseRepository @Inject constructor(private val application:Application
             if (snapShot.documents.isNotEmpty()){
                 val addonGroupModel: List<AddonGroupModel> =
                     snapShot.toObjects(AddonGroupModel::class.java)
-                Log.d(TAG,"Hi :"+addonGroupModel.toString())
+                Log.d(TAG, "Hi :$addonGroupModel")
                 emit(Resource.Success(addonGroupModel))
             }
 
@@ -118,11 +118,24 @@ class FirebaseRepository @Inject constructor(private val application:Application
                     return@addSnapshotListener
                 }
                 if (value != null) {
-                    var orderModel: List<OrdersModel> =
-                        value.toObjects(OrdersModel::class.java)
-
+//                    var orderModel: List<OrdersModel> =
+//                        value.toObjects(OrdersModel::class.java)
 //                    orderModel = orderModel.sortedByDescending { it.order?.preorderTime } //Orders sorted in descending order
+                    var orderModel=  ArrayList<OrdersModel>();
 
+                    val valueIterator = value.documents.iterator()
+                    while (valueIterator.hasNext()) {
+                        var valueIteratorObject = valueIterator.next();
+                        var orderModelObject = valueIteratorObject.toObject(OrdersModel::class.java)
+                        if (orderModelObject != null) {
+                            orderModelObject.zingDetails?.id = valueIteratorObject.id
+                        }
+                        if (orderModelObject != null) {
+                            orderModel.add(orderModelObject)
+                        }
+                    }
+                    var list = orderModel.sortedByDescending { it.zingDetails?.placedTime }
+                    orderModel = ArrayList(list);
                     Log.d("RestaurantProfileViewModel", "orderData is:$value")
                     trySend(orderModel).isSuccess
                 }

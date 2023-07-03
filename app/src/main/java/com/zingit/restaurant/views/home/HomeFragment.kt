@@ -76,8 +76,8 @@ class HomeFragment : Fragment() {
                         Log.e(TAG, "dataOpenClose: ${task.result.data}",)
                         val data= task.result.data?.get("active").toString()
                         if (task.result.exists()) {
-                            Log.d(TAG," value in "+data)
-                            if (data.equals("1")) {
+                            Log.d(TAG, " value in $data")
+                            if (data == "1") {
                                 switchButton.isChecked = true
                                 statusOff.visibility = View.GONE
                                 statusOn.visibility = View.VISIBLE

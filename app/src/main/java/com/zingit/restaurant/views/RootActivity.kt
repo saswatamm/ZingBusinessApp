@@ -2,9 +2,11 @@ package com.zingit.restaurant.views
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
@@ -12,10 +14,12 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Message
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,7 +29,16 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.ActivityHomeMainBinding
 import com.zingit.restaurant.models.order.OrdersModel
@@ -53,12 +66,16 @@ class RootActivity : AppCompatActivity() {
     val PERMISSION_BLUETOOTH_ADMIN = 2
     val PERMISSION_BLUETOOTH_CONNECT = 3
     val PERMISSION_BLUETOOTH_SCAN = 4
+    val PERMISSION_BLUETOOTH_ADVERTISE = 5
     var mediaPlayer: MediaPlayer? = null
 
     var firestore = FirebaseFirestore.getInstance()
     var uniqueOrders = HashSet<String>() //To print only unique orders
     lateinit var paymentModel: OrdersModel
     var selectedDevice: BluetoothConnection? = null
+
+    var context: Context = this;
+
 
 
     @SuppressLint("MissingPermission", "SuspiciousIndentation")
@@ -120,6 +137,37 @@ class RootActivity : AppCompatActivity() {
                     }
 
                 }
+                Dexter.withContext(this)
+                    .withPermissions(
+                        Manifest.permission.BLUETOOTH,
+                        Manifest.permission.BLUETOOTH_ADVERTISE,
+                        Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.BLUETOOTH_CONNECT,
+
+                    ).withListener(object : MultiplePermissionsListener {
+                        override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                        }
+
+                        override fun onPermissionRationaleShouldBeShown(
+                            permissions: List<PermissionRequest>,
+                            token: PermissionToken
+                        ) {
+                        }
+                    }).check()
+
+                // Get the BluetoothDevice instance
+                val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+                val device: BluetoothDevice? = bluetoothAdapter?.getRemoteDevice("66:32:FA:00:E4:42")
+
+                // Bond with the device
+                device?.createBond()
+                // Check if the device is already bonded
+                val isBonded: Boolean = device?.bondState == BluetoothDevice.BOND_BONDED
+                if (isBonded) {
+                    Log.d("BONDED", "Device Bonded");
+                } else {
+                    Log.d("BONDED", "Device Not Bonded");
+                }
 
             }
 
@@ -149,8 +197,8 @@ class RootActivity : AppCompatActivity() {
                                         uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details!!.size}")
-                                        printBluetooth(paymentModel, i.document.id)
-                                        mediaPlayer = MediaPlayer.create(applicationContext, R.raw.incoming_order)
+                                        printBluetooth(context,this@RootActivity,paymentModel, i.document.id)
+                                        mediaPlayer = MediaPlayer.create(this@RootActivity, R.raw.incoming_order)
                                         mediaPlayer?.start()
                                     } else {
                                         Log.e(TAG, "eventPrinting: ${i.document.data.get("order.details.orderID").toString()}")
@@ -203,7 +251,13 @@ class RootActivity : AppCompatActivity() {
             addAction("android.bluetooth.device.action.ACL_DISCONNECTED")
             addAction("android.bluetooth.adapter.action.STATE_CHANGED")
         })
-        selectedDevice= BluetoothConnection(getConnectedDeviceName())
+//        ActivityCompat.requestPermissions(
+//            this,
+//            arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE),
+//            PERMISSION_BLUETOOTH_ADVERTISE
+//        )
+//        makeDiscoverable()
+        //selectedDevice= BluetoothConnection(getConnectedDeviceName())
     }
 
 
@@ -238,11 +292,22 @@ class RootActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, arrayOf(Manifest.permission.BLUETOOTH_SCAN), PERMISSION_BLUETOOTH_SCAN
             )
-        } else {
+        }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+                this, Manifest.permission.BLUETOOTH_ADVERTISE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE), PERMISSION_BLUETOOTH_ADVERTISE
+            )
+        }
+        else {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val connectedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
             for (device in connectedDevices!!) {
+
                 if (isConnected(device)) {
+                    Log.e("Connected Device : ", device.name);
                     return device
                 }
             }
@@ -262,53 +327,222 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-
-
-     fun printBluetooth(ordersModel: OrdersModel, id: String) {
-        AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
-            override fun onError(
-                asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
-            ) {
-                Log.e(
-                    "Async.OnPrintFinished",
-                    "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
-                )
-            }
-
-            override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
-                Log.i(
-                    "Async.OnPrintFinished",
-                    "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
-                )
-
-                try {
-
-                    val sfDocRef = firestore.collection("payment").document(id)
-                    Toast.makeText(
-                        applicationContext, "Print is finished ! $id", Toast.LENGTH_SHORT
-                    ).show()
-
-                    firestore.runTransaction { transaction ->
-                        transaction.update(sfDocRef, "statusCode", 2)
-                    }.addOnSuccessListener {
-                        Log.d(TAG, "Transaction success!")
-
-                    }.addOnFailureListener { e ->
-                        Toast.makeText(
-                            applicationContext, "Error $e", Toast.LENGTH_LONG
-                        ).show()
+    fun printBluetooth(context: Context,activity: Activity,ordersModel: OrdersModel, id: String) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.BLUETOOTH),
+                PERMISSION_BLUETOOTH
+            )
+        } else if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_ADMIN
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
+                PERMISSION_BLUETOOTH_CONNECT
+            )
+        } else {
+            AsyncBluetoothEscPosPrint(
+                context,
+                object : AsyncEscPosPrint.OnPrintFinished() {
+                    override fun onError(
+                        asyncEscPosPrinter: AsyncEscPosPrinter?,
+                        codeException: Int
+                    ) {
+                        Log.e(
+                            "Async.OnPrintFinished",
+                            "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
+                        )
                     }
-                } catch (e: Exception) {
-                    Toast.makeText(applicationContext, "Error $e", Toast.LENGTH_LONG).show()
+
+                    override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
+                        Log.i(
+                            "Async.OnPrintFinished",
+                            "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
+                        )
+
+                        try {
+                            val sfDocRef = firestore.collection("prod_order").document(id)
+                            Toast.makeText(
+                                context,
+                                "Print is finished in OrdersFragment ! $id",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.d(TAG, "Print is finished in OrdersFragment !$id")
+                            firestore.runTransaction { transaction ->
+                                transaction.update(sfDocRef, "zingDetails.status", "2")
+                            }.addOnSuccessListener {
+                                Log.d(TAG, "Transaction success!")
+
+                            }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(
+                                        context,
+                                        "Error $e",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Error $e", Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                }
+            )
+                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,context))
+        }
+    }
+
+    private val bondStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action: String? = intent.action
+
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
+                val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                val bondState: Int? = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
+
+                // Handle bond state changes
+                when (bondState) {
+                    BluetoothDevice.BOND_BONDING -> {
+                        // Device is currently bonding
+                    }
+                    BluetoothDevice.BOND_BONDED -> {
+                        // Device has been successfully bonded
+                    }
+                    BluetoothDevice.BOND_NONE -> {
+                        // Bonding with the device has been cancelled or failed
+                    }
                 }
             }
-
-        }).execute(
-            Utils.getAsyncEscPosPrinter(
-                ordersModel, selectedDevice, this@RootActivity
-            )
-        )
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Register the BroadcastReceiver
+        val filter = IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
+        registerReceiver(bondStateReceiver, filter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        // Unregister the BroadcastReceiver
+        unregisterReceiver(bondStateReceiver)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        Log.e("hehe22", grantResults[0].toString())
+//        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            makeDiscoverable()
+//            when (requestCode) {
+//                PERMISSION_BLUETOOTH, PERMISSION_BLUETOOTH_ADMIN, PERMISSION_BLUETOOTH_CONNECT, PERMISSION_BLUETOOTH_SCAN, PERMISSION_BLUETOOTH_ADVERTISE -> {
+//                    if(requestCode==PERMISSION_BLUETOOTH_ADVERTISE){
+//                        //makeDiscoverable()
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (requestCode == 0) {
+//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
+//
+//            } else {
+//                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+
+
+
+//     fun printBluetooth(activity: Activity, ordersModel: OrdersModel, id: String) {
+//        AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
+//            override fun onError(
+//                asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
+//            ) {
+//                Log.e(
+//                    "Async.OnPrintFinished",
+//                    "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
+//                )
+//            }
+//
+//            override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
+//                Log.i(
+//                    "Async.OnPrintFinished",
+//                    "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
+//                )
+//
+//                try {
+//
+//                    val sfDocRef = firestore.collection("prod_order").document(id)
+//                    Toast.makeText(
+//                        activity, "Print is finished ! $id", Toast.LENGTH_SHORT
+//                    ).show()
+//
+//                    firestore.runTransaction { transaction ->
+//                        transaction.update(sfDocRef, "zingDetails.status", "2")
+//                    }.addOnSuccessListener {
+//                        Log.d(TAG, "Transaction success!")
+//
+//                    }.addOnFailureListener { e ->
+//                        Toast.makeText(
+//                            activity, "Error $e", Toast.LENGTH_LONG
+//                        ).show()
+//                    }
+//                } catch (e: Exception) {
+//                    Toast.makeText(activity, "Error $e", Toast.LENGTH_LONG).show()
+//                }
+//            }
+//
+//        }).execute(
+//            Utils.getAsyncEscPosPrinter(
+//                ordersModel, selectedDevice, activity
+//            )
+//        )
+//    }
 
 
 

@@ -37,6 +37,9 @@ import com.zingit.restaurant.databinding.FragmentNewOrderBinding
 import com.zingit.restaurant.models.item.CancelItemModel
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.utils.Utils
+import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
+import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
+import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -146,12 +149,93 @@ class NewOrderFragment : Fragment() {
 //                )
 //
 
-              RootActivity().printBluetooth(orderModel,orderModel.zingDetails?.id!!)
+              RootActivity().printBluetooth(requireContext(),requireActivity(),orderModel,orderModel.zingDetails?.id!!)
 
         }
 
         return binding.root
     }
+//    fun printBluetooth(ordersModel: OrdersModel, id: String) {
+//        if (ContextCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.BLUETOOTH
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            ActivityCompat.requestPermissions(
+//                requireActivity(),
+//                arrayOf(Manifest.permission.BLUETOOTH),
+//                PERMISSION_BLUETOOTH
+//            )
+//        } else if (ContextCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.BLUETOOTH_ADMIN
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            ActivityCompat.requestPermissions(
+//                requireActivity(),
+//                arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
+//            )
+//        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.BLUETOOTH_CONNECT
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            ActivityCompat.requestPermissions(
+//                requireActivity(),
+//                arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
+//                PERMISSION_BLUETOOTH_CONNECT
+//            )
+//        } else {
+//            AsyncBluetoothEscPosPrint(
+//                requireContext(),
+//                object : AsyncEscPosPrint.OnPrintFinished() {
+//                    override fun onError(
+//                        asyncEscPosPrinter: AsyncEscPosPrinter?,
+//                        codeException: Int
+//                    ) {
+//                        Log.e(
+//                            "Async.OnPrintFinished",
+//                            "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
+//                        )
+//                    }
+//
+//                    override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
+//                        Log.i(
+//                            "Async.OnPrintFinished",
+//                            "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
+//                        )
+//
+//                        try {
+//                            val sfDocRef = firestore.collection("prod_order").document(id)
+//                            Toast.makeText(
+//                                requireContext(),
+//                                "Print is finished in OrdersFragment ! $id",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                            Log.d(TAG, "Print is finished in OrdersFragment !$id")
+//                            firestore.runTransaction { transaction ->
+//                                transaction.update(sfDocRef, "zingDetails.status", "2")
+//                            }.addOnSuccessListener {
+//                                Log.d(TAG, "Transaction success!")
+//
+//                            }
+//                                .addOnFailureListener { e ->
+//                                    Toast.makeText(
+//                                        requireContext(),
+//                                        "Error $e",
+//                                        Toast.LENGTH_LONG
+//                                    ).show()
+//                                }
+//                        } catch (e: Exception) {
+//                            Toast.makeText(requireContext(), "Error $e", Toast.LENGTH_LONG).show()
+//                        }
+//                    }
+//
+//                }
+//            )
+//                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,this@RootActivity))
+//        }
+//    }
     private fun getConnectedDeviceName(): BluetoothDevice? {
         if (ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.BLUETOOTH
@@ -385,6 +469,8 @@ class NewOrderFragment : Fragment() {
 
 
     }
+
+
 
 
 }

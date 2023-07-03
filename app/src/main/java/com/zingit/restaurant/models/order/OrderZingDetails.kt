@@ -52,10 +52,15 @@ data class OrderZingDetails(
     @get:PropertyName("status")
     @set:PropertyName("status")
     var status: String?="",
-//    @get:PropertyName("tableNumber")
-//    @set:PropertyName("tableNumber")
-//    var tableNumber: String?="",
+    @get:PropertyName("tableNumber")
+    @set:PropertyName("tableNumber")
+    var tableNumber: String?="",
     @get:PropertyName("ticketStatus")
     @set:PropertyName("ticketStatus")
     var ticketStatus: String?="",
+
+    @get:PropertyName("placedTime")
+    @set:PropertyName("placedTime")
+    var placedTime: String?="",
+
 )

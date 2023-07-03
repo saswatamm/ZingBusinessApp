@@ -6,12 +6,12 @@
     <string name="restaurant_partner">Restaurant Partner</string>
     <string name="break_queue">Break the Queue.</string>
     <string name="order_id">Order</string>
-    <string name="order_id_">Order ID</string>
-    <string name="date">Date</string>
+    <string name="order_id_">Order ID: </string>
+    <string name="date">Date: </string>
     <string name="total_earnings">Total Earnings</string>
     <string name="total_orders">Total Orders</string>
     <string name="amount">₹100</string>
-    <string name="_time">Time</string>
+    <string name="_time">Time: </string>
     <string name="number">Number</string>
     <string name="mobile_temp">8305809059</string>
     <string name="time_">04:39 PM</string>

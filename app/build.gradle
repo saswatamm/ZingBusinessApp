@@ -130,5 +130,7 @@ dependencies {
     //Lottie Animation
     implementation 'com.airbnb.android:lottie:6.0.0'
 
+    implementation 'com.karumi:dexter:6.2.3'
+
 
 }

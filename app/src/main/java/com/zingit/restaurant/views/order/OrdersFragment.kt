@@ -115,8 +115,8 @@ class OrdersFragment : Fragment() {
                         .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(requireContext()))
                         .whereGreaterThan("zingDetails.status", "0")
                         .addSnapshotListener { value, e ->
-                            Log.e(TAG, "eror: ${e.toString()}", )
-                            if (e == null) {
+                            Log.e(TAG, "error: ${e.toString()}", )
+                            if (e != null) {
                                 loader.visibility = View.GONE
                                 Toast.makeText(requireContext(), "Order does not exist", Toast.LENGTH_SHORT).show()
                                 view?.hideKeyboard()
@@ -125,6 +125,7 @@ class OrdersFragment : Fragment() {
                             }
                             if (value == null) {
                                 Log.w(TAG, "Listen failed.", e)
+
                                 loader.visibility = View.GONE
                                 Toast.makeText(
                                     requireContext(),
@@ -225,6 +226,8 @@ class OrdersFragment : Fragment() {
                                         uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
+                                        paymentModel = i.document.toObject(OrdersModel::class.java)
+                                        printBluetooth(paymentModel, i.document.id)
 //                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
 //                                        printBluetooth(paymentModel, i.document.id)
                                     }
@@ -232,8 +235,7 @@ class OrdersFragment : Fragment() {
                                         Log.e(TAG,"eventPrinting: ${i.document.data.get("order.details.orderID").toString()}")   //Commented it out as already mentioned in HomeFragment
                                     }
                                     //Check this once
-                                    paymentModel = i.document.toObject(OrdersModel::class.java)
-                                    printBluetooth(paymentModel, i.document.id)
+
 
                                 }
                                 DocumentChange.Type.MODIFIED -> {
@@ -256,7 +258,7 @@ class OrdersFragment : Fragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             when (requestCode) {
                 PERMISSION_BLUETOOTH, PERMISSION_BLUETOOTH_ADMIN, PERMISSION_BLUETOOTH_CONNECT, PERMISSION_BLUETOOTH_SCAN -> {
 
@@ -322,7 +324,7 @@ class OrdersFragment : Fragment() {
                                 "Print is finished in OrdersFragment ! $id",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            Log.d(TAG,"Print is finished in OrdersFragment !"+ id)
+                            Log.d(TAG, "Print is finished in OrdersFragment !$id")
                             firestore.runTransaction { transaction ->
                                 transaction.update(sfDocRef, "zingDetails.status", "2")
                             }.addOnSuccessListener {

@@ -43,18 +43,19 @@
 
         <TextView
             android:id="@+id/order"
+            android:paddingTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/duplet_regular"
             android:text="@string/order_id_"
             android:textColor="@color/lightGreyText"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintStart_toStartOf="@id/back_arrow"
-            app:layout_constraintTop_toBottomOf="@id/back_arrow" />
+            app:layout_constraintTop_toBottomOf="@+id/branding" />
 
         <TextView
             android:id="@+id/oderId"
+            android:paddingTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_2sdp"
@@ -67,31 +68,29 @@
 
         <TextView
             android:id="@+id/date"
+            android:paddingTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
             android:fontFamily="@font/duplet_regular"
             android:text="@string/date"
-            android:layout_marginEnd="@dimen/_5sdp"
             android:textColor="@color/lightGreyText"
             android:textSize="@dimen/_14sdp"
-            app:layout_constraintTop_toBottomOf="@id/back_arrow"
-            app:layout_constraintEnd_toStartOf="@id/dateTime"/>
+            app:layout_constraintEnd_toStartOf="@id/dateTime"
+            app:layout_constraintTop_toBottomOf="@+id/branding" />
 
         <TextView
             android:id="@+id/dateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_2sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             android:fontFamily="@font/duplet_bold"
+            android:paddingTop="16dp"
             android:text="@{pastOrder.order.details.preorderDate}"
-            android:layout_marginTop="@dimen/_10sdp"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/back_arrow"/>
+            app:layout_constraintTop_toBottomOf="@+id/branding" />
 
 
 
