@@ -14,12 +14,11 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
+
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -34,11 +33,7 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.ActivityHomeMainBinding
 import com.zingit.restaurant.models.order.OrdersModel
@@ -137,23 +132,7 @@ class RootActivity : AppCompatActivity() {
                     }
 
                 }
-                Dexter.withContext(this)
-                    .withPermissions(
-                        Manifest.permission.BLUETOOTH,
-                        Manifest.permission.BLUETOOTH_ADVERTISE,
-                        Manifest.permission.BLUETOOTH_SCAN,
-                        Manifest.permission.BLUETOOTH_CONNECT,
 
-                    ).withListener(object : MultiplePermissionsListener {
-                        override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                        }
-
-                        override fun onPermissionRationaleShouldBeShown(
-                            permissions: List<PermissionRequest>,
-                            token: PermissionToken
-                        ) {
-                        }
-                    }).check()
 
                 // Get the BluetoothDevice instance
                 val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -251,13 +230,7 @@ class RootActivity : AppCompatActivity() {
             addAction("android.bluetooth.device.action.ACL_DISCONNECTED")
             addAction("android.bluetooth.adapter.action.STATE_CHANGED")
         })
-//        ActivityCompat.requestPermissions(
-//            this,
-//            arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE),
-//            PERMISSION_BLUETOOTH_ADVERTISE
-//        )
-//        makeDiscoverable()
-        //selectedDevice= BluetoothConnection(getConnectedDeviceName())
+
     }
 
 
@@ -415,7 +388,7 @@ class RootActivity : AppCompatActivity() {
 
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
                 val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                val bondState: Int? = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
+                val bondState: Int = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
 
                 // Handle bond state changes
                 when (bondState) {
@@ -449,100 +422,6 @@ class RootActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        Log.e("hehe22", grantResults[0].toString())
-//        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            makeDiscoverable()
-//            when (requestCode) {
-//                PERMISSION_BLUETOOTH, PERMISSION_BLUETOOTH_ADMIN, PERMISSION_BLUETOOTH_CONNECT, PERMISSION_BLUETOOTH_SCAN, PERMISSION_BLUETOOTH_ADVERTISE -> {
-//                    if(requestCode==PERMISSION_BLUETOOTH_ADVERTISE){
-//                        //makeDiscoverable()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == 0) {
-//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
-//
-//            } else {
-//                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
-
-
-
-//     fun printBluetooth(activity: Activity, ordersModel: OrdersModel, id: String) {
-//        AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
-//            override fun onError(
-//                asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
-//            ) {
-//                Log.e(
-//                    "Async.OnPrintFinished",
-//                    "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
-//                )
-//            }
-//
-//            override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
-//                Log.i(
-//                    "Async.OnPrintFinished",
-//                    "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
-//                )
-//
-//                try {
-//
-//                    val sfDocRef = firestore.collection("prod_order").document(id)
-//                    Toast.makeText(
-//                        activity, "Print is finished ! $id", Toast.LENGTH_SHORT
-//                    ).show()
-//
-//                    firestore.runTransaction { transaction ->
-//                        transaction.update(sfDocRef, "zingDetails.status", "2")
-//                    }.addOnSuccessListener {
-//                        Log.d(TAG, "Transaction success!")
-//
-//                    }.addOnFailureListener { e ->
-//                        Toast.makeText(
-//                            activity, "Error $e", Toast.LENGTH_LONG
-//                        ).show()
-//                    }
-//                } catch (e: Exception) {
-//                    Toast.makeText(activity, "Error $e", Toast.LENGTH_LONG).show()
-//                }
-//            }
-//
-//        }).execute(
-//            Utils.getAsyncEscPosPrinter(
-//                ordersModel, selectedDevice, activity
-//            )
-//        )
-//    }
 
 
 

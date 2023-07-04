@@ -1,11 +1,6 @@
 package com.zingit.restaurant.views.order
 
 
-import android.Manifest
-import android.app.Activity
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -15,13 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -36,14 +30,10 @@ import com.zingit.restaurant.databinding.BottomCancelSpecificItemBinding
 import com.zingit.restaurant.databinding.FragmentNewOrderBinding
 import com.zingit.restaurant.models.item.CancelItemModel
 import com.zingit.restaurant.models.order.OrdersModel
-import com.zingit.restaurant.utils.Utils
-import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
-import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
-import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
+import com.zingit.restaurant.network.Constants
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.reflect.Method
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -64,21 +54,18 @@ class NewOrderFragment : Fragment() {
     private val cancelItemModel = ArrayList<CancelItemModel>()
     val cancelItemFinalList = ArrayList<CancelItemModel>()
     val firestore = FirebaseFirestore.getInstance()
+    var fullBool = false
+    var partialBool = false
 
     companion object {
-       const val PERMISSION_BLUETOOTH = 1
-       const val PERMISSION_BLUETOOTH_ADMIN = 2
-       const val PERMISSION_BLUETOOTH_CONNECT = 3
-       const val PERMISSION_BLUETOOTH_SCAN = 4
+        const val PERMISSION_BLUETOOTH = 1
+        const val PERMISSION_BLUETOOTH_ADMIN = 2
+        const val PERMISSION_BLUETOOTH_CONNECT = 3
+        const val PERMISSION_BLUETOOTH_SCAN = 4
     }
+
     lateinit var orderModel: OrdersModel
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -100,11 +87,11 @@ class NewOrderFragment : Fragment() {
             viewModel = zingViewModel
 
 
-            zingViewModel.successMethod.observe(viewLifecycleOwner){
-                if(it){
+            zingViewModel.successMethod.observe(viewLifecycleOwner) {
+                if (it) {
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
-                }else{
+                } else {
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
 
@@ -122,10 +109,10 @@ class NewOrderFragment : Fragment() {
                 cancel(orderModel)
             }
 
-           /*
-           checking the timer --->PlaceTime Order
-           Below Function
-           */
+            /*
+            checking the timer --->PlaceTime Order
+            Below Function
+            */
             countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
@@ -137,155 +124,21 @@ class NewOrderFragment : Fragment() {
 
 
         binding.printKOT.setOnClickListener {
-            Log.d(TAG,"SelectedDevice is"+RootActivity().selectedDevice.toString())
-//            RootActivity().selectedDevice?.let { it1 ->
-//                Log.e(TAG, "printer blue: $it")
-////                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
-////                    it1
-////                )
-//                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,
-//                    orderModel.order?.details!!.orderId,firestore,
-//                    it1
-//                )
-//
+            Log.d(TAG, "SelectedDevice is" + RootActivity().selectedDevice.toString())
 
-              RootActivity().printBluetooth(requireContext(),requireActivity(),orderModel,orderModel.zingDetails?.id!!)
+
+            RootActivity().printBluetooth(
+                requireContext(),
+                requireActivity(),
+                orderModel,
+                orderModel.zingDetails?.id!!
+            )
 
         }
 
         return binding.root
     }
-//    fun printBluetooth(ordersModel: OrdersModel, id: String) {
-//        if (ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.BLUETOOTH
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            ActivityCompat.requestPermissions(
-//                requireActivity(),
-//                arrayOf(Manifest.permission.BLUETOOTH),
-//                PERMISSION_BLUETOOTH
-//            )
-//        } else if (ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.BLUETOOTH_ADMIN
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            ActivityCompat.requestPermissions(
-//                requireActivity(),
-//                arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
-//            )
-//        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.BLUETOOTH_CONNECT
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            ActivityCompat.requestPermissions(
-//                requireActivity(),
-//                arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
-//                PERMISSION_BLUETOOTH_CONNECT
-//            )
-//        } else {
-//            AsyncBluetoothEscPosPrint(
-//                requireContext(),
-//                object : AsyncEscPosPrint.OnPrintFinished() {
-//                    override fun onError(
-//                        asyncEscPosPrinter: AsyncEscPosPrinter?,
-//                        codeException: Int
-//                    ) {
-//                        Log.e(
-//                            "Async.OnPrintFinished",
-//                            "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
-//                        )
-//                    }
-//
-//                    override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
-//                        Log.i(
-//                            "Async.OnPrintFinished",
-//                            "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
-//                        )
-//
-//                        try {
-//                            val sfDocRef = firestore.collection("prod_order").document(id)
-//                            Toast.makeText(
-//                                requireContext(),
-//                                "Print is finished in OrdersFragment ! $id",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                            Log.d(TAG, "Print is finished in OrdersFragment !$id")
-//                            firestore.runTransaction { transaction ->
-//                                transaction.update(sfDocRef, "zingDetails.status", "2")
-//                            }.addOnSuccessListener {
-//                                Log.d(TAG, "Transaction success!")
-//
-//                            }
-//                                .addOnFailureListener { e ->
-//                                    Toast.makeText(
-//                                        requireContext(),
-//                                        "Error $e",
-//                                        Toast.LENGTH_LONG
-//                                    ).show()
-//                                }
-//                        } catch (e: Exception) {
-//                            Toast.makeText(requireContext(), "Error $e", Toast.LENGTH_LONG).show()
-//                        }
-//                    }
-//
-//                }
-//            )
-//                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,this@RootActivity))
-//        }
-//    }
-    private fun getConnectedDeviceName(): BluetoothDevice? {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.BLUETOOTH
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH), PERMISSION_BLUETOOTH
-            )
-        } else if (ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.BLUETOOTH_ADMIN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH_ADMIN), PERMISSION_BLUETOOTH_ADMIN
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.BLUETOOTH_CONNECT
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH_CONNECT), PERMISSION_BLUETOOTH_CONNECT
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.BLUETOOTH_SCAN
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.BLUETOOTH_SCAN), PERMISSION_BLUETOOTH_SCAN
-            )
-        } else {
-            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-            val connectedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
-            for (device in connectedDevices!!) {
-                if (isConnected(device)) {
-                    return device
-                }
-            }
 
-        }
-        return null
-    }
-    private fun isConnected(device: BluetoothDevice): Boolean {
-        return try {
-            val m: Method = device.javaClass.getMethod("isConnected")
-
-            m.invoke(device) as Boolean
-        } catch (e: Exception) {
-            throw IllegalStateException(e)
-        }
-    }
 
     fun cancel(ordersModel: OrdersModel) {
         val binding: BottomCancelOrderBinding = DataBindingUtil.inflate(
@@ -307,12 +160,17 @@ class NewOrderFragment : Fragment() {
             cancelAdapter.submitList(arrayList)
             radio.setOnCheckedChangeListener { group, checkedId ->
                 // handle radio button checked state change
-                when(checkedId) {
+                when (checkedId) {
                     R.id.check_full_order -> {
                         // handle radio button 1 checked
+                        fullBool = true
+                        partialBool = false
                     }
+
                     R.id.check_a_particular_item -> {
                         // handle radio button 2 checked
+                        fullBool = false
+                        partialBool = true
                     }
                 }
 
@@ -322,6 +180,34 @@ class NewOrderFragment : Fragment() {
             }
             close.setOnClickListener {
                 dialog.dismiss()
+            }
+            cancelRefund.setOnClickListener {
+                if (fullBool || partialBool) {
+                    var total = orderModel.order?.details?.total?.toDouble()?.times(100)
+                    zingViewModel.refundApi(
+                        orderModel.zingDetails?.userID!!,
+                        orderModel.zingDetails?.paymentOrderId!!,
+                        total.toString()
+                    )
+
+
+
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Please Select Full or Partial",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            zingViewModel.refundResponse.observe(viewLifecycleOwner){
+                if(!it.success){
+                    Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }else{
+                    Toast.makeText(requireContext(), "Refund Failed", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
             }
 
         }
@@ -348,9 +234,9 @@ class NewOrderFragment : Fragment() {
             cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
 
                 Log.e(TAG, "itemsBottomSheet: $it")
-                if(it.isChecked){
+                if (it.isChecked && it.itemId != "0") {
                     cancelItemFinalList.add(it)
-                }else{
+                } else {
                     cancelItemFinalList.remove(it)
                 }
 
@@ -358,19 +244,33 @@ class NewOrderFragment : Fragment() {
 
             cancelItemModel.clear()
             recyclerView.adapter = cancelSpecificItemsAdapter
-            cancelItemModel.add(CancelItemModel("All Items","0" ,false))
-           // arrayList1.add("All Items")
-            cancelItemModel.addAll(ordersModel.orderItem!!.details.map { CancelItemModel(it.name,it.id, false) })
+            cancelItemModel.add(CancelItemModel("All Items", "0", false))
+            // arrayList1.add("All Items")
+            cancelItemModel.addAll(ordersModel.orderItem!!.details.map {
+                CancelItemModel(
+                    it.name,
+                    it.id,
+                    false
+                )
+            })
             cancelSpecificItemsAdapter.submitList(cancelItemModel)
             cancelRefund.setOnClickListener {
-                if (cancelItemFinalList.isNotEmpty()){
-                    for(i in 0 until cancelItemFinalList.size){
-                        firestore.collection("item").document(cancelItemFinalList.get(i).itemId).update("availableOrNot",false)
+                if (cancelItemFinalList.isNotEmpty()) {
+                    for (i in 0 until cancelItemFinalList.size) {
+                        firestore.collection("item").document(cancelItemFinalList.get(i).itemId)
+                            .update("availableOrNot", false)
                     }
+                    var total = orderModel.order?.details?.total?.toDouble()?.times(100)
+                    zingViewModel.refundApi(
+                        orderModel.zingDetails?.userID!!,
+                        orderModel.zingDetails?.paymentOrderId!!,
+                        total.toString()
+                    )
                     d1.dismiss()
                     findNavController().popBackStack()
-                }else{
-                    Toast.makeText(requireContext(), "Please Select Item", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Please Select Item", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
@@ -387,25 +287,15 @@ class NewOrderFragment : Fragment() {
     }
 
 
-
-
-
-
     @RequiresApi(Build.VERSION_CODES.O)
-    fun countDownTimer(rejectBtn:MaterialButton){
+    fun countDownTimer(rejectBtn: MaterialButton) {
         val targetDuration = Duration.ofMinutes(5)
-//old        val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
-//        val givenTime = Instant.parse(orderModel.order?.details!!.createdOn)
-//        val givenTime = Instant.parse(LocalDateTime.parse(orderModel.order?.details!!.createdOn,
-//            DateTimeFormatter.ISO_LOCAL_DATE_TIME).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-        //ggz REPLACEMENT OF OLDER UTILS.CONVERTTOISOSTRING FUNCTION starts
-        val time=orderModel.order?.details!!.createdOn.substringAfter(" ")
-        val date=orderModel.order?.details!!.createdOn.substringBefore(" ")
-        val dateTime=date+"T"+time
+        val time = orderModel.order?.details!!.createdOn.substringAfter(" ")
+        val date = orderModel.order?.details!!.createdOn.substringBefore(" ")
+        val dateTime = date + "T" + time
         val ldt = LocalDateTime.parse(dateTime)
-        val givenTime=ldt.atZone(ZoneId.systemDefault()).toInstant()
-        //REPLACEMENT OF OLDER UTILS.CONVERTTOISOSTRING FUNCTION ends
-        Log.d(TAG,givenTime.toString())
+        val givenTime = ldt.atZone(ZoneId.systemDefault()).toInstant()
+        Log.d(TAG, givenTime.toString())
         val targetTime = givenTime.plus(targetDuration)
         val currentTime = Instant.now()
         val remainingDuration = Duration.between(currentTime, targetTime)
@@ -467,10 +357,7 @@ class NewOrderFragment : Fragment() {
         }
 
 
-
     }
-
-
 
 
 }

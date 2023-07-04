@@ -62,5 +62,8 @@ data class OrderZingDetails(
     @get:PropertyName("placedTime")
     @set:PropertyName("placedTime")
     var placedTime: String?="",
+    @get:PropertyName("userID")
+    @set:PropertyName("userID")
+    var userID: String?="",
 
 )

@@ -1,11 +1,14 @@
 package com.zingit.restaurant.network
 
 import com.zingit.restaurant.models.*
+import com.zingit.restaurant.models.refund.PhoneRefundResponseModel
 import dagger.Provides
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
-
+import retrofit2.http.Query
+import retrofit2.http.Url
 
 
 interface ApiEndPoints {
@@ -18,5 +21,14 @@ interface ApiEndPoints {
 
     @POST("/prod/api/v1/whatsapp")
     suspend fun callWhatsapp(@Body whatsappRequestModel: WhatsappRequestModel): Response<WhatsAppResponse>
+
+    @GET("phoneperefund/refundPhonePe")
+    suspend fun refundPhonePe(
+        @Query("merchantUserId") merchantUserId: String,
+        @Query("originalTransactionId") originalTransactionId: String,
+        @Query("refundTransactionId") refundTransactionId: String,
+        @Query("amount") amount: String,
+        @Query("callbackUrl") callbackUrl: String,
+    ): Response<PhoneRefundResponseModel>
 
 }

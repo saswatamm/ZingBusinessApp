@@ -23,6 +23,7 @@ import com.zingit.restaurant.R
 import com.zingit.restaurant.models.ApiResult
 import com.zingit.restaurant.models.WhatsappRequestModel
 import com.zingit.restaurant.models.order.OrdersModel
+import com.zingit.restaurant.models.refund.PhoneRefundResponseModel
 import com.zingit.restaurant.repository.ZingRepository
 import com.zingit.restaurant.service.CountdownService
 import com.zingit.restaurant.utils.Utils
@@ -31,6 +32,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -38,7 +40,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepository) :
     ViewModel() {
-    private  val TAG = "OrderDetailsViewModel"
+    private val TAG = "OrderDetailsViewModel"
 
     private val loading: MutableLiveData<Boolean> = MutableLiveData()
     val loadingLivedata: LiveData<Boolean>
@@ -58,6 +60,10 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     val successMethod: LiveData<Boolean>
         get() = _successMethod
 
+    private val _refundResponse: MutableLiveData<PhoneRefundResponseModel> = MutableLiveData()
+    val refundResponse: LiveData<PhoneRefundResponseModel>
+        get() = _refundResponse
+
     private lateinit var timer: CountDownTimer
 
     init {
@@ -71,7 +77,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         hashMap: HashMap<String, Int>,
         mobileNumber: String,
         type: String,
-        isAccept : Boolean,
+        isAccept: Boolean,
         id: String
     ) {
         viewModelScope.launch {
@@ -92,7 +98,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                 ApiResult.Status.SUCCESS -> {
                     loading.value = false
                     data.value = result.data!!.message
-                    if (isAccept){
+                    if (isAccept) {
                         _successMethod.value = true
                         firestore.collection("prod_order")
                             .whereEqualTo("order.details.orderID", id).get()
@@ -111,7 +117,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
 
                                         }
                                             .addOnFailureListener { e ->
-                                                Log.d(TAG,""+e.toString())
+                                                Log.d(TAG, "" + e.toString())
                                             }
                                         // you can apply your actions...
                                     }
@@ -120,15 +126,17 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                                 }
                             })
 
-                    }else{
+                    } else {
                         //firestore.collection("payment").document(id).update("statusCode",-1)
                     }
                 }
+
                 ApiResult.Status.ERROR -> {
                     _successMethod.value = false
                     loading.value = false
                     _error.value = result.message!!
                 }
+
                 else -> {
                     _successMethod.value = false
                     loading.value = false
@@ -166,7 +174,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
 
             override fun onFinish() {
                 // Remove the notification and stop the service
-              remainingTimeFinal.value = "Reject Order"
+                remainingTimeFinal.value = "Reject Order"
                 checkFinish.value = true
 
 
@@ -176,6 +184,43 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         timer.start()
     }
 
+
+    fun refundApi(
+        merchantUserId: String,
+        originalTransactionId: String,
+        amount: String
+    ) {
+        viewModelScope.launch {
+            loading.value = true
+            val result = repository.refundApi(
+                merchantUserId,
+                originalTransactionId,
+                UUID.randomUUID().toString(),
+                amount,
+                "zingnow.in"
+            )
+            when (result.status) {
+                ApiResult.Status.SUCCESS -> {
+                    loading.value = false
+                    _refundResponse.value = result.data!!
+                    _successMethod.value = true
+                }
+
+                ApiResult.Status.ERROR -> {
+                    _successMethod.value = false
+                    loading.value = false
+                    _error.value = result.message!!
+                }
+
+                else -> {
+                    _successMethod.value = false
+                    loading.value = false
+                    _error.value = "Something went wrong"
+                }
+
+            }
+        }
+    }
 
 
 }
