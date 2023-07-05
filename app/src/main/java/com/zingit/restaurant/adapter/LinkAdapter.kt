@@ -1,17 +1,17 @@
 package com.zingit.restaurant.adapter
 
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zingit.restaurant.databinding.VolumeItemBinding
-import com.zingit.restaurant.models.VolumeModel
 import com.zingit.restaurant.models.order.OrdersModel
 
-class QrVolumeAdapter(val context: Context):
-    ListAdapter<OrdersModel, QrVolumeAdapter.MyViewHolder>(QrDiffUtils())  {
+class LinkAdapter(val context: Context):
+    androidx.recyclerview.widget.ListAdapter<OrdersModel, LinkAdapter.MyViewHolder>(LinkDiffUtils())  {
 
 
 
@@ -21,7 +21,7 @@ class QrVolumeAdapter(val context: Context):
 
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QrVolumeAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinkAdapter.MyViewHolder {
         val binding =
             VolumeItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
@@ -34,7 +34,7 @@ class QrVolumeAdapter(val context: Context):
 
 }
 
-class QrDiffUtils : DiffUtil.ItemCallback<OrdersModel>() {
+class LinkDiffUtils : DiffUtil.ItemCallback<OrdersModel>() {
     override fun areItemsTheSame(
         oldItem: OrdersModel,
         newItem: OrdersModel
