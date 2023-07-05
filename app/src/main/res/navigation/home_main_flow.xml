@@ -45,7 +45,14 @@
     <fragment
         android:id="@+id/transactionFragment"
         android:name="com.zingit.restaurant.views.setting.TransactionFragment"
-        android:label="TransactionFragment" />
+        android:label="TransactionFragment" >
+        <action
+            android:id="@+id/action_transactionFragment_to_newOrderFragment"
+            app:destination="@id/newOrderFragment" />
+        <action
+            android:id="@+id/action_transactionFragment_to_linkVolumeFragment"
+            app:destination="@id/linkVolumeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/viewPastOrderFragment"
         android:name="com.zingit.restaurant.views.order.ViewPastOrderFragment"
@@ -60,6 +67,22 @@
         android:label="ActiveFragment" >
         <action
             android:id="@+id/action_activeFragment_to_newOrderFragment"
+            app:destination="@id/newOrderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/linkVolumeFragment"
+        android:name="com.zingit.restaurant.views.setting.LinkVolumeFragment"
+        android:label="LinkVolumeFragment" >
+        <action
+            android:id="@+id/action_linkVolumeFragment_to_newOrderFragment"
+            app:destination="@id/newOrderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/qrVolumeFragment"
+        android:name="com.zingit.restaurant.views.setting.QrVolumeFragment"
+        android:label="QrVolumeFragment" >
+        <action
+            android:id="@+id/action_qrVolumeFragment_to_newOrderFragment"
             app:destination="@id/newOrderFragment" />
     </fragment>
 </navigation>

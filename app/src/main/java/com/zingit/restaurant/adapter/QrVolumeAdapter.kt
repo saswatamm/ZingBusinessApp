@@ -10,7 +10,7 @@ import com.zingit.restaurant.databinding.VolumeItemBinding
 import com.zingit.restaurant.models.VolumeModel
 import com.zingit.restaurant.models.order.OrdersModel
 
-class QrVolumeAdapter(val context: Context):
+class QrVolumeAdapter(val context: Context, val onClick: (OrdersModel) -> Unit):
     ListAdapter<OrdersModel, QrVolumeAdapter.MyViewHolder>(QrDiffUtils())  {
 
 
@@ -31,6 +31,8 @@ class QrVolumeAdapter(val context: Context):
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val orderQR =getItem(position)
         holder.bind(orderQR)
+        holder.binding.viewButton.setOnClickListener {
+            onClick(orderQR) }
     }
 
 }
