@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:fontFamily="@font/duplet_italic"
-                    android:hint="@string/search_by_orderId"
+                    android:hint="Search by Item Name"
                     android:singleLine="true"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
@@ -97,6 +97,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintTop_toBottomOf="@id/cardView"/>
 
+
         <LinearLayout
             android:id="@+id/ll"
             android:layout_width="match_parent"
@@ -125,7 +126,38 @@
                 android:layout_marginStart="5dp"
                 android:background="@drawable/vertical_dotted_line"
                 android:layerType="software"/>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/category_name"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/duplet_bold"
+                android:maxEms="10"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginStart="10dp"
+                android:layout_alignBaseline="@id/category_switch"
+                />
+            <androidx.appcompat.widget.SwitchCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/category_switch"
+                app:track="@drawable/track_selector"
+                android:thumb="@drawable/thumb_selector"
+                android:layout_toRightOf="@id/category_name"
+                />
+                </RelativeLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_products"
                 android:layout_width="match_parent"
@@ -137,7 +169,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:itemCount="4" />
-
+            </LinearLayout>
 
 
         </LinearLayout>

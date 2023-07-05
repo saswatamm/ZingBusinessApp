@@ -102,16 +102,21 @@ class OrdersFragment : Fragment() {
 
         binding.apply {
 
+
+
             searchView.setOnEditorActionListener { textView, i, keyEvent ->
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     loader.visibility = View.VISIBLE
 
-                    firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
-                        .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
-                        .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+//                    firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
+//                        .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
+//                        .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+                    firestore.collection("prod_order").whereEqualTo("order.details.orderID", searchView.text.toString())
+                        .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(requireContext()))
+                        .whereGreaterThan("zingDetails.status", "0")
                         .addSnapshotListener { value, e ->
-                            Log.e(TAG, "eror: ${e.toString()}", )
-                            if (e == null) {
+                            Log.e(TAG, "error: ${e.toString()}", )
+                            if (e != null) {
                                 loader.visibility = View.GONE
                                 Toast.makeText(requireContext(), "Order does not exist", Toast.LENGTH_SHORT).show()
                                 view?.hideKeyboard()
@@ -120,6 +125,7 @@ class OrdersFragment : Fragment() {
                             }
                             if (value == null) {
                                 Log.w(TAG, "Listen failed.", e)
+
                                 loader.visibility = View.GONE
                                 Toast.makeText(
                                     requireContext(),
@@ -130,7 +136,6 @@ class OrdersFragment : Fragment() {
                                 binding.searchView.text.clear()
                             } else {
                                 val gson = Gson()
-
                                 for (doc in value!!) {
                                     val finalValue = doc.toObject(OrdersModel::class.java)
                                     val json = gson.toJson(finalValue)
@@ -152,37 +157,13 @@ class OrdersFragment : Fragment() {
                     false
                 }
             }
-            /*go.setOnClickListener {
-                firestore.collection("payment").whereGreaterThan("statusCode",0).whereLessThan("statusCode",3).whereEqualTo("outletID","9i1Q3aRU8AiH0dUAZjko").get().addOnSuccessListener {
-                    for (document in it) {
-                        Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
-                        if (searchView.text.toString().trim()
-                                .contains(document.data.get("orderNo").toString())
-                        ) {
-                            Log.e(TAG, "${document.id} => ${document.data.get("orderNo")}")
-                            val gson = Gson()
-                            loader.visibility = View.GONE
-                            val finalValue = document.toObject(OrdersModel::class.java)
-                            val json = gson.toJson(finalValue)
-                            val bundle = bundleOf("orderModel" to json)
-                            findNavController().navigate(
-                                R.id.action_ordersFragment_to_newOrderFragment,
-                                bundle
-                            )
-                            view?.hideKeyboard()
-                            binding.searchView.text.clear()
-                            break
-                        }
-
-                    }
-
-                }
-
-            }*/
             go.setOnClickListener {
-                firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
-                    .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
-                    .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+//                firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
+//                    .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
+//                    .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+                firestore.collection("prod_order").whereEqualTo("order.details.orderID", searchView.text.toString())
+                    .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(requireContext()))
+                    .whereGreaterThan("zingDetails.status", "0")
                     .addSnapshotListener { value, e ->
                         if (e != null) {
                             Log.w(TAG, "Listen failed.", e)
@@ -226,12 +207,10 @@ class OrdersFragment : Fragment() {
                         Log.e(TAG, "onViewCreated: $it")
                     }
                 }
-
-
             }
-         /*   Handler().postDelayed({
-                query = firestore.collection("payment").whereEqualTo("outletID",Utils.getUserOutletId(requireContext())).whereEqualTo("statusCode",1)
-                query.addSnapshotListener(object : EventListener<QuerySnapshot> {
+
+            Handler().postDelayed({
+                firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status","0").addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                         Log.e(TAG, "onCreateView: ${value!!.documents}")
                         if (error != null) {
@@ -242,19 +221,25 @@ class OrdersFragment : Fragment() {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
                             when(i.type){
                                 DocumentChange.Type.ADDED -> {
-                                    if(!uniqueOrders.contains(i.document.data.get("paymentOrderID").toString()))
+                                    if(!uniqueOrders.contains(i.document.data.get("order.details.orderID").toString()))
                                     {
-                                        uniqueOrders.add(i.document.data.get("paymentOrderID").toString()) // Unique orders are added to prevent repetative printing
+                                        uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
-                                        Log.e(TAG, "onEvent: ${paymentModel.orderItems.size}",)
+                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
+                                        paymentModel = i.document.toObject(OrdersModel::class.java)
                                         printBluetooth(paymentModel, i.document.id)
+//                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
+//                                        printBluetooth(paymentModel, i.document.id)
                                     }
                                     else{
-                                        Log.e(TAG,"eventPrinting: ${i.document.data.get("paymentOrderID").toString()}")   //Commented it out as already mentioned in HomeFragment
+                                        Log.e(TAG,"eventPrinting: ${i.document.data.get("order.details.orderID").toString()}")   //Commented it out as already mentioned in HomeFragment
                                     }
+                                    //Check this once
+
+
                                 }
                                 DocumentChange.Type.MODIFIED -> {
-                                    Log.e(TAG, "onEvent: ${i.document.data}")
+                                    Log.e(TAG, "onEvent: in Modified ${i.document.data}")
                                 }
                                 DocumentChange.Type.REMOVED -> {
                                     Log.e(TAG, "onEvent: ${i.document.data}")
@@ -263,7 +248,7 @@ class OrdersFragment : Fragment() {
                         }
                     }
                 })
-            }, 5000)*/
+            }, 5)
         }
     }
 
@@ -273,7 +258,7 @@ class OrdersFragment : Fragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             when (requestCode) {
                 PERMISSION_BLUETOOTH, PERMISSION_BLUETOOTH_ADMIN, PERMISSION_BLUETOOTH_CONNECT, PERMISSION_BLUETOOTH_SCAN -> {
 
@@ -333,16 +318,15 @@ class OrdersFragment : Fragment() {
                         )
 
                         try {
-
-                            val sfDocRef = firestore.collection("payment").document(id)
+                            val sfDocRef = firestore.collection("prod_order").document(id)
                             Toast.makeText(
                                 requireContext(),
-                                "Print is finished ! $id",
+                                "Print is finished in OrdersFragment ! $id",
                                 Toast.LENGTH_SHORT
                             ).show()
-
+                            Log.d(TAG, "Print is finished in OrdersFragment !$id")
                             firestore.runTransaction { transaction ->
-                                transaction.update(sfDocRef, "statusCode", 2)
+                                transaction.update(sfDocRef, "zingDetails.status", "2")
                             }.addOnSuccessListener {
                                 Log.d(TAG, "Transaction success!")
 
@@ -361,7 +345,7 @@ class OrdersFragment : Fragment() {
 
                 }
             )
-                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,requireContext()))
+                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,requireActivity()))
         }
     }
 

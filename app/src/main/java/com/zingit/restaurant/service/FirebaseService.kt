@@ -57,8 +57,7 @@ class FirebaseService : FirebaseMessagingService() {
 
             //for Android 12
 
-            val contentPendingIntent: PendingIntent
-            contentPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val contentPendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 PendingIntent.getActivity(
                     applicationContext,
                     0,
@@ -110,7 +109,7 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        Log.e("onMeessageReceived", "onMessageReceived: ${message.data}")
+        Log.e("onMessageReceived", "onMessageReceived: ${message.data}")
         message.data.let {
             val intent = Intent()
             intent.putExtra("redirect", it["redirect"])

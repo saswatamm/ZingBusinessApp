@@ -2,6 +2,9 @@ package com.zingit.restaurant.repository
 
 import android.content.Context
 import com.zingit.restaurant.models.*
+import com.zingit.restaurant.models.orderGenerator.OrderGeneratorResponse
+import com.zingit.restaurant.models.orderGenerator.OrdergeneratorRequest
+import com.zingit.restaurant.models.refund.PhoneRefundResponseModel
 import com.zingit.restaurant.network.ApiEndPoints
 import com.zingit.restaurant.network.ApiUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,6 +29,30 @@ class ZingRepository @Inject constructor(val apiInterFace: ApiEndPoints,private 
     suspend fun callWhatsapp(whatsappRequestModel:WhatsappRequestModel):ApiResult<WhatsAppResponse>{
         return apiUtils.getResponse(context,"Oops Something went wrong") {
             apiInterFace.callWhatsapp(whatsappRequestModel)
+        }
+    }
+
+    suspend fun refundApi(
+        merchantUserId: String,
+        originalTransactionId: String,
+        refundTransactionId: String,
+        amount: String,
+        callbackUrl: String
+    ):ApiResult<PhoneRefundResponseModel>{
+        return apiUtils.getResponse(context,"Oops Something went wrong") {
+            apiInterFace.refundPhonePe(
+                merchantUserId,
+                originalTransactionId,
+                refundTransactionId,
+                amount,
+                callbackUrl
+            )
+        }
+    }
+
+    suspend fun clearOrderGenerator(url:String,orderGenerator: OrdergeneratorRequest):ApiResult<OrderGeneratorResponse>{
+        return apiUtils.getResponse(context,"Oops Something went wrong") {
+            apiInterFace.clearOrderGenerator(url,orderGenerator)
         }
     }
 

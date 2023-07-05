@@ -13,7 +13,10 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.FragmentHomeBinding
+import com.zingit.restaurant.models.item.ItemMenuModel
 import com.zingit.restaurant.utils.Utils
+import com.zingit.restaurant.views.RootActivity
+import kotlinx.coroutines.tasks.await
 
 
 class HomeFragment : Fragment() {
@@ -35,47 +38,91 @@ class HomeFragment : Fragment() {
         firebase = FirebaseFirestore.getInstance()
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-            switchButton.setOnCheckedChangeListener { view, isChecked ->
+            switchButton.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    firebase.collection("outlet")
+
+//                    firebase.collection("outlet")
+//                        .document(Utils.getUserOutletId(requireContext()).toString())
+//                        .update("openStatus", "OPEN")
+
+                    firebase.collection("prod_restaurant")
                         .document(Utils.getUserOutletId(requireContext()).toString())
-                        .update("openStatus", "OPEN")
-                    statusOff.visibility = View.GONE
-                    statusOn.visibility = View.VISIBLE
+                        .update("active", "1")
+                        statusOff.visibility = View.GONE
+                        statusOn.visibility = View.VISIBLE
+                        switchButton.text
+
                 } else {
-                    firebase.collection("outlet")
+//                    firebase.collection("outlet")
+//                        .document(Utils.getUserOutletId(requireContext()).toString())
+//                        .update("openStatus", "CLOSE")
+
+                    firebase.collection("prod_restaurant")
                         .document(Utils.getUserOutletId(requireContext()).toString())
-                        .update("openStatus", "CLOSE")
+                        .update("active", "0")
                     statusOff.visibility = View.VISIBLE
                     statusOn.visibility = View.GONE
+                    Log.d(TAG,"else part is executed in oncheckedclicklistener")
                 }
             }
 
-            firebase.collection("outlet")
+            firebase.collection("prod_restaurant")
                 .document(Utils.getUserOutletId(requireContext()).toString())
                 .get()
-                .addOnSuccessListener {
-                    loader.visibility = View.GONE
-                    Log.e(TAG, "dataOpenClose: ${it.data}",)
-                    if (it.exists()) {
-                        if (it.get("openStatus") == "OPEN") {
-                            switchButton.isChecked = true
-                            statusOff.visibility = View.GONE
-                            statusOn.visibility = View.VISIBLE
-                        } else {
-                            statusOff.visibility = View.VISIBLE
-                            statusOn.visibility = View.GONE
-                            switchButton.isChecked = false
+                .addOnCompleteListener{task->
+                    if(task.isSuccessful)
+                    {
+                        loader.visibility = View.GONE
+                        Log.e(TAG, "dataOpenClose: ${task.result.data}",)
+                        val data= task.result.data?.get("active").toString()
+                        if (task.result.exists()) {
+                            Log.d(TAG, " value in $data")
+                            if (data == "1") {
+                                switchButton.isChecked = true
+                                statusOff.visibility = View.GONE
+                                statusOn.visibility = View.VISIBLE
+                                Log.d(TAG,"value of active if data comes"+data)
+                            }
+                            else {
+                                statusOff.visibility = View.VISIBLE
+                                statusOn.visibility = View.GONE
+                                switchButton.isChecked = false
+                            }
                         }
                     }
                 }
 
-         /*   Handler().postDelayed({
-                loader.visibility = View.VISIBLE
+//CNN date: 25/06            firebase.collection("test_order")
+//                .whereEqualTo("restaurant.details.restID", Utils.getMenuSharingCode(requireContext())).get().addOnCompleteListener {
+//                    Log.d(TAG+" order data = ",it.result.documents.get(0).toString())
+//                }
+
+//            firebase.collection("outlet")
+//                .document(Utils.getUserOutletId(requireContext()).toString())
+//                .get()
+//                .addOnSuccessListener {
+//                    loader.visibility = View.GONE
+//                    Log.e(TAG, "dataOpenClose: ${it.data}",)
+//                    if (it.exists()) {
+//                        if (it.get("openStatus") == "OPEN") {
+//                            switchButton.isChecked = true
+//                            statusOff.visibility = View.GONE
+//                            statusOn.visibility = View.VISIBLE
+//                        } else {
+//                            statusOff.visibility = View.VISIBLE
+//                            statusOn.visibility = View.GONE
+//                            switchButton.isChecked = false
+//                        }
+//                    }
+//                }
 
 
-
-            }, 2000)*/
+//            Handler().postDelayed({
+//                loader.visibility = View.VISIBLE
+//
+//
+//
+//            }, 2000)
 
 
 

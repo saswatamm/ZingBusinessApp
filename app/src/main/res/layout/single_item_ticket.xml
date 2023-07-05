@@ -18,7 +18,7 @@
             android:id="@+id/ticket"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@{orderModel.statusCode==1?@drawable/red_ticket:@drawable/ticket}"
+            android:src='@{orderModel.zingDetails.status.equals("0")?@drawable/red_ticket:@drawable/ticket}'
             android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,8 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:text="@{`from ` + String.valueOf(orderModel.userName)}"
-            android:textColor="@{orderModel.statusCode==1?@color/white:@color/darkGreyText}"
+            android:text="@{`from ` + orderModel.customer.details.name}"
+            android:textColor='@{orderModel.zingDetails.status.equals("0")?@color/white:@color/darkGreyText}'
             android:fontFamily="@font/duplet_semibold"
             android:textSize="12sp"
             android:gravity="center"
@@ -44,8 +44,8 @@
             android:id="@+id/order_no"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{`#` + orderModel.orderNo}"
-            android:textColor="@{orderModel.statusCode==1?@color/white:@color/colorPrimary}"
+            android:text="@{`#`+orderModel.order.details.orderId}"
+            android:textColor='@{orderModel.zingDetails.status.equals("0")?@color/white:@color/colorPrimary}'
             android:fontFamily="@font/duplet_bold"
             android:textSize="24sp"
             android:gravity="center"
@@ -58,8 +58,8 @@
             android:id="@+id/amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{`₹`+ String.valueOf(orderModel.totalAmountPaid)}"
-            android:textColor="@{orderModel.statusCode==1?@color/white:@color/black}"
+            android:text="@{`₹`+orderModel.order.details.total}"
+            android:textColor='@{orderModel.zingDetails.status.equals("0")?@color/white:@color/black}'
             android:fontFamily="@font/duplet_bold"
             android:textSize="18sp"
             android:gravity="center"
@@ -75,14 +75,29 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/duplet_semibold"
-            android:text="@{orderModel.statusCode==1?`Not Printed` : `Tap to View`}"
+            android:text='@{orderModel.zingDetails.status.equals("0")?`Not Printed` : `Tap to View`}'
             android:gravity="center"
-            android:textColor="@{orderModel.statusCode==1?@color/white:@color/darkGreyText}"
+            android:textColor='@{orderModel.zingDetails.status.equals("0")?@color/white:@color/darkGreyText}'
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/ticket"
             app:layout_constraintEnd_toEndOf="@id/ticket"
             android:layout_marginBottom="@dimen/_15sdp"
             app:layout_constraintStart_toStartOf="@id/ticket" />
+<!--        <TextView-->
+        <!--old-->
+<!--            android:id="@+id/taptoview"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/_10sdp"-->
+<!--            android:fontFamily="@font/duplet_semibold"-->
+<!--            android:text="@{orderModel.statusCode==1?`Not Printed` : `Tap to View`}"-->
+<!--            android:gravity="center"-->
+<!--            android:textColor="@{orderModel.statusCode==1?@color/white:@color/darkGreyText}"-->
+<!--            android:textSize="14sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/ticket"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/ticket"-->
+<!--            android:layout_marginBottom="@dimen/_15sdp"-->
+<!--            app:layout_constraintStart_toStartOf="@id/ticket" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

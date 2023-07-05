@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_helpFragment"
             app:destination="@id/helpFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_transactionfragment"
+            app:destination="@id/transactionFragment" />
     </fragment>
     <fragment
         android:id="@+id/menuFragment"
@@ -39,6 +42,10 @@
         android:id="@+id/helpFragment"
         android:name="com.zingit.restaurant.views.setting.HelpFragment"
         android:label="HelpFragment" />
+    <fragment
+        android:id="@+id/transactionFragment"
+        android:name="com.zingit.restaurant.views.setting.TransactionFragment"
+        android:label="TransactionFragment" />
     <fragment
         android:id="@+id/viewPastOrderFragment"
         android:name="com.zingit.restaurant.views.order.ViewPastOrderFragment"

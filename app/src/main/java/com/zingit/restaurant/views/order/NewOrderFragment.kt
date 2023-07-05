@@ -1,8 +1,6 @@
 package com.zingit.restaurant.views.order
 
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -10,16 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
@@ -34,12 +30,14 @@ import com.zingit.restaurant.databinding.BottomCancelSpecificItemBinding
 import com.zingit.restaurant.databinding.FragmentNewOrderBinding
 import com.zingit.restaurant.models.item.CancelItemModel
 import com.zingit.restaurant.models.order.OrdersModel
-import com.zingit.restaurant.utils.Utils
+import com.zingit.restaurant.network.Constants
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
 
@@ -56,21 +54,18 @@ class NewOrderFragment : Fragment() {
     private val cancelItemModel = ArrayList<CancelItemModel>()
     val cancelItemFinalList = ArrayList<CancelItemModel>()
     val firestore = FirebaseFirestore.getInstance()
+    var fullBool = false
+    var partialBool = false
 
     companion object {
-       const val PERMISSION_BLUETOOTH = 1
-       const val PERMISSION_BLUETOOTH_ADMIN = 2
-       const val PERMISSION_BLUETOOTH_CONNECT = 3
-       const val PERMISSION_BLUETOOTH_SCAN = 4
+        const val PERMISSION_BLUETOOTH = 1
+        const val PERMISSION_BLUETOOTH_ADMIN = 2
+        const val PERMISSION_BLUETOOTH_CONNECT = 3
+        const val PERMISSION_BLUETOOTH_SCAN = 4
     }
+
     lateinit var orderModel: OrdersModel
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -92,11 +87,14 @@ class NewOrderFragment : Fragment() {
             viewModel = zingViewModel
 
 
-            zingViewModel.successMethod.observe(viewLifecycleOwner){
-                if(it){
+            zingViewModel.successMethod.observe(viewLifecycleOwner) {
+                if (it) {
+
+
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
-                }else{
+                } else {
+
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
 
@@ -114,32 +112,36 @@ class NewOrderFragment : Fragment() {
                 cancel(orderModel)
             }
 
-           /*
-           checking the timer --->PlaceTime Order
-           Below Function
-           */
+            /*
+            checking the timer --->PlaceTime Order
+            Below Function
+            */
             countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
-            pastOrderAdapter.submitList(orderModel.orderItems)
+            pastOrderAdapter.submitList(orderModel.orderItem?.details)
             backArrow.setOnClickListener {
                 findNavController().popBackStack()
             }
         }
 
+
         binding.printKOT.setOnClickListener {
+            Log.d(TAG, "SelectedDevice is" + RootActivity().selectedDevice.toString())
 
 
-            RootActivity().selectedDevice?.let { it1 ->
-                Log.e(TAG, "printer blue: $it", )
-                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.id,firestore,
-                    it1
-                )
-            }
+            RootActivity().printBluetooth(
+                requireContext(),
+                requireActivity(),
+                orderModel,
+                orderModel.zingDetails?.id!!
+            )
+
         }
 
         return binding.root
     }
+
 
     fun cancel(ordersModel: OrdersModel) {
         val binding: BottomCancelOrderBinding = DataBindingUtil.inflate(
@@ -161,12 +163,17 @@ class NewOrderFragment : Fragment() {
             cancelAdapter.submitList(arrayList)
             radio.setOnCheckedChangeListener { group, checkedId ->
                 // handle radio button checked state change
-                when(checkedId) {
+                when (checkedId) {
                     R.id.check_full_order -> {
                         // handle radio button 1 checked
+                        fullBool = true
+                        partialBool = false
                     }
+
                     R.id.check_a_particular_item -> {
                         // handle radio button 2 checked
+                        fullBool = false
+                        partialBool = true
                     }
                 }
 
@@ -176,6 +183,34 @@ class NewOrderFragment : Fragment() {
             }
             close.setOnClickListener {
                 dialog.dismiss()
+            }
+            cancelRefund.setOnClickListener {
+                if (fullBool || partialBool) {
+                    var total = orderModel.order?.details?.total?.toDouble()?.times(100)
+                    zingViewModel.refundApi(
+                        orderModel.zingDetails?.userID!!,
+                        orderModel.zingDetails?.paymentOrderId!!,
+                        total.toString()
+                    )
+
+
+
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Please Select Full or Partial",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            zingViewModel.refundResponse.observe(viewLifecycleOwner){
+                if(!it.success){
+                    Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }else{
+                    Toast.makeText(requireContext(), "Refund Failed", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
             }
 
         }
@@ -201,10 +236,10 @@ class NewOrderFragment : Fragment() {
         binding.apply {
             cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
 
-                Log.e(TAG, "itemsBottomSheet: $it", )
-                if(it.isChecked){
+                Log.e(TAG, "itemsBottomSheet: $it")
+                if (it.isChecked && it.itemId != "0") {
                     cancelItemFinalList.add(it)
-                }else{
+                } else {
                     cancelItemFinalList.remove(it)
                 }
 
@@ -212,19 +247,33 @@ class NewOrderFragment : Fragment() {
 
             cancelItemModel.clear()
             recyclerView.adapter = cancelSpecificItemsAdapter
-            cancelItemModel.add(CancelItemModel("All Items","0" ,false))
-           // arrayList1.add("All Items")
-            cancelItemModel.addAll(ordersModel.orderItems.map { CancelItemModel(it.itemName,it.itemID, false) })
+            cancelItemModel.add(CancelItemModel("All Items", "0", false))
+            // arrayList1.add("All Items")
+            cancelItemModel.addAll(ordersModel.orderItem!!.details.map {
+                CancelItemModel(
+                    it.name,
+                    it.id,
+                    false
+                )
+            })
             cancelSpecificItemsAdapter.submitList(cancelItemModel)
             cancelRefund.setOnClickListener {
-                if (cancelItemFinalList.isNotEmpty()){
-                    for(i in 0 until cancelItemFinalList.size){
-                        firestore.collection("item").document(cancelItemFinalList.get(i).itemId).update("availableOrNot",false)
+                if (cancelItemFinalList.isNotEmpty()) {
+                    for (i in 0 until cancelItemFinalList.size) {
+                        firestore.collection("item").document(cancelItemFinalList.get(i).itemId)
+                            .update("availableOrNot", false)
                     }
+                    var total = orderModel.order?.details?.total?.toDouble()?.times(100)
+                    zingViewModel.refundApi(
+                        orderModel.zingDetails?.userID!!,
+                        orderModel.zingDetails?.paymentOrderId!!,
+                        total.toString()
+                    )
                     d1.dismiss()
                     findNavController().popBackStack()
-                }else{
-                    Toast.makeText(requireContext(), "Please Select Item", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Please Select Item", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
@@ -241,14 +290,15 @@ class NewOrderFragment : Fragment() {
     }
 
 
-
-
-
-
     @RequiresApi(Build.VERSION_CODES.O)
-    fun countDownTimer(rejectBtn:MaterialButton){
+    fun countDownTimer(rejectBtn: MaterialButton) {
         val targetDuration = Duration.ofMinutes(5)
-        val givenTime = Instant.parse(Utils.convertToIsoString(orderModel.placedTime.toDate()))
+        val time = orderModel.order?.details!!.createdOn.substringAfter(" ")
+        val date = orderModel.order?.details!!.createdOn.substringBefore(" ")
+        val dateTime = date + "T" + time
+        val ldt = LocalDateTime.parse(dateTime)
+        val givenTime = ldt.atZone(ZoneId.systemDefault()).toInstant()
+        Log.d(TAG, givenTime.toString())
         val targetTime = givenTime.plus(targetDuration)
         val currentTime = Instant.now()
         val remainingDuration = Duration.between(currentTime, targetTime)
@@ -308,7 +358,6 @@ class NewOrderFragment : Fragment() {
 
 
         }
-
 
 
     }

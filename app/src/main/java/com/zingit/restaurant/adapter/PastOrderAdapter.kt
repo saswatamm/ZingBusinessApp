@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zingit.restaurant.databinding.ItemSingleOrderLayoutBinding
 import com.zingit.restaurant.databinding.SingleItemHistoryBinding
 import com.zingit.restaurant.models.order.OrderItem
+import com.zingit.restaurant.models.order.OrderItemDetails
 import com.zingit.restaurant.models.order.OrdersModel
 
-class PastOrderAdapter(val context: Context) : ListAdapter<OrderItem, PastOrderAdapter.MyViewHolder>(PastOrderDiffUtils()) {
+class PastOrderAdapter(val context: Context) : ListAdapter<OrderItemDetails, PastOrderAdapter.MyViewHolder>(PastOrderDiffUtils()) {
 
     inner class MyViewHolder(val binding: ItemSingleOrderLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(orderItem: OrderItem) {
+        fun bind(orderItem: OrderItemDetails) {
             binding.order = orderItem
 
 
@@ -37,17 +38,17 @@ class PastOrderAdapter(val context: Context) : ListAdapter<OrderItem, PastOrderA
 
 }
 
-class PastOrderDiffUtils : DiffUtil.ItemCallback<OrderItem>() {
+class PastOrderDiffUtils : DiffUtil.ItemCallback<OrderItemDetails>() {
     override fun areItemsTheSame(
-        oldItem: OrderItem,
-        newItem: OrderItem
+        oldItem: OrderItemDetails,
+        newItem: OrderItemDetails
     ): Boolean {
-        return oldItem.itemID == newItem.itemID
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: OrderItem,
-        newItem: OrderItem
+        oldItem: OrderItemDetails,
+        newItem: OrderItemDetails
     ): Boolean {
         return oldItem == newItem
     }

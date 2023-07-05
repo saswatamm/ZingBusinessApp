@@ -13,28 +13,29 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.res.ResourcesCompat.getDrawableForDensity
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.dantsu.escposprinter.connection.DeviceConnection
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
 import com.dantsu.escposprinter.textparser.PrinterTextParserImg
+import com.google.android.gms.common.api.Api.Client
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firestore.v1.StructuredQuery.Order
+import com.google.firebase.firestore.QuerySnapshot
 import com.zingit.restaurant.R
-import com.zingit.restaurant.models.PaymentModel
 import com.zingit.restaurant.models.order.OrderItem
+import com.zingit.restaurant.models.order.OrderItemDetails
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
 import com.zingit.restaurant.utils.printer.AsyncEscPosPrint
@@ -42,21 +43,10 @@ import com.zingit.restaurant.utils.printer.AsyncEscPosPrinter
 import com.zingit.restaurant.views.order.NewOrderFragment
 import com.zingit.restaurant.views.order.NewOrderFragment.Companion.PERMISSION_BLUETOOTH
 import com.zingit.restaurant.views.order.NewOrderFragment.Companion.PERMISSION_BLUETOOTH_SCAN
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
-import kotlin.time.Duration.Companion.seconds
 
 
 object Utils {
@@ -96,6 +86,17 @@ object Utils {
         return formatter.format(date)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun convertToIsoString1(date: String?): String {
+        // Convert the Timestamp object to a Date object
+
+        // Create a SimpleDateFormat to format the Date object
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        // Format the Date object into a string in the desired format
+        return formatter.format(date)
+    }
+
     fun View.hideKeyboard() {
         val inputMethodManager =
             context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -107,12 +108,16 @@ object Utils {
         account_id: String,
         email: String,
         outlet_id: String,
+        menu_sharing_code: String,
+        printerMac:String,
     ) {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
         editor.putString("account_id", account_id)
         editor.putString("email", email)
         editor.putString("outlet_id", outlet_id)
+        editor.putString("menu_sharing_code", menu_sharing_code)
+        editor.putString("printerMac", printerMac)
         editor.commit()
     }
 
@@ -120,6 +125,16 @@ object Utils {
     fun getUserInfo(context: Context): String? {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         return sharedPreference.getString("account_id", null)
+    }
+
+    fun getPrinterMac(context: Context): String? {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        return sharedPreference.getString("printerMac", null)
+    }
+
+    fun getMenuSharingCode(context: Context): String? {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        return sharedPreference.getString("menu_sharing_code", null)
     }
 
     fun getUserEmail(context: Context): String? {
@@ -150,13 +165,12 @@ object Utils {
         return dateFormat.format(date).toString().toUpperCase()
     }
 
-    fun getItemsMapType(list: ArrayList<OrderItem>): HashMap<String, Int> {
+    fun getItemsMapType(list: ArrayList<OrderItemDetails>): HashMap<String, Int> {
         val hashMap = HashMap<String, Int>()
 
-
         for (i in 0 until list.size) {
-            val itemName = list[i].itemName
-            val itemQuantity = list[i].itemQuantity
+            val itemName = list[i].name
+            val itemQuantity = list[i].quantity
             val mapped = hashMapOf(Pair(first = itemName, second = itemQuantity.toInt()))
             hashMap.putAll(mapped)
         }
@@ -221,10 +235,24 @@ object Utils {
 
 
     private fun orderType(payment: OrdersModel): String {
-        if (payment.orderType == null || payment.orderType == "") {
+        if (payment.order?.details!!.orderType == null || payment.order?.details!!.orderType == "") {
             return "Dine In"
         } else {
-            return payment.orderType
+            var tableNo = payment.zingDetails?.tableNumber;
+            var flag = 0;
+            if(tableNo == "" || tableNo == "-1")
+                flag = -1;
+            var ordertype = payment.order?.details!!.orderType
+            if(ordertype == "D") {
+                ordertype = "Dine-in";
+                if(flag==0)
+                {
+                    ordertype = "$ordertype (# $tableNo)"
+                }
+            }
+            else if(ordertype =="P")
+                ordertype = "Takeaway"
+            return ordertype
         }
     }
 
@@ -238,25 +266,30 @@ object Utils {
 
         slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(
             printer,
-            context.getResources()
-                .getDrawableForDensity(R.drawable.new_zing, DisplayMetrics.DENSITY_HIGH)
+            ContextCompat.getDrawable(context, R.drawable.new_zing)!!
         ) + "</img>\n";
         /*slip = "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, getDrawableForDensity(
             R.drawable.title_logo, DisplayMetrics.DENSITY_MEDIUM))+"</img>\n";*/
 
         slip += "[L]\n"
-        slip += "[L]<b>Order type : " + getSpaces("Order type : ",orderType(payment))+orderType(payment)+"\n\n"
+        slip += "[L]<b>Order type : " + getSpaces("Order type : ", orderType(payment)) + orderType(payment) + "\n\n"
         /*slip += """
              ${"[R]<font size='normal'>        " + "[R]${orderType(payment)}"}</font>
 
              """.trimIndent()*/
 
-        slip += "[L]<b>Order No. : " + getSpaces(" Order No.: ", payment.orderNo)+payment.orderNo+"\n\n"
+        slip += "[L]<b>Order No. : " + getSpaces(
+            " Order No.: ",
+            payment.order?.details!!.orderId
+        ) + payment.order?.details!!.orderId + "\n\n"
         /*slip += """
              ${"[R]<font size='normal'>        " + "[R]${payment.orderNo}"}</font>
 
              """.trimIndent()*/
-        slip += "[L]<b>" + "Order From : " + getSpaces("Order From : ", payment.userName.split(" ")[0])+payment.userName.split(" ")[0]+"\n\n"
+        slip += "[L]<b>" + "Order From : " + getSpaces(
+            "Order From : ",
+            payment.customer?.details!!.name.split(" ")[0]
+        ) + payment.customer?.details!!.name.split(" ")[0] + "\n\n"
         /*slip += """
              ${"[R]<font size='normal'>        " + "[R]${payment.userName.split(" ")[0]}"}</font>
 
@@ -265,11 +298,14 @@ object Utils {
         //slip += "[L]<font size='big'>Order from        " + Dataholder.printingPayment.getUserName().toUpperCase() + "</font>\n";
         //Add phone no here
         slip += "[C]<b>=============================================\n\n"
-        for (i in 0 until payment.orderItems.size) {
-            spaces = getSpaces(payment.orderItems.get(i).itemName, "x2")
-            slip += "[L]<font size='big-4'>" + payment.orderItems.get(i).itemName + spaces + "x" + payment.orderItems.get(
-                i
-            ).itemQuantity + "\n\n"
+        for (i in 0 until payment.orderItem?.details!!.size) {
+            spaces = getSpaces(payment.orderItem!!.details.get(i).name, "x2")
+            var variation = payment.orderItem!!.details.get(i).variationName;
+            if(variation != "")
+            {
+                variation = " ($variation) ";
+            }
+            slip += "[L]<font size='big-4'>" + payment.orderItem!!.details[i].name + variation + spaces + "x" + payment.orderItem!!.details.get(i).quantity + "\n\n"
             "</font>"
 
 
@@ -281,8 +317,8 @@ object Utils {
         }
         slip += "[C]<b>=============================================\n\n"
         slip += """
-             ${"[R]<font size='big-4'>                        Total Amount: " + payment.basePrice}</font>
-             
+             ${"[R]<font size='big-4'>           Total Amount (incl. taxes): ₹" + payment.order!!.details!!.total}</font>
+
              """.trimIndent()
         return slip
     }
@@ -366,23 +402,24 @@ object Utils {
         }
     }
 
-    /*fun getSpaces(item: String): String {
-        Log.e(TAG, "Item Length ${item.length}")
-        var itemLength = item.length
-        var spaces = ""
-        // var count = if(itemLength>=16) 23 - (itemLength-16) else 17 + (16-itemLength)
-        var count = if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength)
-        for (i in 1..count)
-            spaces += " "
-        return spaces
-    }*/
+//    fun getSpaces(item: String): String {
+//        Log.e(TAG, "Item Length ${item.length}")
+//        var itemLength = item.length
+//        var spaces = ""
+//        // var count = if(itemLength>=16) 23 - (itemLength-16) else 17 + (16-itemLength)
+//        var count = if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength)
+//        for (i in 1..count)
+//            spaces += " "
+//        return spaces
+//    }
 
     fun getSpaces(item: String, right: String): String {
         Log.e(TAG, "Item Length ${item.length}")
         var itemLength = item.length
         var spaces = ""
         // var count = if(itemLength>=16) 23 - (itemLength-16) else 17 + (16-itemLength)
-        var count = if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength)+2-right.length
+        var count =
+            if (itemLength >= 16) 25 - (itemLength - 16) else 25 + (16 - itemLength) + 2 - right.length
         for (i in 1..count)
             spaces += " "
         return spaces
@@ -397,8 +434,6 @@ object Utils {
         firestore: FirebaseFirestore,
         bluetoothConnection: BluetoothConnection
     ) {
-
-
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.BLUETOOTH
@@ -458,29 +493,44 @@ object Utils {
                             "Async.OnPrintFinished",
                             "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
                         )
-
                         try {
+                            Log.d(TAG, "id passed to printBluetooth is ${id}")
+                            firestore.collection("prod_order")
+                                .whereEqualTo("order.details.orderID", id).get()
+                                .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
+                                    if (task.isSuccessful) {
+                                        for (documentSnapshot in task.result.documents) {
+                                            // here you can get the id.
+                                            Log.d(TAG, "Document got is ${documentSnapshot.data}")
+                                            firestore.runTransaction { transaction ->
+                                                transaction.update(
+                                                    documentSnapshot.reference,
+                                                    "zingDetails.status",
+                                                    "2"
+                                                )
+                                            }.addOnSuccessListener {
+                                                Log.d(TAG, "Transaction success! new")
 
-                            val sfDocRef = firestore.collection("payment").document(id)
+                                            }
+                                                .addOnFailureListener { e ->
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Error $e",
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                }
+                                            // you can apply your actions...
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error in getting document ref")
+                                    }
+                                })
                             Toast.makeText(
                                 context,
                                 "Print is finished ! $id",
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                            firestore.runTransaction { transaction ->
-                                transaction.update(sfDocRef, "statusCode", 2)
-                            }.addOnSuccessListener {
-                                Log.d(TAG, "Transaction success!")
-
-                            }
-                                .addOnFailureListener { e ->
-                                    Toast.makeText(
-                                        context,
-                                        "Error $e",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
                         } catch (e: Exception) {
                             Toast.makeText(context, "Error $e", Toast.LENGTH_LONG).show()
                         }
