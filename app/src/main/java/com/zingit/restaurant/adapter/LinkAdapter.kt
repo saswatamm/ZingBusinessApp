@@ -18,6 +18,7 @@ class LinkAdapter(val context: Context):
     inner class MyViewHolder(val binding:VolumeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(ordersModel:  OrdersModel) {
+            binding.orderModel = ordersModel
 
         }
     }

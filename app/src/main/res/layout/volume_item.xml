@@ -3,6 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="orderModel"
+            type="com.zingit.restaurant.models.order.OrdersModel" />
 
     </data>
 
@@ -26,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_4sdp"
-        android:text="Order #1B12"
+        android:text="@{`Order` + `#` + orderModel.order.details.orderId}"
         android:textColor="@color/black"
         android:fontFamily="@font/duplet_bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/amount_tv"
-            android:text="₹100"
+            android:text="@{`₹` + orderModel.order.details.total}"
             android:textColor="@color/black"
             android:fontFamily="@font/duplet_bold"
             android:layout_marginStart="@dimen/_2sdp"
