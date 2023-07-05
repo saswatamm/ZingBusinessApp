@@ -2,6 +2,8 @@ package com.zingit.restaurant.repository
 
 import android.content.Context
 import com.zingit.restaurant.models.*
+import com.zingit.restaurant.models.orderGenerator.OrderGeneratorResponse
+import com.zingit.restaurant.models.orderGenerator.OrdergeneratorRequest
 import com.zingit.restaurant.models.refund.PhoneRefundResponseModel
 import com.zingit.restaurant.network.ApiEndPoints
 import com.zingit.restaurant.network.ApiUtils
@@ -45,6 +47,12 @@ class ZingRepository @Inject constructor(val apiInterFace: ApiEndPoints,private 
                 amount,
                 callbackUrl
             )
+        }
+    }
+
+    suspend fun clearOrderGenerator(url:String,orderGenerator: OrdergeneratorRequest):ApiResult<OrderGeneratorResponse>{
+        return apiUtils.getResponse(context,"Oops Something went wrong") {
+            apiInterFace.clearOrderGenerator(url,orderGenerator)
         }
     }
 

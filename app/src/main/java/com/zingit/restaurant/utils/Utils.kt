@@ -109,6 +109,7 @@ object Utils {
         email: String,
         outlet_id: String,
         menu_sharing_code: String,
+        printerMac:String,
     ) {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
@@ -116,6 +117,7 @@ object Utils {
         editor.putString("email", email)
         editor.putString("outlet_id", outlet_id)
         editor.putString("menu_sharing_code", menu_sharing_code)
+        editor.putString("printerMac", printerMac)
         editor.commit()
     }
 
@@ -123,6 +125,11 @@ object Utils {
     fun getUserInfo(context: Context): String? {
         val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
         return sharedPreference.getString("account_id", null)
+    }
+
+    fun getPrinterMac(context: Context): String? {
+        val sharedPreference = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE)
+        return sharedPreference.getString("printerMac", null)
     }
 
     fun getMenuSharingCode(context: Context): String? {

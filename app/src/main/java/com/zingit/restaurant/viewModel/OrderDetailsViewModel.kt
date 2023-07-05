@@ -23,6 +23,8 @@ import com.zingit.restaurant.R
 import com.zingit.restaurant.models.ApiResult
 import com.zingit.restaurant.models.WhatsappRequestModel
 import com.zingit.restaurant.models.order.OrdersModel
+import com.zingit.restaurant.models.orderGenerator.OrderGeneratorResponse
+import com.zingit.restaurant.models.orderGenerator.OrdergeneratorRequest
 import com.zingit.restaurant.models.refund.PhoneRefundResponseModel
 import com.zingit.restaurant.repository.ZingRepository
 import com.zingit.restaurant.service.CountdownService
@@ -63,6 +65,11 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     private val _refundResponse: MutableLiveData<PhoneRefundResponseModel> = MutableLiveData()
     val refundResponse: LiveData<PhoneRefundResponseModel>
         get() = _refundResponse
+
+
+    private val _orderGeneratorResponse :MutableLiveData<OrderGeneratorResponse> = MutableLiveData()
+    val orderGeneratorResponse :LiveData<OrderGeneratorResponse>
+    get() = _orderGeneratorResponse
 
     private lateinit var timer: CountDownTimer
 
@@ -222,5 +229,43 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         }
     }
 
+
+
+    fun orderGenerator(
+        url:String,
+        restId:String,
+        orderNumber: String
+    ) {
+        viewModelScope.launch {
+            loading.value = true
+            val result = repository.clearOrderGenerator(
+                url,
+                OrdergeneratorRequest(
+                    restId,
+                    orderNumber)
+
+            )
+            when (result.status) {
+                ApiResult.Status.SUCCESS -> {
+                    loading.value = false
+                    _orderGeneratorResponse.value = result.data!!
+                    _successMethod.value = true
+                }
+
+                ApiResult.Status.ERROR -> {
+                    _successMethod.value = false
+                    loading.value = false
+                    _error.value = result.message!!
+                }
+
+                else -> {
+                    _successMethod.value = false
+                    loading.value = false
+                    _error.value = "Something went wrong"
+                }
+
+            }
+        }
+    }
 
 }

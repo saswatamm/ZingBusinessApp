@@ -14,11 +14,13 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-
+import android.os.Message
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.webkit.PermissionRequest
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -33,6 +35,10 @@ import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 
 import com.zingit.restaurant.R
 import com.zingit.restaurant.databinding.ActivityHomeMainBinding
@@ -132,21 +138,47 @@ class RootActivity : AppCompatActivity() {
                     }
 
                 }
+                Dexter.withContext(this)
+                    .withPermissions(
+                        Manifest.permission.BLUETOOTH,
+                        Manifest.permission.BLUETOOTH_ADVERTISE,
+                        Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.BLUETOOTH_CONNECT,
 
+                    ).withListener(object : MultiplePermissionsListener {
+                        override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+
+                        }
+
+                        override fun onPermissionRationaleShouldBeShown(
+                            p0: MutableList<com.karumi.dexter.listener.PermissionRequest>?,
+                            p1: PermissionToken?
+                        ) {
+                            TODO("Not yet implemented")
+                        }
+
+                    }).check()
 
                 // Get the BluetoothDevice instance
                 val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-                val device: BluetoothDevice? = bluetoothAdapter?.getRemoteDevice("66:32:FA:00:E4:42")
-
-                // Bond with the device
-                device?.createBond()
-                // Check if the device is already bonded
-                val isBonded: Boolean = device?.bondState == BluetoothDevice.BOND_BONDED
-                if (isBonded) {
-                    Log.d("BONDED", "Device Bonded");
-                } else {
-                    Log.d("BONDED", "Device Not Bonded");
+                if(Utils.getPrinterMac(this@RootActivity) != null){
+                    val device: BluetoothDevice? = bluetoothAdapter?.getRemoteDevice(Utils.getPrinterMac(this@RootActivity))
+                    // Bond with the device
+                    device?.createBond()
+                    // Check if the device is already bonded
+                    val isBonded: Boolean = device?.bondState == BluetoothDevice.BOND_BONDED
+                    if (isBonded) {
+                        Log.d("BONDED", "Device Bonded");
+                    } else {
+                        Log.d("BONDED", "Device Not Bonded");
+                    }
+                }else{
+                    Toast.makeText(this@RootActivity, "Mac not found in db", Toast.LENGTH_SHORT).show()
                 }
+
+
+
+
 
             }
 
@@ -230,7 +262,13 @@ class RootActivity : AppCompatActivity() {
             addAction("android.bluetooth.device.action.ACL_DISCONNECTED")
             addAction("android.bluetooth.adapter.action.STATE_CHANGED")
         })
-
+//        ActivityCompat.requestPermissions(
+//            this,
+//            arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE),
+//            PERMISSION_BLUETOOTH_ADVERTISE
+//        )
+//        makeDiscoverable()
+        //selectedDevice= BluetoothConnection(getConnectedDeviceName())
     }
 
 
@@ -388,7 +426,7 @@ class RootActivity : AppCompatActivity() {
 
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED == action) {
                 val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                val bondState: Int = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
+                val bondState: Int? = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR)
 
                 // Handle bond state changes
                 when (bondState) {
@@ -422,6 +460,100 @@ class RootActivity : AppCompatActivity() {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        Log.e("hehe22", grantResults[0].toString())
+//        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            makeDiscoverable()
+//            when (requestCode) {
+//                PERMISSION_BLUETOOTH, PERMISSION_BLUETOOTH_ADMIN, PERMISSION_BLUETOOTH_CONNECT, PERMISSION_BLUETOOTH_SCAN, PERMISSION_BLUETOOTH_ADVERTISE -> {
+//                    if(requestCode==PERMISSION_BLUETOOTH_ADVERTISE){
+//                        //makeDiscoverable()
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (requestCode == 0) {
+//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
+//
+//            } else {
+//                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+
+
+
+//     fun printBluetooth(activity: Activity, ordersModel: OrdersModel, id: String) {
+//        AsyncBluetoothEscPosPrint(this, object : AsyncEscPosPrint.OnPrintFinished() {
+//            override fun onError(
+//                asyncEscPosPrinter: AsyncEscPosPrinter?, codeException: Int
+//            ) {
+//                Log.e(
+//                    "Async.OnPrintFinished",
+//                    "AsyncEscPosPrint.OnPrintFinished : An error occurred !"
+//                )
+//            }
+//
+//            override fun onSuccess(asyncEscPosPrinter: AsyncEscPosPrinter?) {
+//                Log.i(
+//                    "Async.OnPrintFinished",
+//                    "AsyncEscPosPrint.OnPrintFinished : Print is finished !"
+//                )
+//
+//                try {
+//
+//                    val sfDocRef = firestore.collection("prod_order").document(id)
+//                    Toast.makeText(
+//                        activity, "Print is finished ! $id", Toast.LENGTH_SHORT
+//                    ).show()
+//
+//                    firestore.runTransaction { transaction ->
+//                        transaction.update(sfDocRef, "zingDetails.status", "2")
+//                    }.addOnSuccessListener {
+//                        Log.d(TAG, "Transaction success!")
+//
+//                    }.addOnFailureListener { e ->
+//                        Toast.makeText(
+//                            activity, "Error $e", Toast.LENGTH_LONG
+//                        ).show()
+//                    }
+//                } catch (e: Exception) {
+//                    Toast.makeText(activity, "Error $e", Toast.LENGTH_LONG).show()
+//                }
+//            }
+//
+//        }).execute(
+//            Utils.getAsyncEscPosPrinter(
+//                ordersModel, selectedDevice, activity
+//            )
+//        )
+//    }
 
 
 

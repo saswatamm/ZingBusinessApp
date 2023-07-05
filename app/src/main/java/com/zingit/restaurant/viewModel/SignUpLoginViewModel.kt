@@ -116,13 +116,12 @@ class SignUpLoginViewModel @Inject constructor(
                 loading.value = false
                 val outletAuthModel = value.documents[0].toObject(OutletAuthModel::class.java)
                 if (outletAuthModel != null) {
-                    Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-                    Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}", )
-                    Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}", )
-                    Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, "ksSGAXGLELBpP8LA5S1G","ksSGAXGLELBpP8LA5S1G")
-                    Log.e(TAG, "OutletIdSet:"+Utils.getUserOutletId(application), )
+                    Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}")
+                    Log.e(TAG, "mAuth: ${mAuth.currentUser!!.email}")
+                    Log.e(TAG, "getOutlet: ${outletAuthModel.outletId}")
+                    Utils.insertUserInfo(application, mAuth.currentUser?.uid!!,  mAuth.currentUser?.email!!, value.documents.get(0).data?.get("outletID").toString(),value.documents.get(0).data?.get("outletID").toString(),value.documents.get(0).data?.get("printerMac").toString())
+                    Log.e(TAG, "OutletIdSet:"+Utils.getUserOutletId(application))
                     signIn.value = true
-
                 }
             }
         }

@@ -71,14 +71,11 @@ class OrdersViewModel @Inject constructor(
                     val ldt = LocalDateTime.parse(dateTime)
                     val seconds=ldt.atZone(ZoneOffset.UTC).toEpochSecond()
                     val timeDiff = currentTime  - seconds
-                    if (timeDiff <= 24 * 60 * 60) { // 3 hours in milliseconds
+                    if (timeDiff <= 24 * 60 * 60) {
                         myList.add(orderModel)
                     }
 
-//CN                    val timeDiff = currentTime  - order.placedTime!!.seconds
-//                    if (timeDiff <= 24 * 60 * 60) { // 3 hours in milliseconds
-//                        myList.add(order)
-//                    }
+//CN
 
                 }
                 _orderHistoryData.value = myList
@@ -90,6 +87,8 @@ class OrdersViewModel @Inject constructor(
     fun clear() {
         myList.clear()
     }
+
+
 
 
 //    fun getOrderSearch(string: String) {

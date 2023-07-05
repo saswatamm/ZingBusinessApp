@@ -1,6 +1,8 @@
 package com.zingit.restaurant.network
 
 import com.zingit.restaurant.models.*
+import com.zingit.restaurant.models.orderGenerator.OrderGeneratorResponse
+import com.zingit.restaurant.models.orderGenerator.OrdergeneratorRequest
 import com.zingit.restaurant.models.refund.PhoneRefundResponseModel
 import dagger.Provides
 import retrofit2.Response
@@ -30,5 +32,12 @@ interface ApiEndPoints {
         @Query("amount") amount: String,
         @Query("callbackUrl") callbackUrl: String,
     ): Response<PhoneRefundResponseModel>
+
+
+    @POST("/clearOrderNumber")
+    suspend fun clearOrderGenerator(
+        @Url url: String,
+        @Body orderGenerator: OrdergeneratorRequest
+    ): Response<OrderGeneratorResponse>
 
 }

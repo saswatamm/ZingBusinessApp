@@ -89,9 +89,12 @@ class NewOrderFragment : Fragment() {
 
             zingViewModel.successMethod.observe(viewLifecycleOwner) {
                 if (it) {
+
+
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 } else {
+
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
 
