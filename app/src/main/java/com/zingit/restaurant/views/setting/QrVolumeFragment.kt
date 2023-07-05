@@ -2,13 +2,12 @@ package com.zingit.restaurant.views.setting
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -55,9 +54,16 @@ class QrVolumeFragment : Fragment() {
 
 
         val c = Calendar.getInstance()
+        c.add(Calendar.DAY_OF_MONTH, -1);
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val currentYear = Calendar.getInstance()[Calendar.YEAR]
+        val minCalendar = Calendar.getInstance()
+        minCalendar[Calendar.YEAR] = currentYear
+        minCalendar[Calendar.MONTH] = Calendar.JANUARY
+        minCalendar[Calendar.DAY_OF_MONTH] = 1
 
         binding.dateValueTv.text =
             day.toString() + "." + (month + 1).toString() + "." + year.toString()
@@ -74,11 +80,16 @@ class QrVolumeFragment : Fragment() {
             month,
             day
         )
+        dpd.datePicker.minDate = minCalendar.timeInMillis
+        dpd.datePicker.maxDate = System.currentTimeMillis();
 
 
 
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
+            calendarIcon.setOnClickListener {
+                dpd.show()
+            }
             qrVolumeAdapter = QrVolumeAdapter(requireContext()) {
                 if (it != null) {
                     gson = Gson()
