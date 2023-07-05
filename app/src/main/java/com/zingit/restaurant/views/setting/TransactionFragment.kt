@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zingit.restaurant.R
 import com.zingit.restaurant.adapter.ViewPagerAdapter
 import com.zingit.restaurant.databinding.FragmentTransactionBinding
+import com.zingit.restaurant.viewModel.SignUpLoginViewModel
+import com.zingit.restaurant.viewModel.TransactionViewModel
 import com.zingit.restaurant.views.order.ActiveFragment
 import com.zingit.restaurant.views.order.HistoryFragment
 

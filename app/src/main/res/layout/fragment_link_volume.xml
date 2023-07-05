@@ -4,6 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="earningModel"
+            type="com.zingit.restaurant.models.earning.EarningModel" />
+
 
     </data>
 
@@ -83,7 +87,7 @@
             app:layout_constraintTop_toBottomOf="@+id/date_tv"
             app:layout_constraintStart_toStartOf="@id/date_tv"
             app:layout_constraintEnd_toEndOf="@id/date_tv"
-            android:text="23.04.22"
+            android:text="@{earningModel.createdOn}"
             android:fontFamily="@font/duplet_bold"
             android:textColor="@color/black"
             android:textSize="@dimen/_11sdp"
@@ -97,7 +101,7 @@
             app:layout_constraintTop_toBottomOf="@+id/total_orders_tv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="407"
+            android:text="@{earningModel.linkTotalOrderNos}"
             android:fontFamily="@font/duplet_bold"
             android:textSize="@dimen/_11sdp"
             android:textColor="@color/black"
@@ -111,7 +115,7 @@
             app:layout_constraintTop_toBottomOf="@+id/total_earnings_tv"
             app:layout_constraintStart_toStartOf="@id/total_earnings_tv"
             app:layout_constraintEnd_toEndOf="@id/total_earnings_tv"
-            android:text="₹58,000"
+            android:text="@{`₹` + earningModel.linkOrderTotal}"
             android:fontFamily="@font/duplet_bold"
             android:textSize="@dimen/_11sdp"
             android:layout_marginTop="@dimen/_11sdp"
@@ -123,10 +127,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/link_volume_rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/single_item_ticket"
+            tools:listitem="@layout/volume_item"
             app:layout_constraintTop_toBottomOf="@id/date_value_tv"
             />
 
