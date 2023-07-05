@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zingit.restaurant.databinding.VolumeItemBinding
 import com.zingit.restaurant.models.order.OrdersModel
 
-class LinkAdapter(val context: Context):
+class LinkAdapter(val context: Context , val onClick: (OrdersModel) -> Unit):
     androidx.recyclerview.widget.ListAdapter<OrdersModel, LinkAdapter.MyViewHolder>(LinkDiffUtils())  {
 
 
@@ -18,6 +18,7 @@ class LinkAdapter(val context: Context):
     inner class MyViewHolder(val binding:VolumeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(ordersModel:  OrdersModel) {
+            binding.orderModel = ordersModel
 
         }
     }
@@ -30,6 +31,9 @@ class LinkAdapter(val context: Context):
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val orderQR =getItem(position)
         holder.bind(orderQR)
+        holder.binding.viewButton.setOnClickListener {
+            onClick(orderQR) }
+
     }
 
 }
