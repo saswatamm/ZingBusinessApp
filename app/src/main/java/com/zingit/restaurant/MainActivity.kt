@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     lateinit var binding: ActivityMainBinding
     lateinit var navController : NavController
     private val REQUEST_CODE_NOTIFICATION_PERMISSION = 1
@@ -40,6 +41,8 @@ class MainActivity : AppCompatActivity() {
                 arrayOf(android.Manifest.permission.POST_NOTIFICATIONS, android.Manifest.permission.ACCESS_NOTIFICATION_POLICY),
                 REQUEST_CODE_NOTIFICATION_PERMISSION)
         }
+
+
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

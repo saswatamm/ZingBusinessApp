@@ -5,5 +5,6 @@ data class OutletAuthModel(
     val password:String = "",
     val outletId:String = "",
     val userID:String = "",
+    val printerMac:String =""
 
 )

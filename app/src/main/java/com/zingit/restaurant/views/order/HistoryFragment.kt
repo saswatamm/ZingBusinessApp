@@ -1,5 +1,6 @@
 package com.zingit.restaurant.views.order
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
@@ -37,6 +39,7 @@ class HistoryFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,7 +62,6 @@ class HistoryFragment : Fragment() {
                         R.id.action_ordersFragment_to_viewPastOrderFragment,
                         bundle
                     )
-
                 }
                 orderViewModel.orderHistoryData.collect {
                     loader.visibility = View.VISIBLE
@@ -79,8 +81,6 @@ class HistoryFragment : Fragment() {
                         historyRv.adapter = orderHistoryAdapter
                         orderHistoryAdapter.submitList(it)
                     }
-
-
                 }
             }
             return binding.root

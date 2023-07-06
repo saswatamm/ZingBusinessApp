@@ -33,7 +33,7 @@ object ApiClient {
     fun provideRetrofit(loggingClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(Constants.PROD_URL)
+            .baseUrl(Constants.BASE_URL)
             .client(loggingClient)
             .build()
     }

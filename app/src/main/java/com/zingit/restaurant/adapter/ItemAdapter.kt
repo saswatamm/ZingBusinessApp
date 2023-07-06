@@ -45,7 +45,8 @@ class MyDiffUtilsAds : DiffUtil.ItemCallback<OrderItem>() {
         oldItem: OrderItem,
         newItem: OrderItem
     ): Boolean {
-        return oldItem.itemID == newItem.itemID
+//        return oldItem.itemID == newItem.itemID
+        return true
     }
 
     override fun areContentsTheSame(

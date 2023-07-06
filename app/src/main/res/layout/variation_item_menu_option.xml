@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="variaitonMenu"
+            type="com.zingit.restaurant.models.item.VariationsModel"
+            />
+        <variable
+            name="activeornot"
+            type="Boolean"
+            />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/tv_variation_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/duplet_semibold"
+            android:maxEms="10"
+            android:maxLines="1"
+            android:text="@{variaitonMenu.name}"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/variatiion_amount"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/variatiion_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/duplet_regular"
+            android:text="@{`₹`+String.valueOf(variaitonMenu.price)}"
+            android:textColor="@color/textGrey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_variation_name"
+            app:layout_constraintEnd_toStartOf="@id/variation_switch_toggle"
+            app:layout_constraintTop_toTopOf="@id/tv_variation_name" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/variation_switch_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:checked="@{activeornot}"
+            android:thumb="@drawable/thumb_selector"
+            app:layout_constraintBottom_toBottomOf="@id/variatiion_amount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/variatiion_amount"
+            app:track="@drawable/track_selector" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

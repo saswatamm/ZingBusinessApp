@@ -1,5 +1,6 @@
 package com.zingit.restaurant.viewModel
 
+import android.content.ClipData.Item
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,45 +26,67 @@ constructor(
     private val _iteMenuData = MutableStateFlow(ItemMenuState())
     val iteMenuData: StateFlow<ItemMenuState> = _iteMenuData
 
-    private val _categoryData = MutableStateFlow(CategoryState())
-    val categoryData: StateFlow<CategoryState> = _categoryData
+//    private val _categoryData = MutableStateFlow(CategoryState())
+//    val categoryData: StateFlow<CategoryState> = _categoryData
    var tempList:MutableList<CategoryModel> = mutableListOf()
+//My new set of variables
+    private val _categoryData1 = MutableStateFlow(CategoryState())
+    val categoryData1: StateFlow<CategoryState> = _categoryData1
+    var tempList1:MutableList<CategoryModel> = mutableListOf()
 
 
     @JvmOverloads
     fun getMenuData(category:String?=null) {
 
-        firebaseRepository.getMenuData().onEach {
-            when (it) {
+        firebaseRepository.getCategoryData().onEach {
+            when(it)
+            {
                 is Resource.Loading -> {
-                    _iteMenuData.value = ItemMenuState(isLoading = true)
+                    _categoryData1.value= CategoryState(isLoading=true)
                 }
                 is Resource.Error -> {
-                    _iteMenuData.value = ItemMenuState(isLoading = false,error = it.message ?: "")
+                    _categoryData1.value= CategoryState(isLoading = false, error = it.message?:"")
+                    Log.d("In ExploreViewModels error by FirebaseRepo func getCategoryData",it.message.toString())
                 }
                 is Resource.Success -> {
 
-                    it.data?.forEachIndexed { index, itemMenuModel ->
-                        tempList.add(CategoryModel(itemMenuModel.category,itemMenuModel.itemImage))
+                    it.data?.forEachIndexed {index, categoryModel->
+                        tempList1.add(categoryModel)
                     }
-                    if(category==null){
-                        val menuFinal = it.data?.filter {it1 -> it1.category == it.data[0].category
-                          }?.toList()
-                        Log.e("MenuFinal", "getMenuData: $menuFinal", )
-                        _iteMenuData.value = ItemMenuState(isLoading = false,data = menuFinal)
-                    }else{
-                        val menuFinal = it.data?.filter {it1 -> it1.category == category
-                        }?.toList()
-                        Log.e("MenuFinal", "getMenuData: $menuFinal", )
-                        _iteMenuData.value = ItemMenuState(isLoading = false, data = menuFinal)
-                    }
+                    _categoryData1.value = CategoryState(data = tempList1.distinctBy { it.categoryName }.toList())
+                    Log.d("EXpViewModel","_categoryData.value="+_categoryData1.value.toString())
 
-
-
-                    _categoryData.value = CategoryState(data = tempList.distinctBy { it.category }.toList())
+                    firebaseRepository.getMenuData().onEach {
+                        when (it) {
+                            is Resource.Loading -> {
+                                _iteMenuData.value = ItemMenuState(isLoading = true)
+                            }
+                            is Resource.Error -> {
+                                _iteMenuData.value = ItemMenuState(isLoading = false,error = it.message ?: "")
+                                Log.d("In ExploreViewModels if error by FirebaseRepo func named getMenuData",it.message.toString())
+                            }
+                            is Resource.Success -> {
+                                if(category==null){
+                                    val menuFinal = it.data?.filter {it1 -> it1.categoryName == tempList1[0].categoryName   //Here, what if the above
+                                    }?.toList()                                                                           //function, that populates templist1
+                                    Log.e("MenuFinal", "getMenuDataNoCat: $menuFinal", )                           //,although is in flow, but exectues after this function?
+                                    _iteMenuData.value = ItemMenuState(isLoading = false,data = menuFinal)
+                                }
+                                else{
+                                    val menuFinal = it.data?.filter {it1 -> it1.categoryName == category
+                                    }?.toList()
+                                    Log.e("MenuFinal", "getMenuData: $menuFinal", )
+                                    _iteMenuData.value = ItemMenuState(isLoading = false, data = menuFinal)
+                                }
+                            }
+                        }
+                    }.launchIn(viewModelScope)
                 }
             }
         }.launchIn(viewModelScope)
+
+
+
     }
 
 
