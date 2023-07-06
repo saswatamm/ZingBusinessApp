@@ -179,6 +179,9 @@ class FirebaseRepository @Inject constructor(private val application: Applicatio
         awaitClose { snapshot.remove() }
     }
 
+
+
+
     fun qrOrderList(): Flow<List<OrdersModel>> = callbackFlow {
         val snapshot = fireStoreDatabase.collection("prod_order")
             .whereEqualTo("restaurant.details.restaurant_id", Utils.getMenuSharingCode(application))
