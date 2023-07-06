@@ -178,14 +178,6 @@ object Utils {
 
     }
 
-    fun formatTime(time: String): String {
-        val inputFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
-
-        val inputTime = inputFormat.parse(time)
-        return outputFormat.format(inputTime)
-    }
-
     @JvmStatic
     @BindingAdapter("onEditorAction")
     fun EditText.bindOnEditorAction(onEditorAction: () -> Boolean) {

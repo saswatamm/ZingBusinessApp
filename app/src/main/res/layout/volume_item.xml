@@ -7,8 +7,6 @@
             name="orderModel"
             type="com.zingit.restaurant.models.order.OrdersModel" />
 
-        <import type="com.zingit.restaurant.utils.Utils"/>
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,7 +41,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/time_tv"
             app:layout_constraintTop_toBottomOf="@id/order_tv"
-            android:text="@{Utils.INSTANCE.formatTime(orderModel.order.details.preorderTime)}"
+            android:text="04:49 PM"
             android:textSize="@dimen/_7sdp"
             android:fontFamily="@font/duplet_regular"
             app:layout_constraintStart_toStartOf="@id/order_tv"
