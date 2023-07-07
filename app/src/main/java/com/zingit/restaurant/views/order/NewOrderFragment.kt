@@ -115,7 +115,7 @@ class NewOrderFragment : Fragment() {
             checking the timer --->PlaceTime Order
             Below Function
             */
-     //       countDownTimer(rejectBtn)
+            countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
             pastOrderAdapter.submitList(orderModel.orderItem?.details)
@@ -258,6 +258,7 @@ class NewOrderFragment : Fragment() {
                     orderModel.order?.details?.let { it1 ->
                         ordersModel.restaurant?.details?.let { it2 ->
                             zingViewModel.refundApi(
+                                ordersModel,
                                 PhonePeReq( orderModel.zingDetails?.userID!!,
                                     orderModel.zingDetails?.paymentOrderId!!,
                                     UUID.randomUUID().toString(),
@@ -268,7 +269,18 @@ class NewOrderFragment : Fragment() {
                         }
                     }
                     d1.dismiss()
-//                    findNavController().popBackStack()
+                    zingViewModel.dataLivedata.observe(viewLifecycleOwner){
+                        if(it.status == "Success"){
+
+                            Toast.makeText(requireContext(), "Refund Success", Toast.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+
+                        }else{
+                            Toast.makeText(requireContext(), "Refund Failed", Toast.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+                        }
+                    }
+
                 } else {
                     Toast.makeText(requireContext(), "Please Select Item", Toast.LENGTH_SHORT)
                         .show()
@@ -341,7 +353,10 @@ class NewOrderFragment : Fragment() {
 
                 override fun onFinish() {
                     // The timer has finished, do something here...
-                    rejectBtn.isEnabled = true
+                    zingViewModel.whatsappAccepted(orderModel.customer?.details!!.phone,
+                        orderModel.order?.details!!.orderId,orderModel.restaurant?.details!!.restaurant_name,
+                        orderModel.customer?.details!!.name,"15")
+                    rejectBtn.isEnabled = false
                     rejectBtn.text = getString(R.string.reject_order)
                     rejectBtn.background.setTint(
                         ContextCompat.getColor(

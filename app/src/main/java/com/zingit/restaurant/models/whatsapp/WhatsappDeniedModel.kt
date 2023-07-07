@@ -9,5 +9,4 @@ data class WhatsappDeniedModel(
     val orderNumber: String,
     @SerializedName("userName")
     val userName: String,
-
     )
