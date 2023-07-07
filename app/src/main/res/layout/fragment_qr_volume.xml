@@ -14,8 +14,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_12sdp"
         tools:context=".views.setting.QrVolumeFragment">
         <TextView
+            android:paddingStart="@dimen/_15sdp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +26,6 @@
             android:fontFamily="@font/duplet_bold"
             android:textSize="@dimen/_15sdp"
             android:textColor="@color/black"
-            android:layout_marginStart="@dimen/_7sdp"
             android:layout_marginTop="@dimen/_7sdp"
             android:id="@+id/transaction_text"
             />
@@ -35,8 +36,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/calendar_today"
-            android:layout_marginEnd="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_7sdp"
+            android:paddingEnd="@dimen/_15sdp"
+            android:paddingTop="@dimen/_7sdp"
             android:id="@+id/calendar_icon"
             android:contentDescription="calendar Today"
             />
@@ -130,6 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:layout_marginBottom="@dimen/_64sdp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/volume_item"
             app:layout_constraintTop_toBottomOf="@id/date_value_tv"

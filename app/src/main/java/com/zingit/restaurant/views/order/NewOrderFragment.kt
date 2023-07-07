@@ -195,11 +195,13 @@ class NewOrderFragment : Fragment() {
             cancelRefund.setOnClickListener {
                 if (fullBool || partialBool) {
                     var total = orderModel.order?.details?.total?.toDouble()?.times(100)
-                    zingViewModel.refundApi(
-                        orderModel.zingDetails?.userID!!,
-                        orderModel.zingDetails?.paymentOrderId!!,
-                        total.toString()
-                    )
+                    orderModel.order?.details?.let { it1 ->
+                        zingViewModel.refundApi(
+                            orderModel.zingDetails?.userID!!,
+                            orderModel.zingDetails?.paymentOrderId!!,
+                            total.toString(), it1.orderId
+                        )
+                    }
 
 
 
@@ -272,11 +274,13 @@ class NewOrderFragment : Fragment() {
                             .update("availableOrNot", false)
                     }
                     var total = orderModel.order?.details?.total?.toDouble()?.times(100)
-                    zingViewModel.refundApi(
-                        orderModel.zingDetails?.userID!!,
-                        orderModel.zingDetails?.paymentOrderId!!,
-                        total.toString()
-                    )
+                    ordersModel.order?.details?.let { it1 ->
+                        zingViewModel.refundApi(
+                            orderModel.zingDetails?.userID!!,
+                            orderModel.zingDetails?.paymentOrderId!!,
+                            total.toString(), it1.orderId
+                        )
+                    }
                     d1.dismiss()
                     findNavController().popBackStack()
                 } else {

@@ -77,7 +77,36 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         startCountdownTimer()
     }
 
+    fun cancelOrder(id: String){
+        firestore.collection("prod_order")
+            .whereEqualTo("order.details.orderID", id)
+            .whereEqualTo("restaurant.details.restaurant_id", "hi")
+            .whereIn("zingDetails.status", mutableListOf("0","1", "2"))
+            .get()
+            .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
+                if (task.isSuccessful) {
+                    for (documentSnapshot in task.result.documents) {
+                        // here you can get the id.
+                        Log.d(TAG, "Document got is ${documentSnapshot.data}")
+                        firestore.runTransaction { transaction ->
+                            transaction.update(
+                                documentSnapshot.reference,
+                                "zingDetails.status",
+                                "-1"
+                            )
+                        }.addOnSuccessListener {
 
+                        }
+                            .addOnFailureListener { e ->
+                                Log.d(TAG, "" + e.toString())
+                            }
+                        // you can apply your actions...
+                    }
+                } else {
+                    Log.d(TAG, "Error in getting document ref")
+                }
+            })
+    }
     fun whatsappToUser(
         userName: String,
         orderNumber: String,
@@ -85,8 +114,38 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         mobileNumber: String,
         type: String,
         isAccept: Boolean,
-        id: String
+        id: String,
+        restId: String
     ) {
+        Log.d("Whatsapp called", "$userName $orderNumber $mobileNumber $type $isAccept $id $restId")
+        firestore.collection("prod_order")
+            .whereEqualTo("order.details.orderID", id)
+            .whereEqualTo("restaurant.details.restaurant_id", restId)
+            .whereIn("zingDetails.status", mutableListOf("0","1", "2"))
+            .get()
+            .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
+                if (task.isSuccessful) {
+                    for (documentSnapshot in task.result.documents) {
+                        // here you can get the id.
+                        Log.d(TAG, "Document got is ${documentSnapshot.data}")
+                        firestore.runTransaction { transaction ->
+                            transaction.update(
+                                documentSnapshot.reference,
+                                "zingDetails.status",
+                                "5"
+                            )
+                        }.addOnSuccessListener {
+
+                        }
+                            .addOnFailureListener { e ->
+                                Log.d(TAG, "" + e.toString())
+                            }
+                        // you can apply your actions...
+                    }
+                } else {
+                    Log.d(TAG, "Error in getting document ref")
+                }
+            })
         viewModelScope.launch {
             loading.value = true
             val result = repository.callWhatsapp(
@@ -108,7 +167,10 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                     if (isAccept) {
                         _successMethod.value = true
                         firestore.collection("prod_order")
-                            .whereEqualTo("order.details.orderID", id).get()
+                            .whereEqualTo("order.details.orderID", id)
+                            .whereEqualTo("restaurant.details.restaurant_id", restId)
+                            .whereIn("zingDetails.status", mutableListOf("0","1", "2"))
+                            .get()
                             .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
                                 if (task.isSuccessful) {
                                     for (documentSnapshot in task.result.documents) {
@@ -135,6 +197,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
 
                     } else {
                         //firestore.collection("payment").document(id).update("statusCode",-1)
+
                     }
                 }
 
@@ -195,7 +258,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     fun refundApi(
         merchantUserId: String,
         originalTransactionId: String,
-        amount: String
+        amount: String, orderId: String
     ) {
         viewModelScope.launch {
             loading.value = true
@@ -211,6 +274,8 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                     loading.value = false
                     _refundResponse.value = result.data!!
                     _successMethod.value = true
+
+                    cancelOrder(orderId)
                 }
 
                 ApiResult.Status.ERROR -> {

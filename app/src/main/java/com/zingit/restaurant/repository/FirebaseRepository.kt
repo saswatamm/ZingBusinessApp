@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 import kotlin.math.log
 
@@ -114,6 +116,7 @@ class FirebaseRepository @Inject constructor(private val application: Applicatio
         Log.e(TAG, "getOrder: ${Utils.getUserOutletId(application)}")
         val snapShot = fireStoreDatabase.collection("prod_order")
             .whereEqualTo("restaurant.details.restaurant_id", Utils.getMenuSharingCode(application))
+            .whereIn("zingDetails.status", mutableListOf("0","1","2"))
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     trySend(listOf()).isSuccess
@@ -147,9 +150,10 @@ class FirebaseRepository @Inject constructor(private val application: Applicatio
 
     }
 
-    fun linkedOrderList() : Flow<List<OrdersModel>> = callbackFlow {
+    fun linkedOrderList(date: String) : Flow<List<OrdersModel>> = callbackFlow {
         val snapshot = fireStoreDatabase.collection("prod_order")
             .whereEqualTo("restaurant.details.restaurant_id", Utils.getMenuSharingCode(application))
+            .whereEqualTo("order.details.preorder_date", date)
             .whereEqualTo("zingDetails.qrScanned",false)
             .addSnapshotListener { value, error ->
                 if (error != null) {
@@ -179,9 +183,10 @@ class FirebaseRepository @Inject constructor(private val application: Applicatio
         awaitClose { snapshot.remove() }
     }
 
-    fun qrOrderList(): Flow<List<OrdersModel>> = callbackFlow {
+    fun qrOrderList(date: String): Flow<List<OrdersModel>> = callbackFlow {
         val snapshot = fireStoreDatabase.collection("prod_order")
             .whereEqualTo("restaurant.details.restaurant_id", Utils.getMenuSharingCode(application))
+            .whereEqualTo("order.details.preorder_date", date)
             .whereEqualTo("zingDetails.qrScanned",true)
             .addSnapshotListener { value, error ->
                 if (error != null) {
@@ -214,10 +219,11 @@ class FirebaseRepository @Inject constructor(private val application: Applicatio
     }
 
 
-    fun getEarningDb(): Flow<EarningModel> = callbackFlow {
+    fun getEarningDb(date: String): Flow<EarningModel> = callbackFlow {
         Log.e(TAG, "getEarningDb: ${Utils.getUserOutletId(application)}")
         val snapshot = fireStoreDatabase.collection("prod_earnings")
             .whereEqualTo("restaurantID", Utils.getUserOutletId(application))
+            .whereEqualTo("created_on", date)//yyyy-mm-dd
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     trySend(EarningModel(null, null, null, null, null, null, null, null)).isSuccess

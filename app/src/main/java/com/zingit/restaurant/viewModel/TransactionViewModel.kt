@@ -30,8 +30,8 @@ constructor(
 
 
 
-    fun getEarningData() {
-       firebaseRepository.getEarningDb().onEach {
+    fun getEarningData(date: String) {
+       firebaseRepository.getEarningDb(date).onEach {
 
            if (it!=null) {
                _earningData.value = it
@@ -40,8 +40,8 @@ constructor(
        }.launchIn(viewModelScope)
     }
 
-    fun getOrdersData() {
-        firebaseRepository.qrOrderList().onEach {
+    fun getOrdersData(date: String) {
+        firebaseRepository.qrOrderList(date).onEach {
 
             if (it.isNotEmpty()) {
                 _orderActiveData.value = it
@@ -51,8 +51,8 @@ constructor(
 
     }
 
-    fun getLinkedOrdersData() {
-        firebaseRepository.linkedOrderList().onEach {
+    fun getLinkedOrdersData(date: String) {
+        firebaseRepository.linkedOrderList(date).onEach {
             if (it.isNotEmpty()) {
                 _orderLinkedData.value = it
                 Log.d(TAG,"Order Data is :$it")

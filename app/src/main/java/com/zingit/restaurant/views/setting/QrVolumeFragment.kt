@@ -2,6 +2,7 @@ package com.zingit.restaurant.views.setting
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,8 +50,6 @@ class QrVolumeFragment : Fragment() {
         {
             itemList.add(VolumeModel("88222",true,"100"))
         }*/
-        viewModel.getEarningData()
-        viewModel.getOrdersData()
 
 
         val c = Calendar.getInstance()
@@ -65,15 +64,23 @@ class QrVolumeFragment : Fragment() {
         minCalendar[Calendar.MONTH] = Calendar.JANUARY
         minCalendar[Calendar.DAY_OF_MONTH] = 1
 
+        Log.d("Calendar", year.toString() + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", (day)))
+
+        viewModel.getEarningData(year.toString() + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", (day)))
+        viewModel.getOrdersData(year.toString() + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", (day)))
+
         binding.dateValueTv.text =
-            day.toString() + "." + (month + 1).toString() + "." + year.toString()
+            year.toString() + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", (day-1))
 
         val dpd = DatePickerDialog(
             requireContext(),
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
 
                 // Display Selected date in textbox
-                binding.dateValueTv.setText("" + dayOfMonth + "." + (monthOfYear + 1) + "." + year)
+
+                binding.dateValueTv.setText(year.toString() + "-" + String.format("%02d",(monthOfYear + 1)) + "-" + String.format("%02d",(dayOfMonth)))
+                viewModel.getEarningData(year.toString() + "-" + String.format("%02d",(monthOfYear + 1)) + "-" + String.format("%02d",(dayOfMonth)))
+                viewModel.getOrdersData(year.toString() + "-" + String.format("%02d",(monthOfYear + 1)) + "-" + String.format("%02d",(dayOfMonth)))
 
             },
             year,
@@ -81,7 +88,7 @@ class QrVolumeFragment : Fragment() {
             day
         )
         dpd.datePicker.minDate = minCalendar.timeInMillis
-        dpd.datePicker.maxDate = System.currentTimeMillis();
+        dpd.datePicker.maxDate = (System.currentTimeMillis()-86400000);
 
 
 
@@ -95,10 +102,14 @@ class QrVolumeFragment : Fragment() {
                     gson = Gson()
                     val json = gson.toJson(it)
                     val bundle = bundleOf("orderModel" to json)
-                    findNavController().navigate(
-                        R.id.newOrderFragment,
-                        bundle
-                    )
+                    if(it.zingDetails?.status=="5"){
+                        val bundle = bundleOf("orderModel" to json)
+                        findNavController().navigate(R.id.viewPastOrderFragment, bundle)
+                    }
+                    else{
+                        val bundle = bundleOf("orderModel" to json)
+                        findNavController().navigate(R.id.newOrderFragment, bundle)
+                    }
 
                 }
             }

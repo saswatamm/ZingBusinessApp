@@ -1,5 +1,6 @@
 package com.zingit.restaurant.views.setting
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -24,6 +25,7 @@ import com.zingit.restaurant.viewModel.TransactionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @AndroidEntryPoint
 class LinkVolumeFragment : Fragment() {
@@ -45,17 +47,63 @@ class LinkVolumeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_link_volume, container, false)
-        viewModel.getEarningData()
-        viewModel.getLinkedOrdersData()
+
+        val c = Calendar.getInstance()
+        c.add(Calendar.DAY_OF_MONTH, -1);
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val currentYear = Calendar.getInstance()[Calendar.YEAR]
+        val minCalendar = Calendar.getInstance()
+        minCalendar[Calendar.YEAR] = currentYear
+        minCalendar[Calendar.MONTH] = Calendar.JANUARY
+        minCalendar[Calendar.DAY_OF_MONTH] = 1
+
+        viewModel.getEarningData(year.toString() + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", (day)))
+
+        viewModel.getLinkedOrdersData(year.toString() + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", (day)))
+
+
+        binding.dateValueTv.text =
+            year.toString() + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", (day))
+
+        val dpd = DatePickerDialog(
+            requireContext(),
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+
+                // Display Selected date in textbox
+                binding.dateValueTv.setText(year.toString() + "-" + String.format("%02d",(monthOfYear + 1)) + "-" + String.format("%02d",(dayOfMonth)))
+                viewModel.getEarningData(year.toString() + "-" + String.format("%02d",(monthOfYear + 1)) + "-" + String.format("%02d",(dayOfMonth)))
+                viewModel.getLinkedOrdersData(year.toString() + "-" + String.format("%02d",(monthOfYear + 1)) + "-" + String.format("%02d",(dayOfMonth)))
+
+            },
+            year,
+            month,
+            day
+        )
+        dpd.datePicker.minDate = minCalendar.timeInMillis
+        dpd.datePicker.maxDate = (System.currentTimeMillis()-86400000);
+
+
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
+
+            calendarIcon.setOnClickListener {
+                dpd.show()
+            }
             linkAdapter = LinkAdapter(requireContext()) {
                 if (it != null) {
                     gson = Gson()
                     val json = gson.toJson(it)
-                    val bundle = bundleOf("orderModel" to json)
-                    findNavController().navigate(R.id.newOrderFragment, bundle)
-
+                    if(it.zingDetails?.status=="5"){
+                        val bundle = bundleOf("orderModel" to json)
+                        findNavController().navigate(R.id.viewPastOrderFragment, bundle)
+                    }
+                    else{
+                        val bundle = bundleOf("orderModel" to json)
+                        findNavController().navigate(R.id.newOrderFragment, bundle)
+                    }
                 }
 
 

@@ -11,13 +11,10 @@ data class OrderRestaurantModelDetails(
     @get:PropertyName("address")
     @set:PropertyName("address")
     var address: String = "",
-    @get:PropertyName("contact_information")
-    @set:PropertyName("contact_information")
-    var contactInfo: String = "",
-    @get:PropertyName("res_name")
-    @set:PropertyName("res_name")
-    var restaurantName: String = "",
-    @get:PropertyName("restID")
-    @set:PropertyName("restID")
-    var restaurantId: String = "",
+    @get:PropertyName("restaurant_name")
+    @set:PropertyName("restaurant_name")
+    var restaurant_name: String = "",
+    @get:PropertyName("restaurant_id")
+    @set:PropertyName("restaurant_id")
+    var restaurant_id: String = "",
 )

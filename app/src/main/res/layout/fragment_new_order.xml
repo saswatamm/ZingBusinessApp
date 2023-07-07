@@ -206,6 +206,7 @@
 <!--                android:textColor="@color/white"-->
 <!--                android:textSize="@dimen/_10sdp"-->
 <!--                app:cornerRadius="@dimen/_5sdp" />-->
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/prepared"
                 android:layout_width="match_parent"
@@ -215,7 +216,7 @@
                 android:backgroundTint="@color/green"
                 android:fontFamily="@font/duplet_semibold"
                 android:letterSpacing="0.03"
-                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.customer.details.name,pastOrder.order.details.orderId,Utils.INSTANCE.getItemsMapType(pastOrder.orderItem.details),pastOrder.customer.details.phone,`order_prepared_campaign`,true,pastOrder.order.details.orderId)}"
+                android:onClick="@{() -> viewModel.whatsappToUser(pastOrder.customer.details.name,pastOrder.order.details.orderId,Utils.INSTANCE.getItemsMapType(pastOrder.orderItem.details),pastOrder.customer.details.phone,`order_prepared_campaign`,true,pastOrder.order.details.orderId,pastOrder.restaurant.details.restaurant_id)}"
                 android:paddingVertical="@dimen/_15sdp"
                 android:text="@string/order_prepared"
                 android:textAlignment="center"
