@@ -30,8 +30,6 @@ import com.zingit.restaurant.databinding.BottomCancelSpecificItemBinding
 import com.zingit.restaurant.databinding.FragmentNewOrderBinding
 import com.zingit.restaurant.models.item.CancelItemModel
 import com.zingit.restaurant.models.order.OrdersModel
-import com.zingit.restaurant.network.Constants
-import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,8 +74,6 @@ class NewOrderFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_order, container, false)
 
-
-
         gson = Gson()
         val data = arguments?.getString("orderModel")
         orderModel = gson.fromJson(data, OrdersModel::class.java)
@@ -117,7 +113,7 @@ class NewOrderFragment : Fragment() {
             checking the timer --->PlaceTime Order
             Below Function
             */
-            countDownTimer(rejectBtn)
+            //countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
             pastOrderAdapter.submitList(orderModel.orderItem?.details)
@@ -160,10 +156,10 @@ class NewOrderFragment : Fragment() {
         )
         val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
         cancelAdapter = CancelItemAdapter(requireContext()) {
-            if (it == getString(R.string.items_is)) {
-                dialog.dismiss()
-                itemsBottomSheet(ordersModel)
-            }
+//            if (it == getString(R.string.items_is)) {
+//                dialog.dismiss()
+//                itemsBottomSheet(ordersModel)
+//            }
         }
 
         binding.apply {
@@ -193,25 +189,9 @@ class NewOrderFragment : Fragment() {
                 dialog.dismiss()
             }
             cancelRefund.setOnClickListener {
-                if (fullBool || partialBool) {
-                    var total = orderModel.order?.details?.total?.toDouble()?.times(100)
-                    orderModel.order?.details?.let { it1 ->
-                        zingViewModel.refundApi(
-                            orderModel.zingDetails?.userID!!,
-                            orderModel.zingDetails?.paymentOrderId!!,
-                            total.toString(), it1.orderId
-                        )
-                    }
+                dialog.dismiss()
+                itemsBottomSheet(ordersModel)
 
-
-
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Please Select Full or Partial",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
             }
             zingViewModel.refundResponse.observe(viewLifecycleOwner){
                 if(!it.success){
@@ -246,7 +226,6 @@ class NewOrderFragment : Fragment() {
         binding.apply {
             cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
 
-                Log.e(TAG, "itemsBottomSheet: $it")
                 if (it.isChecked && it.itemId != "0") {
                     cancelItemFinalList.add(it)
                 } else {
@@ -257,8 +236,7 @@ class NewOrderFragment : Fragment() {
 
             cancelItemModel.clear()
             recyclerView.adapter = cancelSpecificItemsAdapter
-            cancelItemModel.add(CancelItemModel("All Items", "0", false))
-            // arrayList1.add("All Items")
+//          cancelItemModel.add(CancelItemModel("All Items", "0", false))
             cancelItemModel.addAll(ordersModel.orderItem!!.details.map {
                 CancelItemModel(
                     it.name,
@@ -270,16 +248,19 @@ class NewOrderFragment : Fragment() {
             cancelRefund.setOnClickListener {
                 if (cancelItemFinalList.isNotEmpty()) {
                     for (i in 0 until cancelItemFinalList.size) {
-                        firestore.collection("item").document(cancelItemFinalList.get(i).itemId)
-                            .update("availableOrNot", false)
+                        firestore.collection("prod_menu").document(cancelItemFinalList.get(i).itemId)
+                            .update("active", "0")
                     }
                     var total = orderModel.order?.details?.total?.toDouble()?.times(100)
-                    ordersModel.order?.details?.let { it1 ->
-                        zingViewModel.refundApi(
-                            orderModel.zingDetails?.userID!!,
-                            orderModel.zingDetails?.paymentOrderId!!,
-                            total.toString(), it1.orderId
-                        )
+
+                    orderModel.order?.details?.let { it1 ->
+                        ordersModel.restaurant?.details?.let { it2 ->
+                            zingViewModel.refundApi(
+                                orderModel.zingDetails?.userID!!,
+                                orderModel.zingDetails?.paymentOrderId!!,
+                                total.toString(), it1.orderId, it2.restaurant_id
+                            )
+                        }
                     }
                     d1.dismiss()
                     findNavController().popBackStack()

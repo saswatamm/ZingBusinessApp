@@ -1,39 +1,23 @@
 package com.zingit.restaurant.viewModel
 
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.View
-import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.ServiceCompat.stopForeground
-import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.findNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.gson.Gson
-import com.zingit.restaurant.R
 import com.zingit.restaurant.models.ApiResult
 import com.zingit.restaurant.models.WhatsappRequestModel
-import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.models.orderGenerator.OrderGeneratorResponse
 import com.zingit.restaurant.models.orderGenerator.OrdergeneratorRequest
 import com.zingit.restaurant.models.refund.PhoneRefundResponseModel
 import com.zingit.restaurant.repository.ZingRepository
-import com.zingit.restaurant.service.CountdownService
-import com.zingit.restaurant.utils.Utils
-import com.zingit.restaurant.utils.Utils.hideKeyboard
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -135,7 +119,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                                 "5"
                             )
                         }.addOnSuccessListener {
-
+                            orderGenerator(restId, orderNumber)
                         }
                             .addOnFailureListener { e ->
                                 Log.d(TAG, "" + e.toString())
@@ -258,33 +242,42 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     fun refundApi(
         merchantUserId: String,
         originalTransactionId: String,
-        amount: String, orderId: String
+        amount: String, orderId: String, restaurantId: String
     ) {
+        Log.d("Refunding", "$merchantUserId $originalTransactionId $amount")
+
+        //add refund details to zingDetails
+
         viewModelScope.launch {
             loading.value = true
+            Log.d("Refunding", "initiated")
             val result = repository.refundApi(
                 merchantUserId,
                 originalTransactionId,
                 UUID.randomUUID().toString(),
                 amount,
-                "zingnow.in"
+                "https://zingnow.in"
             )
             when (result.status) {
                 ApiResult.Status.SUCCESS -> {
+                    Log.e("PhonePe Result Success", result.data!!.toString() )
                     loading.value = false
                     _refundResponse.value = result.data!!
                     _successMethod.value = true
 
                     cancelOrder(orderId)
+                    orderGenerator(restaurantId, orderId)
                 }
 
                 ApiResult.Status.ERROR -> {
+                    Log.e("PhonePe Result Error", result.message+".")
                     _successMethod.value = false
                     loading.value = false
                     _error.value = result.message!!
                 }
 
                 else -> {
+                    Log.e("PhonePe Result Else", result.message+".")
                     _successMethod.value = false
                     loading.value = false
                     _error.value = "Something went wrong"
@@ -297,10 +290,10 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
 
 
     fun orderGenerator(
-        url:String,
         restId:String,
         orderNumber: String
     ) {
+        var url = "https://ordergenerator-dev.zingnow.in/clearOrderNumber"
         viewModelScope.launch {
             loading.value = true
             val result = repository.clearOrderGenerator(

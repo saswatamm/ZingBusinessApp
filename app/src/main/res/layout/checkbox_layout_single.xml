@@ -11,12 +11,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="2dp">
 
         <CheckBox
             android:id="@+id/not_available"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/duplet_semibold"
             android:text="@{cancelOrder}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -52,7 +52,7 @@
             android:textColor="@color/lightGreyText"
             android:textSize="@dimen/_11sdp"
             android:layout_marginTop="@dimen/_11sdp"
-            android:layout_marginStart="@dimen/_11sdp"
+            android:layout_marginStart="@dimen/_15sdp"
             android:id="@+id/date_tv"
             />
         <TextView
@@ -81,7 +81,7 @@
             android:textColor="@color/lightGreyText"
             android:layout_marginStart="@dimen/_11sdp"
             android:id="@+id/total_earnings_tv"
-            android:layout_marginEnd="@dimen/_11sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
             />
         <TextView
             android:layout_width="wrap_content"
