@@ -42,6 +42,7 @@ class ApiUtils  @Inject constructor(private val retrofit: Retrofit) {
             }
 
         } catch (e: Throwable) {
+            Log.e("API SYSTEM", "getResponse: ${e.message}", )
             if(e is IOException)
                 return ApiResult.error("Please Check Your Network Connection", null)
             else if (e is java.util.concurrent.CancellationException)

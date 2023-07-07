@@ -110,7 +110,7 @@ class OrdersFragment : Fragment() {
 
                     firestore.collection("prod_order").whereEqualTo("order.details.orderID", searchView.text.toString())
                         .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(requireContext()))
-                        .whereGreaterThan("zingDetails.status", "0")
+                        .whereIn("zingDetails.status",  mutableListOf("0","1", "2"))
                         .addSnapshotListener { value, e ->
                             Log.e(TAG, "error: ${e.toString()}", )
                             if (e != null) {
@@ -122,7 +122,6 @@ class OrdersFragment : Fragment() {
                             }
                             if (value == null) {
                                 Log.w(TAG, "Listen failed.", e)
-
                                 loader.visibility = View.GONE
                                 Toast.makeText(
                                     requireContext(),

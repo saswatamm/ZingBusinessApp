@@ -3,7 +3,11 @@ package com.zingit.restaurant.network
 import com.zingit.restaurant.models.*
 import com.zingit.restaurant.models.orderGenerator.OrderGeneratorResponse
 import com.zingit.restaurant.models.orderGenerator.OrdergeneratorRequest
+import com.zingit.restaurant.models.refund.PhonePeReq
 import com.zingit.restaurant.models.refund.PhoneRefundResponseModel
+import com.zingit.restaurant.models.whatsapp.WhatsappAcceptModel
+import com.zingit.restaurant.models.whatsapp.WhatsappDeniedModel
+import com.zingit.restaurant.models.whatsapp.WhatsappPreparedModel
 import dagger.Provides
 import retrofit2.Response
 import retrofit2.http.Body
@@ -24,14 +28,19 @@ interface ApiEndPoints {
     @POST("/prod/api/v1/whatsapp")
     suspend fun callWhatsapp(@Body whatsappRequestModel: WhatsappRequestModel): Response<WhatsAppResponse>
 
-    @GET("phoneperefund/refundPhonePe")
+    @POST("/aisensy/accepted")
+    suspend fun whatsappAccepted(@Body whatsappAcceptedModel: WhatsappAcceptModel): Response<CommonResponseModel>
+
+    @POST("/aisensy/prepared")
+    suspend fun whatsappPrepared(@Body whatsappPreparedModel: WhatsappPreparedModel): Response<CommonResponseModel>
+    @POST("/aisensy/denied")
+    suspend fun whatsappDenied(@Body whatsappDeniedModel: WhatsappDeniedModel): Response<CommonResponseModel>
+
+
+    @POST("/phoneperefund/refundPhonePe")
     suspend fun refundPhonePe(
-        @Query("merchantUserId") merchantUserId: String,
-        @Query("originalTransactionId") originalTransactionId: String,
-        @Query("refundTransactionId") refundTransactionId: String,
-        @Query("amount") amount: String,
-        @Query("callbackUrl") callbackUrl: String,
-    ): Response<PhoneRefundResponseModel>
+     @Body phonePeReq: PhonePeReq
+    ): Response<CommonResponseModel>
 
 
     @POST("/clearOrderNumber")

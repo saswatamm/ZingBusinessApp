@@ -30,6 +30,7 @@ import com.zingit.restaurant.databinding.BottomCancelSpecificItemBinding
 import com.zingit.restaurant.databinding.FragmentNewOrderBinding
 import com.zingit.restaurant.models.item.CancelItemModel
 import com.zingit.restaurant.models.order.OrdersModel
+import com.zingit.restaurant.models.refund.PhonePeReq
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,6 +38,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 
@@ -113,7 +115,7 @@ class NewOrderFragment : Fragment() {
             checking the timer --->PlaceTime Order
             Below Function
             */
-            //countDownTimer(rejectBtn)
+     //       countDownTimer(rejectBtn)
             pastOrderAdapter = PastOrderAdapter(requireContext())
             itemRv.adapter = pastOrderAdapter
             pastOrderAdapter.submitList(orderModel.orderItem?.details)
@@ -256,14 +258,17 @@ class NewOrderFragment : Fragment() {
                     orderModel.order?.details?.let { it1 ->
                         ordersModel.restaurant?.details?.let { it2 ->
                             zingViewModel.refundApi(
-                                orderModel.zingDetails?.userID!!,
-                                orderModel.zingDetails?.paymentOrderId!!,
-                                total.toString(), it1.orderId, it2.restaurant_id
+                                PhonePeReq( orderModel.zingDetails?.userID!!,
+                                    orderModel.zingDetails?.paymentOrderId!!,
+                                    UUID.randomUUID().toString(),
+                                    total.toString(),
+                                "zingnow.in")
+                               ,
                             )
                         }
                     }
                     d1.dismiss()
-                    findNavController().popBackStack()
+//                    findNavController().popBackStack()
                 } else {
                     Toast.makeText(requireContext(), "Please Select Item", Toast.LENGTH_SHORT)
                         .show()
@@ -336,7 +341,7 @@ class NewOrderFragment : Fragment() {
 
                 override fun onFinish() {
                     // The timer has finished, do something here...
-                    rejectBtn.isEnabled = false
+                    rejectBtn.isEnabled = true
                     rejectBtn.text = getString(R.string.reject_order)
                     rejectBtn.background.setTint(
                         ContextCompat.getColor(
