@@ -108,9 +108,6 @@ class OrdersFragment : Fragment() {
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
                     loader.visibility = View.VISIBLE
 
-//                    firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
-//                        .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
-//                        .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
                     firestore.collection("prod_order").whereEqualTo("order.details.orderID", searchView.text.toString())
                         .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(requireContext()))
                         .whereGreaterThan("zingDetails.status", "0")
@@ -158,16 +155,13 @@ class OrdersFragment : Fragment() {
                 }
             }
             go.setOnClickListener {
-//                firestore.collection("payment").whereEqualTo("orderNo", searchView.text.toString())
-//                    .whereEqualTo("outletID", Utils.getUserOutletId(requireContext()))
-//                    .whereGreaterThan("statusCode", 0).whereLessThan("statusCode", 3)
+
                 firestore.collection("prod_order").whereEqualTo("order.details.orderID", searchView.text.toString())
                     .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(requireContext()))
                     .whereGreaterThan("zingDetails.status", "0")
                     .addSnapshotListener { value, e ->
                         if (e != null) {
                             Log.w(TAG, "Listen failed.", e)
-                            //Toast.makeText(requireContext(), "Order does not exist", Toast.LENGTH_SHORT).show()
                             view?.hideKeyboard()
                             binding.searchView.text.clear()
                             return@addSnapshotListener
@@ -209,46 +203,46 @@ class OrdersFragment : Fragment() {
                 }
             }
 
-            Handler().postDelayed({
-                firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status","0").addSnapshotListener(object : EventListener<QuerySnapshot> {
-                    override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
-                        Log.e(TAG, "onCreateView: ${value!!.documents}")
-                        if (error != null) {
-                            Log.e(TAG, "fetchUsersData: ${error.message}")
-                            return
-                        }
-                        for (i in value!!.documentChanges) {
-                            Log.e(TAG, "fetchUsersData: ${i.document.data}")
-                            when(i.type){
-                                DocumentChange.Type.ADDED -> {
-                                    if(!uniqueOrders.contains(i.document.data.get("order.details.orderID").toString()))
-                                    {
-                                        uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
-                                        paymentModel = i.document.toObject(OrdersModel::class.java)
-                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
-                                        paymentModel = i.document.toObject(OrdersModel::class.java)
-                                        printBluetooth(paymentModel, i.document.id)
+//            Handler().postDelayed({
+//                firestore.collection("prod_order").whereEqualTo("restaurant.details.restaurant_id",Utils.getUserOutletId(requireContext())).whereEqualTo("zingDetails.status","0").addSnapshotListener(object : EventListener<QuerySnapshot> {
+//                    override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+//                        Log.e(TAG, "onCreateView: ${value!!.documents}")
+//                        if (error != null) {
+//                            Log.e(TAG, "fetchUsersData: ${error.message}")
+//                            return
+//                        }
+//                        for (i in value!!.documentChanges) {
+//                            Log.e(TAG, "fetchUsersData: ${i.document.data}")
+//                            when(i.type){
+//                                DocumentChange.Type.ADDED -> {
+//                                    if(!uniqueOrders.contains(i.document.data.get("order.details.orderID").toString()))
+//                                    {
+//                                        uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
+//                                        paymentModel = i.document.toObject(OrdersModel::class.java)
 //                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
-//                                        printBluetooth(paymentModel, i.document.id)
-                                    }
-                                    else{
-                                        Log.e(TAG,"eventPrinting: ${i.document.data.get("order.details.orderID").toString()}")   //Commented it out as already mentioned in HomeFragment
-                                    }
-                                    //Check this once
-
-
-                                }
-                                DocumentChange.Type.MODIFIED -> {
-                                    Log.e(TAG, "onEvent: in Modified ${i.document.data}")
-                                }
-                                DocumentChange.Type.REMOVED -> {
-                                    Log.e(TAG, "onEvent: ${i.document.data}")
-                                }
-                            }
-                        }
-                    }
-                })
-            }, 5)
+//                                        paymentModel = i.document.toObject(OrdersModel::class.java)
+//                                        //printBluetooth(paymentModel, i.document.id)
+////                                        Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
+////                                        printBluetooth(paymentModel, i.document.id)
+//                                    }
+//                                    else{
+//                                        Log.e(TAG,"eventPrintingOrder: ${i.document.data.get("order.details.orderID").toString()}")   //Commented it out as already mentioned in HomeFragment
+//                                    }
+//                                    //Check this once
+//
+//
+//                                }
+//                                DocumentChange.Type.MODIFIED -> {
+//                                    Log.e(TAG, "onEvent: in Modified ${i.document.data}")
+//                                }
+//                                DocumentChange.Type.REMOVED -> {
+//                                    Log.e(TAG, "onEvent: ${i.document.data}")
+//                                }
+//                            }
+//                        }
+//                    }
+//                })
+//            }, 5)
         }
     }
 
@@ -345,7 +339,7 @@ class OrdersFragment : Fragment() {
 
                 }
             )
-                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,requireActivity()))
+                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,requireContext()))
         }
     }
 

@@ -31,6 +31,7 @@ import com.zingit.restaurant.databinding.FragmentNewOrderBinding
 import com.zingit.restaurant.models.item.CancelItemModel
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.network.Constants
+import com.zingit.restaurant.utils.Utils
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -136,6 +137,13 @@ class NewOrderFragment : Fragment() {
                 orderModel,
                 orderModel.zingDetails?.id!!
             )
+
+//            RootActivity().selectedDevice?.let { it1 ->
+//                Log.e(TAG, "printer blue: $it", )
+//                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.zingDetails?.id!!,firestore,
+//                    it1
+//                )
+//            }
 
         }
 

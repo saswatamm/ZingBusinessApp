@@ -176,17 +176,11 @@ class RootActivity : AppCompatActivity() {
                     Toast.makeText(this@RootActivity, "Mac not found in db", Toast.LENGTH_SHORT).show()
                 }
 
-
-
-
-
             }
 
 
             Handler().postDelayed({
-//                var query = firestore.collection("payment")
-//                    .whereEqualTo("outletID", Utils.getUserOutletId(this))
-//                    .whereEqualTo("statusCode", 1)
+
                 var query = firestore.collection("prod_order")
                     .whereEqualTo("restaurant.details.restaurant_id", Utils.getUserOutletId(this))
                     .whereEqualTo("zingDetails.status", "0")
@@ -204,15 +198,17 @@ class RootActivity : AppCompatActivity() {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
                             when (i.type) {
                                 DocumentChange.Type.ADDED -> {
-                                    if (!uniqueOrders.contains(i.document.data.get("order.details.orderID").toString())) {
-                                        uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
-                                        paymentModel = i.document.toObject(OrdersModel::class.java)
+                                    paymentModel = i.document.toObject(OrdersModel::class.java)
+                                    if (!paymentModel.order?.details?.let { uniqueOrders.contains(it.orderId) }!!) {
+                                        paymentModel.order!!.details?.let { uniqueOrders.add(it.orderId) }// Unique orders are added to prevent repetative printing
+                                        Log.d("RootActivity", "InPrinting should happen")
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details!!.size}")
                                         printBluetooth(context,this@RootActivity,paymentModel, i.document.id)
                                         mediaPlayer = MediaPlayer.create(this@RootActivity, R.raw.incoming_order)
                                         mediaPlayer?.start()
                                     } else {
-                                        Log.e(TAG, "eventPrinting: ${i.document.data.get("order.details.orderID").toString()}")
+                                        Log.d("RootActivity", "OutPrinting should happen")
+                                        Log.e(TAG, "eventPrintingRoot: ${i.document.data.get("order.details.orderID").toString()}")
                                     }
                                 }
                                 DocumentChange.Type.MODIFIED -> {
@@ -262,13 +258,6 @@ class RootActivity : AppCompatActivity() {
             addAction("android.bluetooth.device.action.ACL_DISCONNECTED")
             addAction("android.bluetooth.adapter.action.STATE_CHANGED")
         })
-//        ActivityCompat.requestPermissions(
-//            this,
-//            arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE),
-//            PERMISSION_BLUETOOTH_ADVERTISE
-//        )
-//        makeDiscoverable()
-        //selectedDevice= BluetoothConnection(getConnectedDeviceName())
     }
 
 
@@ -390,11 +379,11 @@ class RootActivity : AppCompatActivity() {
 
                         try {
                             val sfDocRef = firestore.collection("prod_order").document(id)
-                            Toast.makeText(
-                                context,
-                                "Print is finished in OrdersFragment ! $id",
-                                Toast.LENGTH_SHORT
-                            ).show()
+//                            Toast.makeText(
+//                                context,
+//                                "Print is finished in OrdersFragment ! $id",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
                             Log.d(TAG, "Print is finished in OrdersFragment !$id")
                             firestore.runTransaction { transaction ->
                                 transaction.update(sfDocRef, "zingDetails.status", "2")
@@ -416,7 +405,7 @@ class RootActivity : AppCompatActivity() {
 
                 }
             )
-                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice,context))
+                .execute(Utils.getAsyncEscPosPrinter(ordersModel, selectedDevice, context))
         }
     }
 
