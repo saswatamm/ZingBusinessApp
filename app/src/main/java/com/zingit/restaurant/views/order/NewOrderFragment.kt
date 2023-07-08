@@ -34,6 +34,10 @@ import com.zingit.restaurant.models.refund.PhonePeReq
 import com.zingit.restaurant.viewModel.OrderDetailsViewModel
 import com.zingit.restaurant.views.RootActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -85,15 +89,23 @@ class NewOrderFragment : Fragment() {
             pastOrder = orderModel
             viewModel = zingViewModel
 
+            zingViewModel.whatsappDeniedData.observe(viewLifecycleOwner) {
+                if (it.status == "Success") {
+                    findNavController().popBackStack()
+                }
+            }
+
 
             zingViewModel.successMethod.observe(viewLifecycleOwner) {
                 if (it) {
-
+                    zingViewModel.orderGenerator(
+                        orderModel.restaurant?.details!!.restaurant_id,
+                        orderModel.order?.details!!.orderId
+                    )
 
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 } else {
-
                     Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
 
@@ -127,8 +139,6 @@ class NewOrderFragment : Fragment() {
 
         binding.printKOT.setOnClickListener {
             Log.d(TAG, "SelectedDevice is" + RootActivity().selectedDevice.toString())
-
-
             RootActivity().printBluetooth(
                 requireContext(),
                 requireActivity(),
@@ -136,12 +146,6 @@ class NewOrderFragment : Fragment() {
                 orderModel.zingDetails?.id!!
             )
 
-//            RootActivity().selectedDevice?.let { it1 ->
-//                Log.e(TAG, "printer blue: $it", )
-//                Utils.printBluetooth(requireActivity(),requireContext(),orderModel,orderModel.zingDetails?.id!!,firestore,
-//                    it1
-//                )
-//            }
 
         }
 
@@ -195,11 +199,11 @@ class NewOrderFragment : Fragment() {
                 itemsBottomSheet(ordersModel)
 
             }
-            zingViewModel.refundResponse.observe(viewLifecycleOwner){
-                if(!it.success){
+            zingViewModel.refundResponse.observe(viewLifecycleOwner) {
+                if (!it.success) {
                     Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
-                }else{
+                } else {
                     Toast.makeText(requireContext(), "Refund Failed", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 }
@@ -250,34 +254,61 @@ class NewOrderFragment : Fragment() {
             cancelRefund.setOnClickListener {
                 if (cancelItemFinalList.isNotEmpty()) {
                     for (i in 0 until cancelItemFinalList.size) {
-                        firestore.collection("prod_menu").document(cancelItemFinalList.get(i).itemId)
+                        firestore.collection("prod_menu")
+                            .document(cancelItemFinalList.get(i).itemId)
                             .update("active", "0")
                     }
                     var total = orderModel.order?.details?.total?.toDouble()?.times(100)
 
                     orderModel.order?.details?.let { it1 ->
                         ordersModel.restaurant?.details?.let { it2 ->
-                            zingViewModel.refundApi(
-                                ordersModel,
-                                PhonePeReq( orderModel.zingDetails?.userID!!,
-                                    orderModel.zingDetails?.paymentOrderId!!,
-                                    UUID.randomUUID().toString(),
-                                    total.toString(),
-                                "zingnow.in")
-                               ,
-                            )
+
+                            CoroutineScope(Dispatchers.IO).launch {
+                                async {
+                                    zingViewModel.refundApi(
+                                        ordersModel,
+                                        PhonePeReq(
+                                            orderModel.zingDetails?.userID!!,
+                                            orderModel.zingDetails?.paymentOrderId!!,
+                                            UUID.randomUUID().toString(),
+                                            total.toString(),
+                                            "zingnow.in"
+                                        )
+                                    )
+
+
+                                }.await()
+                                async {
+                                    zingViewModel.orderGenerator(
+                                        orderModel.restaurant?.details!!.restaurant_id,
+                                        orderModel.order?.details!!.orderId
+                                    )
+                                }.await()
+
+                                async {
+                                    zingViewModel.whatsappDenied(
+                                        orderModel.customer?.details!!.phone,
+                                        orderModel.order?.details!!.orderId,
+                                        orderModel.customer?.details!!.name,
+                                        true,
+                                        orderModel.restaurant?.details!!.restaurant_id
+                                    )
+                                }.await()
+
+
+                            }
+
+
                         }
                     }
                     d1.dismiss()
-                    zingViewModel.dataLivedata.observe(viewLifecycleOwner){
-                        if(it.status == "Success"){
-
-                            Toast.makeText(requireContext(), "Refund Success", Toast.LENGTH_SHORT).show()
-                            findNavController().popBackStack()
-
-                        }else{
-                            Toast.makeText(requireContext(), "Refund Failed", Toast.LENGTH_SHORT).show()
-                            findNavController().popBackStack()
+                    zingViewModel.dataLivedata.observe(viewLifecycleOwner) {
+                        if (it.status == "Success") {
+                            Toast.makeText(requireContext(), "Refund Success", Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            Toast.makeText(requireContext(), "Refund Failed", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
 
@@ -305,6 +336,7 @@ class NewOrderFragment : Fragment() {
         val targetDuration = Duration.ofMinutes(5)
         val time = orderModel.order?.details!!.createdOn.substringAfter(" ")
         val date = orderModel.order?.details!!.createdOn.substringBefore(" ")
+
         val dateTime = date + "T" + time
         val ldt = LocalDateTime.parse(dateTime)
         val givenTime = ldt.atZone(ZoneId.systemDefault()).toInstant()
@@ -314,7 +346,7 @@ class NewOrderFragment : Fragment() {
         val remainingDuration = Duration.between(currentTime, targetTime)
         if (remainingDuration.isNegative || remainingDuration.isZero) {
             rejectBtn.text = getString(R.string.reject_order)
-            rejectBtn.isEnabled = false
+            rejectBtn.isEnabled = true
             rejectBtn.background.setTint(
                 ContextCompat.getColor(
                     requireContext(),
@@ -353,9 +385,13 @@ class NewOrderFragment : Fragment() {
 
                 override fun onFinish() {
                     // The timer has finished, do something here...
-                    zingViewModel.whatsappAccepted(orderModel.customer?.details!!.phone,
-                        orderModel.order?.details!!.orderId,orderModel.restaurant?.details!!.restaurant_name,
-                        orderModel.customer?.details!!.name,"15")
+                    zingViewModel.whatsappAccepted(
+                        orderModel.customer?.details!!.phone,
+                        orderModel.order?.details!!.orderId,
+                        orderModel.restaurant?.details!!.restaurant_name,
+                        orderModel.customer?.details!!.name,
+                        "15"
+                    )
                     rejectBtn.isEnabled = false
                     rejectBtn.text = getString(R.string.reject_order)
                     rejectBtn.background.setTint(

@@ -12,8 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.zingit.restaurant.models.ApiResult
 import com.zingit.restaurant.models.CommonResponseModel
-import com.zingit.restaurant.models.WhatsappRequestModel
-import com.zingit.restaurant.models.order.OrderModel
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.models.orderGenerator.OrderGeneratorResponse
 import com.zingit.restaurant.models.orderGenerator.OrdergeneratorRequest
@@ -24,11 +22,11 @@ import com.zingit.restaurant.models.whatsapp.WhatsappDeniedModel
 import com.zingit.restaurant.models.whatsapp.WhatsappPreparedModel
 import com.zingit.restaurant.repository.ZingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -52,6 +50,11 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         get() = data
     val checkFinish: MutableLiveData<Boolean> = MutableLiveData()
 
+
+    private val _whatsappDeniedData: MutableLiveData<CommonResponseModel> = MutableLiveData()
+    val whatsappDeniedData: LiveData<CommonResponseModel>
+        get() = _whatsappDeniedData
+
     private val _successMethod: MutableLiveData<Boolean> = MutableLiveData()
     val successMethod: LiveData<Boolean>
         get() = _successMethod
@@ -61,9 +64,9 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         get() = _refundResponse
 
 
-    private val _orderGeneratorResponse :MutableLiveData<OrderGeneratorResponse> = MutableLiveData()
-    val orderGeneratorResponse :LiveData<OrderGeneratorResponse>
-    get() = _orderGeneratorResponse
+    private val _orderGeneratorResponse: MutableLiveData<OrderGeneratorResponse> = MutableLiveData()
+    val orderGeneratorResponse: LiveData<OrderGeneratorResponse>
+        get() = _orderGeneratorResponse
 
     private lateinit var timer: CountDownTimer
 
@@ -71,11 +74,11 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         startCountdownTimer()
     }
 
-    fun cancelOrder(id: String){
+    fun cancelOrder(id: String) {
         firestore.collection("prod_order")
             .whereEqualTo("order.details.orderID", id)
             .whereEqualTo("restaurant.details.restaurant_id", "hi")
-            .whereIn("zingDetails.status", mutableListOf("0","1", "2"))
+            .whereIn("zingDetails.status", mutableListOf("0", "1", "2"))
             .get()
             .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
                 if (task.isSuccessful) {
@@ -104,13 +107,13 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
 
 
     fun whatsappAccepted(
-        destination:String,
-        orderNumber:String,
-        restaurantName:String,
-        userName:String,
-        zingTime:String,
+        destination: String,
+        orderNumber: String,
+        restaurantName: String,
+        userName: String,
+        zingTime: String,
 
-    ){
+        ) {
         viewModelScope.launch {
             loading.value = true
             val result = repository.whatsappAccepted(
@@ -126,7 +129,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                 ApiResult.Status.SUCCESS -> {
                     loading.value = false
                     data.value = result.data!!
-                     _successMethod.value = true
+                    _successMethod.value = true
 
 
                 }
@@ -157,7 +160,7 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         restId: String,
 
 
-    ){
+        ) {
         viewModelScope.launch {
             loading.value = true
             val result = repository.whatsappDenied(
@@ -170,18 +173,12 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
             when (result.status) {
                 ApiResult.Status.SUCCESS -> {
                     loading.value = false
-                    data.value = result.data!!
-                    if (isAccept) {
-                        _successMethod.value = true
+                    _whatsappDeniedData.value = result.data!!
 
-                    } else {
-                        //firestore.collection("payment").document(id).update("statusCode",-1)
-
-                    }
                 }
 
                 ApiResult.Status.ERROR -> {
-                    _successMethod.value = false
+                    _whatsappDeniedData.value = result.data!!
                     loading.value = false
                     _error.value = result.message!!
                 }
@@ -205,29 +202,33 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
         userName: String,
         isAccept: Boolean,
         restId: String
-    ){
+    ) {
 
 
         viewModelScope.launch {
             loading.value = true
-            val result = repository.whatsappPrepared(
-                WhatsappPreparedModel(
-                    mobileNumber,
-                    orderNumber,
-                    restaurantName,
-                    userName
+            val result = withContext(Dispatchers.IO) {
+                repository.whatsappPrepared(
+                    WhatsappPreparedModel(
+                        mobileNumber,
+                        orderNumber,
+                        restaurantName,
+                        userName
+                    )
                 )
-            )
+
+            }
             when (result.status) {
                 ApiResult.Status.SUCCESS -> {
                     loading.value = false
                     data.value = result.data!!
                     if (isAccept) {
-                        _successMethod.value = true
+
+                        orderGenerator(restId, orderNumber)
                         firestore.collection("prod_order")
                             .whereEqualTo("order.details.orderID", orderNumber)
                             .whereEqualTo("restaurant.details.restaurant_id", restId)
-                            .whereIn("zingDetails.status", mutableListOf("0","1", "2"))
+                            .whereIn("zingDetails.status", mutableListOf("0", "1", "2"))
                             .get()
                             .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
                                 if (task.isSuccessful) {
@@ -241,9 +242,11 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                                                 "5"
                                             )
                                         }.addOnSuccessListener {
-                                            orderGenerator(restId, orderNumber)
+                                            _successMethod.value = true
+
                                         }
                                             .addOnFailureListener { e ->
+                                                _successMethod.value = true
                                                 Log.d(TAG, "" + e.toString())
                                             }
                                         // you can apply your actions...
@@ -254,7 +257,6 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                             })
 
                     } else {
-                        //firestore.collection("payment").document(id).update("statusCode",-1)
 
                     }
                 }
@@ -324,28 +326,23 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
             loading.value = true
             Log.d("Refunding", "initiated")
             val result = repository.refundApi(
-              phonePeReq = phonePeReq
+                phonePeReq = phonePeReq
             )
             when (result.status) {
                 ApiResult.Status.SUCCESS -> {
-                    Log.e("PhonePe Result Success", result.data!!.toString() )
+                    Log.e("PhonePe Result Success", result.data!!.toString())
                     loading.value = false
-                    data.value = result.data!!
-
-                    launch {
-                        whatsappDenied(orderModel.customer?.details!!.phone,orderModel.order?.details!!.orderId,orderModel.customer?.details!!.name,true,orderModel.restaurant?.details!!.restaurant_id)
-
-                    }
-
                     firestore.collection("prod_order")
                         .whereEqualTo("order.details.orderID", orderModel.order?.details!!.orderId)
-                        .whereEqualTo("restaurant.details.restaurant_id", orderModel.restaurant?.details?.restaurant_id)
-                        .whereIn("zingDetails.status", mutableListOf("0","1", "2"))
+                        .whereEqualTo(
+                            "restaurant.details.restaurant_id",
+                            orderModel.restaurant?.details?.restaurant_id
+                        )
+                        .whereIn("zingDetails.status", mutableListOf("0", "1", "2"))
                         .get()
                         .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
                             if (task.isSuccessful) {
                                 for (documentSnapshot in task.result.documents) {
-                                    // here you can get the id.
                                     Log.d(TAG, "Document got is ${documentSnapshot.data}")
                                     firestore.runTransaction { transaction ->
                                         val currentTimeMillis = System.currentTimeMillis()
@@ -356,12 +353,16 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                                             documentSnapshot.reference,
                                             "zingDetails.refundProcessTime",
                                             formattedDate,
-                                            "zingDetails.refundProcessed",orderModel.order?.details?.total,
-                                            "zingDetails.refundReason",phonePeReq.refundTransactionId,
-                                            "zingDetails.status","-1",
+                                            "zingDetails.refundProcessed",
+                                            orderModel.order?.details?.total,
+                                            "zingDetails.refundReason",
+                                            phonePeReq.refundTransactionId,
+                                            "zingDetails.status",
+                                            "-1",
                                         )
                                     }.addOnSuccessListener {
-//                                        orderGenerator(phonePeReq.restaurantId, phonePeReq.orderId)
+                                        data.value = result.data!!
+
                                     }
                                         .addOnFailureListener { e ->
                                             Log.d(TAG, "" + e.toString())
@@ -373,19 +374,17 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
                             }
                         })
 
-//                    cancelOrder(orderId)
- //                   orderGenerator(restaurantId, orderId)
                 }
 
                 ApiResult.Status.ERROR -> {
-                    Log.e("PhonePe Result Error", result.message+".")
+                    Log.e("PhonePe Result Error", result.message + ".")
                     _successMethod.value = false
                     loading.value = false
                     _error.value = result.message!!
                 }
 
                 else -> {
-                    Log.e("PhonePe Result Else", result.message+".")
+                    Log.e("PhonePe Result Else", result.message + ".")
                     _successMethod.value = false
                     loading.value = false
                     _error.value = "Something went wrong"
@@ -396,21 +395,23 @@ class OrderDetailsViewModel @Inject constructor(private var repository: ZingRepo
     }
 
 
-
     fun orderGenerator(
-        restId:String,
+        restId: String,
         orderNumber: String
     ) {
-        var url = "https://ordergenerator-dev.zingnow.in/clearOrderNumber"
+        val url = "https://ordergenerator-dev.zingnow.in/clearOrderNumber"
         viewModelScope.launch {
             loading.value = true
-            val result = repository.clearOrderGenerator(
-                url,
-                OrdergeneratorRequest(
-                    restId,
-                    orderNumber)
+            val result = withContext(Dispatchers.IO) {
+                repository.clearOrderGenerator(
+                    url,
+                    OrdergeneratorRequest(
+                        restId,
+                        orderNumber
+                    )
 
-            )
+                )
+            }
             when (result.status) {
                 ApiResult.Status.SUCCESS -> {
                     loading.value = false

@@ -24,6 +24,8 @@ class OrdersViewModel @Inject constructor(
     private val TAG = "OrdersViewModel"
     private val _orderActiveData: MutableStateFlow<List<OrdersModel>> = MutableStateFlow(listOf())
     val orderActiveData: StateFlow<List<OrdersModel>> = _orderActiveData
+    private val _loading : MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val loading : StateFlow<Boolean> = _loading
 
     private val _orderHistoryData: MutableStateFlow<List<OrdersModel>> = MutableStateFlow(listOf())
     val orderHistoryData: StateFlow<List<OrdersModel>> = _orderHistoryData
@@ -37,11 +39,15 @@ class OrdersViewModel @Inject constructor(
 
 
     fun getOrdersData() {
+        _orderActiveData.value = listOf()
+        _loading.value = true
         repository.getOrder().onEach {
-
             if (it.isNotEmpty()) {
+                _loading.value = false
                 _orderActiveData.value = it
                 Log.d(TAG,"Order Data is :$it")
+            }else{
+                _loading.value = false
             }
         }.launchIn(viewModelScope)
 

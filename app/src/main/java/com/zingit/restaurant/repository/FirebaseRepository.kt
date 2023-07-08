@@ -123,11 +123,7 @@ class FirebaseRepository @Inject constructor(private val application: Applicatio
                     return@addSnapshotListener
                 }
                 if (value != null) {
-//                    var orderModel: List<OrdersModel> =
-//                        value.toObjects(OrdersModel::class.java)
-//                    orderModel = orderModel.sortedByDescending { it.order?.preorderTime } //Orders sorted in descending order
                     var orderModel = ArrayList<OrdersModel>();
-
                     val valueIterator = value.documents.iterator()
                     while (valueIterator.hasNext()) {
                         var valueIteratorObject = valueIterator.next();
@@ -141,7 +137,7 @@ class FirebaseRepository @Inject constructor(private val application: Applicatio
                     }
                     var list = orderModel.sortedByDescending { it.zingDetails?.placedTime }
                     orderModel = ArrayList(list);
-                    Log.d("RestaurantProfileViewModel", "orderData is:$value")
+                    Log.d("RestaurantProfileViewModel", "orderData is:$orderModel")
                     trySend(orderModel).isSuccess
                 }
             }

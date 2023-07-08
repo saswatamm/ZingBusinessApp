@@ -43,7 +43,7 @@ interface ApiEndPoints {
     ): Response<CommonResponseModel>
 
 
-    @POST("/clearOrderNumber")
+    @POST
     suspend fun clearOrderGenerator(
         @Url url: String,
         @Body orderGenerator: OrdergeneratorRequest
