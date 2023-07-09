@@ -37,7 +37,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -89,28 +91,23 @@ class NewOrderFragment : Fragment() {
             pastOrder = orderModel
             viewModel = zingViewModel
 
+            zingViewModel.whatsappPrepared.observe(viewLifecycleOwner){
+                if (it.status == "Success") {
+                    Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
+                    findNavController().popBackStack()
+                }
+            }
+
             zingViewModel.whatsappDeniedData.observe(viewLifecycleOwner) {
                 if (it.status == "Success") {
+                    Toast.makeText(requireContext(), "Refund Initiated", Toast.LENGTH_SHORT).show()
                     findNavController().popBackStack()
                 }
             }
 
 
-            zingViewModel.successMethod.observe(viewLifecycleOwner) {
-                if (it) {
-                    zingViewModel.orderGenerator(
-                        orderModel.restaurant?.details!!.restaurant_id,
-                        orderModel.order?.details!!.orderId
-                    )
 
-                    Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
-                } else {
-                    Toast.makeText(requireContext(), "Order Prepared", Toast.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
 
-                }
-            }
             arrayList.clear()
             val tempArray = arrayOf(
                 getString(R.string.items_is),
@@ -199,15 +196,7 @@ class NewOrderFragment : Fragment() {
                 itemsBottomSheet(ordersModel)
 
             }
-            zingViewModel.refundResponse.observe(viewLifecycleOwner) {
-                if (!it.success) {
-                    Toast.makeText(requireContext(), "${it.message}", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                } else {
-                    Toast.makeText(requireContext(), "Refund Failed", Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
-                }
-            }
+
 
         }
 
@@ -231,8 +220,7 @@ class NewOrderFragment : Fragment() {
         d1.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         binding.apply {
             cancelSpecificItemsAdapter = CancelSpecificItemsAdapter(requireContext()) {
-
-                if (it.isChecked && it.itemId != "0") {
+                if (it.isChecked) {
                     cancelItemFinalList.add(it)
                 } else {
                     cancelItemFinalList.remove(it)
@@ -259,13 +247,9 @@ class NewOrderFragment : Fragment() {
                             .update("active", "0")
                     }
                     var total = orderModel.order?.details?.total?.toDouble()?.times(100)
-
                     orderModel.order?.details?.let { it1 ->
                         ordersModel.restaurant?.details?.let { it2 ->
-
-                            CoroutineScope(Dispatchers.IO).launch {
-                                async {
-                                    zingViewModel.refundApi(
+                                    zingViewModel.whatsappMultiOperationDenied(
                                         ordersModel,
                                         PhonePeReq(
                                             orderModel.zingDetails?.userID!!,
@@ -277,40 +261,10 @@ class NewOrderFragment : Fragment() {
                                     )
 
 
-                                }.await()
-                                async {
-                                    zingViewModel.orderGenerator(
-                                        orderModel.restaurant?.details!!.restaurant_id,
-                                        orderModel.order?.details!!.orderId
-                                    )
-                                }.await()
-
-                                async {
-                                    zingViewModel.whatsappDenied(
-                                        orderModel.customer?.details!!.phone,
-                                        orderModel.order?.details!!.orderId,
-                                        orderModel.customer?.details!!.name,
-                                        true,
-                                        orderModel.restaurant?.details!!.restaurant_id
-                                    )
-                                }.await()
-
-
-                            }
-
-
                         }
                     }
                     d1.dismiss()
-                    zingViewModel.dataLivedata.observe(viewLifecycleOwner) {
-                        if (it.status == "Success") {
-                            Toast.makeText(requireContext(), "Refund Success", Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
-                            Toast.makeText(requireContext(), "Refund Failed", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
+
 
                 } else {
                     Toast.makeText(requireContext(), "Please Select Item", Toast.LENGTH_SHORT)
@@ -358,7 +312,6 @@ class NewOrderFragment : Fragment() {
             object : CountDownTimer(remainingDuration.toMillis(), 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                     // Calculate the remaining time as a Duration
-
                     val text = "Reject Order ${
                         String.format(
                             "(%02d:%02d)",

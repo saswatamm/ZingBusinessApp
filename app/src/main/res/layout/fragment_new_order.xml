@@ -216,7 +216,7 @@
                 android:backgroundTint="@color/green"
                 android:fontFamily="@font/duplet_semibold"
                 android:letterSpacing="0.03"
-                android:onClick="@{() -> viewModel.whatsappPrepared(pastOrder.customer.details.phone,pastOrder.order.details.orderId,pastOrder.restaurant.details.restaurant_name,pastOrder.customer.details.name,true,pastOrder.restaurant.details.restaurant_id)}"
+                android:onClick="@{() -> viewModel.whatsappMultiOperation(pastOrder.customer.details.phone,pastOrder.order.details.orderId,pastOrder.restaurant.details.restaurant_name,pastOrder.customer.details.name,true,pastOrder.restaurant.details.restaurant_id)}"
                 android:paddingVertical="@dimen/_15sdp"
                 android:text="@string/order_prepared"
                 android:textAlignment="center"
