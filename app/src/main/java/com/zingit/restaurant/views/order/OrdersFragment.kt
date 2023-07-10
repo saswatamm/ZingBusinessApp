@@ -214,10 +214,11 @@ class OrdersFragment : Fragment() {
                             Log.e(TAG, "fetchUsersData: ${i.document.data}")
                             when(i.type){
                                 DocumentChange.Type.ADDED -> {
-                                    if(!uniqueOrders.contains(i.document.data.get("order.details.orderID").toString()))
-                                    {
-                                        uniqueOrders.add(i.document.data.get("order.details.orderID").toString()) // Unique orders are added to prevent repetative printing
-                                        paymentModel = i.document.toObject(OrdersModel::class.java)
+                                    paymentModel = i.document.toObject(OrdersModel::class.java)
+                                    paymentModel.zingDetails?.id = i.document.id
+
+                                    if(!uniqueOrders.contains(i.document.id)){
+                                        uniqueOrders.add(i.document.id)
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details?.size}",)
                                         paymentModel = i.document.toObject(OrdersModel::class.java)
                                         //printBluetooth(paymentModel, i.document.id)

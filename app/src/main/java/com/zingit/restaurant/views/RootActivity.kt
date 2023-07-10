@@ -199,15 +199,17 @@ class RootActivity : AppCompatActivity() {
                             when (i.type) {
                                 DocumentChange.Type.ADDED -> {
                                     paymentModel = i.document.toObject(OrdersModel::class.java)
-                                    if (!paymentModel.order?.details?.let { uniqueOrders.contains(it.orderId) }!!) {
-                                        paymentModel.order!!.details?.let { uniqueOrders.add(it.orderId) }// Unique orders are added to prevent repetative printing
+                                    paymentModel.zingDetails?.id = i.document.id
+                                    if(!uniqueOrders.contains(i.document.id)){
+                                        uniqueOrders.add(i.document.id)
                                         Log.d("RootActivity", "InPrinting should happen")
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details!!.size}")
                                         printBluetooth(context,this@RootActivity,paymentModel, i.document.id)
                                         mediaPlayer = MediaPlayer.create(this@RootActivity, R.raw.incoming_order)
                                         mediaPlayer?.start()
-                                    } else {
-                                        Log.d("RootActivity", "OutPrinting should happen")
+                                    }
+                                    else {
+                                        Log.d("RootActivity", "Printing should happen")
                                         Log.e(TAG, "eventPrintingRoot: ${i.document.data.get("order.details.orderID").toString()}")
                                     }
                                 }
