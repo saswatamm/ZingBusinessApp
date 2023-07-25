@@ -65,5 +65,8 @@ data class OrderZingDetails(
     @get:PropertyName("userID")
     @set:PropertyName("userID")
     var userID: String?="",
+    @get:PropertyName("user_delivery_address")
+    @set:PropertyName("user_delivery_address")
+    var user_delivery_address: String?="",
 
 )

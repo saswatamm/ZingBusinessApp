@@ -204,9 +204,19 @@ class RootActivity : AppCompatActivity() {
                                         uniqueOrders.add(i.document.id)
                                         Log.d("RootActivity", "InPrinting should happen")
                                         Log.e(TAG, "onEvent: ${paymentModel.orderItem?.details!!.size}")
-                                        printBluetooth(context,this@RootActivity,paymentModel, i.document.id)
-                                        mediaPlayer = MediaPlayer.create(this@RootActivity, R.raw.incoming_order)
-                                        mediaPlayer?.start()
+                                        try{
+                                            var customerDetails = paymentModel.customer?.details!!.phone;
+                                            if(customerDetails.length>9)
+                                            {
+                                                printBluetooth(context,this@RootActivity,paymentModel, i.document.id)
+                                                mediaPlayer = MediaPlayer.create(this@RootActivity, R.raw.incoming_order)
+                                                mediaPlayer?.start()
+                                            }
+                                        }
+                                        catch (e: Exception){
+
+                                        }
+
                                     }
                                     else {
                                         Log.d("RootActivity", "Printing should happen")

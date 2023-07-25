@@ -309,6 +309,28 @@ object Utils {
                 "Order From : ",
                 payment.customer?.details!!.name.split(" ")[0]
             ) + payment.customer?.details!!.name.split(" ")[0] + "\n\n"
+
+
+
+            slip += "[L]<b>" + "Contact No : " + getSpaces(
+                "Contact No : ",
+                 payment.customer?.details!!.phone) + payment.customer?.details!!.phone + "\n\n"
+
+
+
+            try{
+                    if(payment.zingDetails?.modeSelected.equals("delivery"))
+                    {
+                        slip += "Address :    " + payment.zingDetails?.user_delivery_address + "\n\n";
+                    }
+
+            }
+            catch (e:java.lang.Exception)
+            {
+
+            }
+
+
             /*slip += """
                  ${"[R]<font size='normal'>        " + "[R]${payment.userName.split(" ")[0]}"}</font>
 
