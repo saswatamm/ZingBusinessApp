@@ -19,7 +19,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,13 +27,10 @@ import androidx.fragment.app.Fragment
 import com.dantsu.escposprinter.connection.DeviceConnection
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection
 import com.dantsu.escposprinter.textparser.PrinterTextParserImg
-import com.google.android.gms.common.api.Api.Client
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.zingit.restaurant.R
-import com.zingit.restaurant.models.order.OrderItem
 import com.zingit.restaurant.models.order.OrderItemDetails
 import com.zingit.restaurant.models.order.OrdersModel
 import com.zingit.restaurant.utils.printer.AsyncBluetoothEscPosPrint
@@ -318,17 +314,17 @@ object Utils {
 
 
 
-            try{
-                    if(payment.zingDetails?.modeSelected.equals("delivery"))
-                    {
-                        slip += "Address :    " + payment.zingDetails?.user_delivery_address + "\n\n";
-                    }
-
-            }
-            catch (e:java.lang.Exception)
-            {
-
-            }
+//            try{
+//                    if(payment.zingDetails?.modeSelected.equals("delivery"))
+//                    {
+//                        slip += "Address :    " + payment.zingDetails?.user_delivery_address + "\n\n";
+//                    }
+//
+//            }
+//            catch (e:java.lang.Exception)
+//            {
+//
+//            }
 
 
             /*slip += """
@@ -340,13 +336,13 @@ object Utils {
             //Add phone no here
             slip += "[C]<b>=============================================\n\n"
             for (i in 0 until payment.orderItem?.details!!.size) {
-                spaces = getSpaces(payment.orderItem!!.details.get(i).name, "x2")
-                var variation = payment.orderItem!!.details.get(i).variationName;
+                var variation = payment.orderItem!!.details.get(i).variation_name;
+                spaces = getSpaces(payment.orderItem!!.details[i].name + variation, "x" + payment.orderItem!!.details[i].quantity)
                 if(variation != "")
                 {
                     variation = " ($variation) ";
                 }
-                slip += "[L]<font size='big-4'>" + payment.orderItem!!.details[i].name + variation + spaces + "x" + payment.orderItem!!.details.get(i).quantity + "\n\n"
+                slip += "[L]<font size='big-4'>" + payment.orderItem!!.details[i].name + variation + spaces + "x" + payment.orderItem!!.details[i].quantity + "\n\n"
                 "</font>"
 
 
@@ -358,12 +354,53 @@ object Utils {
             }
             slip += "[C]<b>=============================================\n\n"
             slip += """
-             ${"[R]<font size='big-4'>           Total Amount (incl. taxes): ₹" + payment.order!!.details!!.total}</font>
+             ${"[L]<font size='big-4'>Total Payable (incl. taxes): ₹" + payment.zingDetails!!.totalPayable}</font>
 
              """.trimIndent()
+            slip += "\n"
+//            var qrLink = "upi://pay?pa=eazypay.582796318@icici&pn=BLITZBEE PRIVATE LIMITED&tr=EZYS7003926500&am=&cu=INR&mc=5411";
+//            try{
+//                qrLink = createLink(qrLink, payment.zingDetails!!.totalPayable)
+//                slip += "[L]<qrcode size='28'>${qrLink}/</qrcode>\n\n";
+//            }
+//            catch (e : Exception)
+//            {
+//
+//            }
+//            slip += "[R]<b>Pay on Delivery. Scan the QR to complete payment" + "\n\n"
+
+
             return slip
         }
 
+    }
+
+    fun createLink(qrLink: String, totalPayable: String?): String {
+        var updatedLink = "";
+        if (totalPayable != null) {
+            var c=0
+
+            for(i in qrLink.length-1 downTo 0)
+            {
+                var char = qrLink[i];
+                if(char=='&')
+                {
+                    c++
+                }
+                if(c==2)
+                {
+                    updatedLink = char + updatedLink;
+                    updatedLink = totalPayable + updatedLink;
+                    c++;
+                    continue;
+                }
+                updatedLink = char + updatedLink;
+
+            }
+            return updatedLink;
+        }
+
+        return qrLink;
     }
 
 

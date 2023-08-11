@@ -38,7 +38,7 @@ data class OrderItemDetails(
     var variationId: String = "",
     @get:PropertyName("variation_name")
     @set:PropertyName("variation_name")
-    var variationName: String = "",
+    var variation_name: String = "",
 //    @get:PropertyName("item_tax")
 //    @set:PropertyName("item_tax")
 //    var itemTax: ArrayList<OrderItemTax> = arrayListOf(),

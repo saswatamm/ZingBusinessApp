@@ -26,7 +26,7 @@ android {
         dev {
             dimension "default"
 //            applicationIdSuffix ".dev"
-            versionCode 52
+            versionCode 63
             versionName "1.0"
         }
         staging{
@@ -131,6 +131,8 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.0.0'
 
     implementation 'com.karumi:dexter:6.2.3'
+
+
 
 
 }
